@@ -932,12 +932,14 @@ address {
   display: none;
 }
 
-/* Compliance Rate */
-.compliance-stat .compliance-rate {
-  color: #32cd32 !important;  /* Lime green */
+/* Compliance Rate - Lime Green */
+.bucket-stat.compliance-stat .stat-value.compliance-rate {
+  color: #00ff00 !important;  /* Bright lime green */
   font-weight: 700;
+  text-shadow: 0 0 2px rgba(0, 255, 0, 0.3);
 }
 
-[data-theme="dark"] .compliance-stat .compliance-rate {
-  color: #7fff00 !important;  /* Brighter lime for dark mode */
+[data-theme="dark"] .bucket-stat.compliance-stat .stat-value.compliance-rate {
+  color: #00ff00 !important;  /* Bright lime green */
+  text-shadow: 0 0 4px rgba(0, 255, 0, 0.5);
 }
