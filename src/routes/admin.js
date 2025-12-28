@@ -684,6 +684,146 @@ router.get('/unions/:unionId/buckets/:id', async (req, res) => {
   }
 });
 
+// Upload master PDF for bucket
+router.post('/unions/:unionId/buckets/:id/upload-master-pdf', upload.single('master_pdf'), async (req, res) => {
+  try {
+    const bucket = await Bucket.findById(req.params.id);
+    if (!bucket) {
+      req.session.error = 'Bucket not found';
+      return res.redirect(`/admin/unions/${req.params.unionId}`);
+    }
+
+    if (!req.file) {
+      req.session.error = 'Please select a PDF file';
+      return res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}/edit`);
+    }
+
+    // Delete old PDF if exists
+    if (bucket.master_pdf_filename) {
+      const oldPath = path.join(__dirname, '../../uploads/pdfs', bucket.master_pdf_filename);
+      if (fs.existsSync(oldPath)) {
+        fs.unlinkSync(oldPath);
+      }
+    }
+
+    await Bucket.updateMasterPdf(req.params.id, req.file.filename);
+    req.session.success = 'Master PDF uploaded successfully';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}/edit`);
+  } catch (err) {
+    console.error('Upload master PDF error:', err);
+    req.session.error = 'Error uploading PDF';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}/edit`);
+  }
+});
+
+// Download master PDF
+router.get('/unions/:unionId/buckets/:id/master-pdf', async (req, res) => {
+  try {
+    const bucket = await Bucket.findById(req.params.id);
+    if (!bucket || !bucket.master_pdf_filename) {
+      req.session.error = 'No master PDF on file';
+      return res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}`);
+    }
+
+    const filePath = path.join(__dirname, '../../uploads/pdfs', bucket.master_pdf_filename);
+    if (!fs.existsSync(filePath)) {
+      req.session.error = 'PDF file not found';
+      return res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}`);
+    }
+
+    const downloadName = `${bucket.name.replace(/[^a-z0-9]/gi, '_')}_master.pdf`;
+    res.download(filePath, downloadName);
+  } catch (err) {
+    console.error('Download master PDF error:', err);
+    req.session.error = 'Error downloading PDF';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}`);
+  }
+});
+
+// Remove master PDF
+router.post('/unions/:unionId/buckets/:id/remove-master-pdf', async (req, res) => {
+  try {
+    const bucket = await Bucket.findById(req.params.id);
+    if (bucket && bucket.master_pdf_filename) {
+      const filePath = path.join(__dirname, '../../uploads/pdfs', bucket.master_pdf_filename);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+      await Bucket.removeMasterPdf(req.params.id);
+    }
+    req.session.success = 'Master PDF removed';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}/edit`);
+  } catch (err) {
+    console.error('Remove master PDF error:', err);
+    req.session.error = 'Error removing PDF';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}/edit`);
+  }
+});
+
+// Email member with master PDF attached
+router.post('/unions/:unionId/buckets/:id/email-member/:memberId', async (req, res) => {
+  try {
+    const bucket = await Bucket.findById(req.params.id);
+    const member = await Member.findById(req.params.memberId);
+
+    if (!bucket || !member) {
+      req.session.error = 'Bucket or member not found';
+      return res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}`);
+    }
+
+    if (!member.email) {
+      req.session.error = 'Member does not have an email address';
+      return res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}`);
+    }
+
+    if (!bucket.master_pdf_filename) {
+      req.session.error = 'No master PDF uploaded for this bucket';
+      return res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}`);
+    }
+
+    const pdfPath = path.join(__dirname, '../../uploads/pdfs', bucket.master_pdf_filename);
+    if (!fs.existsSync(pdfPath)) {
+      req.session.error = 'Master PDF file not found';
+      return res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}`);
+    }
+
+    if (!process.env.SENDGRID_API_KEY) {
+      req.session.error = 'Email service not configured';
+      return res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}`);
+    }
+
+    // Read PDF and convert to base64
+    const pdfContent = fs.readFileSync(pdfPath).toString('base64');
+
+    await sgMail.send({
+      to: member.email,
+      from: process.env.SENDGRID_FROM_EMAIL,
+      subject: `Action Required: ${bucket.name} - Document Signature`,
+      html: `
+        <h2>Hello ${member.first_name},</h2>
+        <p>Please find attached the document that requires your signature for <strong>${bucket.name}</strong>.</p>
+        <p>Once signed, please return this document to your union representative.</p>
+        <p>Thank you,<br>Your Union Local</p>
+      `,
+      attachments: [
+        {
+          content: pdfContent,
+          filename: `${bucket.name.replace(/[^a-z0-9]/gi, '_')}_document.pdf`,
+          type: 'application/pdf',
+          disposition: 'attachment'
+        }
+      ]
+    });
+
+    req.session.success = `Email sent to ${member.first_name} ${member.last_name}`;
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}`);
+  } catch (err) {
+    console.error('Email member error:', err);
+    req.session.error = 'Error sending email';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}`);
+  }
+});
+
 // === MEMBERS (for super admin) ===
 
 // New member form

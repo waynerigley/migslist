@@ -7,6 +7,9 @@
 <div class="action-bar">
   <a href="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/members/new" class="btn btn-primary">Add Member</a>
   <a href="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/edit" class="btn btn-outline">Edit Bucket</a>
+  <% if (bucket.master_pdf_filename) { %>
+    <a href="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/master-pdf" class="btn btn-outline">Download Master PDF</a>
+  <% } %>
   <div class="dropdown">
     <button class="btn btn-outline">Export</button>
     <div class="dropdown-menu">
@@ -15,6 +18,12 @@
     </div>
   </div>
 </div>
+
+<% if (!bucket.master_pdf_filename) { %>
+  <div class="alert alert-info">
+    <strong>Tip:</strong> Upload a master PDF in <a href="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/edit">bucket settings</a> to enable emailing documents to members.
+  </div>
+<% } %>
 
 <% if (members.length === 0) { %>
   <div class="empty-state">
@@ -56,9 +65,42 @@
           <td class="actions">
             <a href="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/members/<%= member.id %>" class="btn btn-outline btn-sm">View</a>
             <a href="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/members/<%= member.id %>/edit" class="btn btn-outline btn-sm">Edit</a>
+            <% if (!member.pdf_filename && bucket.master_pdf_filename && member.email) { %>
+              <form action="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/email-member/<%= member.id %>" method="POST" class="inline-form" onsubmit="return confirm('Send document to <%= member.first_name %> at <%= member.email %>?')">
+                <button type="submit" class="btn btn-primary btn-sm" title="Email document to member">Email</button>
+              </form>
+            <% } %>
           </td>
         </tr>
       <% }) %>
     </tbody>
   </table>
 <% } %>
+
+<style>
+.alert-info {
+  background: #eff6ff;
+  border: 1px solid #3b82f6;
+  color: #1e40af;
+  padding: 1rem;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+.alert-info a {
+  color: #1e40af;
+  font-weight: 600;
+}
+[data-theme="dark"] .alert-info {
+  background: #1e3a5f;
+  border-color: #3b82f6;
+  color: #93c5fd;
+}
+[data-theme="dark"] .alert-info a {
+  color: #93c5fd;
+}
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+</style>

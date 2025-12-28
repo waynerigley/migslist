@@ -45,6 +45,22 @@ const Bucket = {
     return result.rows[0];
   },
 
+  async updateMasterPdf(id, filename) {
+    const result = await db.query(
+      `UPDATE buckets SET master_pdf_filename = $1 WHERE id = $2 RETURNING *`,
+      [filename, id]
+    );
+    return result.rows[0];
+  },
+
+  async removeMasterPdf(id) {
+    const result = await db.query(
+      `UPDATE buckets SET master_pdf_filename = NULL WHERE id = $1 RETURNING *`,
+      [id]
+    );
+    return result.rows[0];
+  },
+
   // Soft delete - just marks as deleted
   async delete(id) {
     await db.query('UPDATE buckets SET deleted_at = NOW() WHERE id = $1', [id]);
