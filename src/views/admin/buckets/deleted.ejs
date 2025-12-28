@@ -1,0 +1,66 @@
+<%- include('../../partials/header', { title: 'Deleted Buckets - ' + union.name, backLink: '/admin/unions/' + union.id }) %>
+
+<div class="section-header">
+  <h2>Deleted Buckets</h2>
+  <a href="/admin/unions/<%= union.id %>" class="btn btn-outline">Back to Union</a>
+</div>
+
+<% if (deletedBuckets.length === 0) { %>
+  <div class="empty-state">
+    <h3>No deleted buckets</h3>
+    <p>There are no deleted buckets to recover for this union.</p>
+  </div>
+<% } else { %>
+  <div class="alert alert-info" style="margin-bottom: 1.5rem;">
+    These buckets have been soft-deleted and can be restored. All member data is still preserved.
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Number</th>
+        <th>Name</th>
+        <th>Members</th>
+        <th>Deleted</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% deletedBuckets.forEach(bucket => { %>
+        <tr>
+          <td>#<%= bucket.number %></td>
+          <td><strong><%= bucket.name %></strong></td>
+          <td><%= bucket.member_count || 0 %></td>
+          <td><%= bucket.deleted_at ? new Date(bucket.deleted_at).toLocaleDateString() : '-' %></td>
+          <td class="action-buttons">
+            <form action="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/restore" method="POST" class="inline-form">
+              <button type="submit" class="btn btn-success btn-sm">Restore</button>
+            </form>
+            <form action="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/hard-delete" method="POST" class="inline-form" onsubmit="return confirm('PERMANENTLY delete this bucket and all its members? This cannot be undone!')">
+              <button type="submit" class="btn btn-danger btn-sm">Delete Forever</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+
+<style>
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+.alert-info {
+  background: #eff6ff;
+  border: 1px solid #3b82f6;
+  color: #1e40af;
+  padding: 1rem;
+  border-radius: var(--radius);
+}
+[data-theme="dark"] .alert-info {
+  background: #1e3a5f;
+  border-color: #3b82f6;
+  color: #93c5fd;
+}
+</style>

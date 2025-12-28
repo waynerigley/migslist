@@ -26,9 +26,9 @@
     <hr class="form-divider">
 
     <h3>Danger Zone</h3>
-    <p class="text-muted">Deleting this bucket will also delete all members in it.</p>
-    <form action="/buckets/<%= bucket.id %>/delete" method="POST" onsubmit="return confirm('Delete this bucket and all its members?')">
-      <button type="submit" class="btn btn-danger">Delete Bucket</button>
-    </form>
+    <p class="text-muted">Deleting this bucket will hide it from view. Contact admin to recover if needed.</p>
+    <button type="button" class="btn btn-danger" onclick="openDeleteModal('/buckets/<%= bucket.id %>/delete', '<%= bucket.name %>', <%= typeof memberCount !== 'undefined' ? memberCount : 0 %>)">Delete Bucket</button>
   <% } %>
 </div>
+
+<%- include('../partials/delete-modal') %>

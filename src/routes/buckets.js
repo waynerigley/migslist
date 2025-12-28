@@ -84,8 +84,9 @@ router.get('/:id', checkBucketAccess, async (req, res) => {
 });
 
 // Edit bucket form
-router.get('/:id/edit', checkBucketAccess, (req, res) => {
-  res.render('buckets/edit', { bucket: req.bucket });
+router.get('/:id/edit', checkBucketAccess, async (req, res) => {
+  const members = await Member.findByBucketId(req.params.id);
+  res.render('buckets/edit', { bucket: req.bucket, memberCount: members.length });
 });
 
 // Update bucket

@@ -610,7 +610,7 @@ router.post('/unions/:unionId/buckets/:id', async (req, res) => {
   }
 });
 
-// Delete bucket
+// Delete bucket (soft delete)
 router.post('/unions/:unionId/buckets/:id/delete', async (req, res) => {
   try {
     await Bucket.delete(req.params.id);
@@ -620,6 +620,49 @@ router.post('/unions/:unionId/buckets/:id/delete', async (req, res) => {
     console.error('Delete bucket error:', err);
     req.session.error = 'Error deleting bucket';
     res.redirect(`/admin/unions/${req.params.unionId}`);
+  }
+});
+
+// View deleted buckets
+router.get('/unions/:unionId/buckets-deleted', async (req, res) => {
+  try {
+    const union = await Union.findById(req.params.unionId);
+    if (!union) {
+      req.session.error = 'Union not found';
+      return res.redirect('/admin/unions');
+    }
+    const deletedBuckets = await Bucket.findDeleted(req.params.unionId);
+    res.render('admin/buckets/deleted', { union, deletedBuckets });
+  } catch (err) {
+    console.error('View deleted buckets error:', err);
+    req.session.error = 'Error loading deleted buckets';
+    res.redirect(`/admin/unions/${req.params.unionId}`);
+  }
+});
+
+// Restore bucket
+router.post('/unions/:unionId/buckets/:id/restore', async (req, res) => {
+  try {
+    await Bucket.restore(req.params.id);
+    req.session.success = 'Bucket restored successfully';
+    res.redirect(`/admin/unions/${req.params.unionId}`);
+  } catch (err) {
+    console.error('Restore bucket error:', err);
+    req.session.error = 'Error restoring bucket';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets-deleted`);
+  }
+});
+
+// Permanently delete bucket
+router.post('/unions/:unionId/buckets/:id/hard-delete', async (req, res) => {
+  try {
+    await Bucket.hardDelete(req.params.id);
+    req.session.success = 'Bucket permanently deleted';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets-deleted`);
+  } catch (err) {
+    console.error('Hard delete bucket error:', err);
+    req.session.error = 'Error deleting bucket';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets-deleted`);
   }
 });
 

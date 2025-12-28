@@ -16,7 +16,7 @@ const Bucket = {
       `SELECT b.*, u.name as union_name
        FROM buckets b
        JOIN unions u ON b.union_id = u.id
-       WHERE b.id = $1`,
+       WHERE b.id = $1 AND b.deleted_at IS NULL`,
       [id]
     );
     return result.rows[0];
@@ -29,7 +29,7 @@ const Bucket = {
               COUNT(CASE WHEN m.pdf_filename IS NOT NULL THEN 1 END) as good_standing_count
        FROM buckets b
        LEFT JOIN members m ON b.id = m.bucket_id
-       WHERE b.union_id = $1
+       WHERE b.union_id = $1 AND b.deleted_at IS NULL
        GROUP BY b.id
        ORDER BY b.number`,
       [unionId]
@@ -45,8 +45,38 @@ const Bucket = {
     return result.rows[0];
   },
 
+  // Soft delete - just marks as deleted
   async delete(id) {
+    await db.query('UPDATE buckets SET deleted_at = NOW() WHERE id = $1', [id]);
+  },
+
+  // Hard delete - actually removes from database (for admin use)
+  async hardDelete(id) {
     await db.query('DELETE FROM buckets WHERE id = $1', [id]);
+  },
+
+  // Restore a soft-deleted bucket
+  async restore(id) {
+    const result = await db.query(
+      'UPDATE buckets SET deleted_at = NULL WHERE id = $1 RETURNING *',
+      [id]
+    );
+    return result.rows[0];
+  },
+
+  // Find deleted buckets (for admin recovery)
+  async findDeleted(unionId) {
+    const result = await db.query(
+      `SELECT b.*,
+              COUNT(m.id) as member_count
+       FROM buckets b
+       LEFT JOIN members m ON b.id = m.bucket_id
+       WHERE b.union_id = $1 AND b.deleted_at IS NOT NULL
+       GROUP BY b.id
+       ORDER BY b.deleted_at DESC`,
+      [unionId]
+    );
+    return result.rows;
   },
 
   async belongsToUnion(bucketId, unionId) {

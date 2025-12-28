@@ -476,6 +476,11 @@ a:hover {
   margin-bottom: 1rem;
 }
 
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .section-header h2 {
   font-size: 1.25rem;
   color: var(--gray-900);
