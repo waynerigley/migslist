@@ -10,21 +10,47 @@
   <div class="landing-container">
     <div class="landing-info">
       <div class="landing-logo">
-        <img src="/logo.png" alt="MigsList Logo">
+        <img src="/logo.png" alt="MIGS List Logo">
       </div>
       <h1>MIGS List</h1>
       <p class="tagline">Members In Good Standing List</p>
       <p class="tagline-sub">Union Member Management System</p>
 
+      <div class="landing-highlights">
+        <div class="highlight-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span>Track Member Compliance</span>
+        </div>
+        <div class="highlight-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          <span>PDF Document Management</span>
+        </div>
+        <div class="highlight-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          <span>Excel Export Reports</span>
+        </div>
+      </div>
+
       <div class="landing-cta">
-        <a href="/features" class="btn btn-cta">See Features</a>
+        <a href="/features" class="btn btn-cta">See All Features</a>
         <a href="/signup" class="btn btn-cta btn-cta-secondary">Start Free 30-Day Trial</a>
+      </div>
+
+      <div class="landing-trust">
+        <p>Trusted by union locals across Canada</p>
       </div>
     </div>
 
     <div class="landing-login">
       <div class="login-box">
-        <h2>Sign In</h2>
+        <h2>Welcome Back</h2>
+        <p class="login-subtitle">Sign in to your account</p>
 
         <% if (typeof error !== 'undefined' && error) { %>
           <div class="alert alert-error"><%= error %></div>
@@ -35,23 +61,94 @@
 
         <form action="/login" method="POST">
           <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required autofocus>
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required autofocus placeholder="you@example.com">
           </div>
 
           <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="password" required placeholder="Enter your password">
           </div>
 
           <button type="submit" class="btn btn-primary btn-block">Sign In</button>
         </form>
 
         <div class="login-footer">
-          <a href="/forgot-password">Forgot password?</a>
+          <a href="/forgot-password">Forgot your password?</a>
         </div>
+
+        <div class="login-divider">
+          <span>New to MIGS List?</span>
+        </div>
+
+        <a href="/signup" class="btn btn-outline btn-block">Request Access</a>
       </div>
     </div>
   </div>
+
+  <style>
+    .landing-highlights {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin: 2rem 0;
+    }
+    .highlight-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+    .highlight-item svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    .landing-trust {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+    .landing-trust p {
+      font-size: 0.875rem;
+      opacity: 0.7;
+      margin: 0;
+    }
+    .login-subtitle {
+      color: var(--gray-500);
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+    .login-divider {
+      text-align: center;
+      margin: 1.5rem 0;
+      position: relative;
+    }
+    .login-divider::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 1px;
+      background: var(--gray-200);
+    }
+    .login-divider span {
+      background: white;
+      padding: 0 1rem;
+      position: relative;
+      color: var(--gray-500);
+      font-size: 0.875rem;
+    }
+    @media (max-width: 768px) {
+      .landing-highlights {
+        align-items: center;
+      }
+      .landing-trust {
+        text-align: center;
+      }
+    }
+  </style>
 </body>
 </html>
