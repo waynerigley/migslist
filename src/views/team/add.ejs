@@ -1,0 +1,60 @@
+<%- include('../partials/header', { title: 'Add Secretary', backLink: '/team' }) %>
+
+<div class="form-container">
+  <h2>Add Secretary</h2>
+  <p class="text-muted">Add a secretary to help manage your union's buckets and members.</p>
+
+  <form action="/team" method="POST">
+    <div class="form-group">
+      <label for="email">Email Address *</label>
+      <input type="email" id="email" name="email" required autofocus placeholder="secretary@example.com">
+      <small>They will receive login credentials at this email</small>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" name="firstName" placeholder="John">
+      </div>
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" name="lastName" placeholder="Smith">
+      </div>
+    </div>
+
+    <div class="permissions-info">
+      <h4>Secretary Permissions</h4>
+      <ul>
+        <li><strong>Can:</strong> Add/edit buckets, add/edit members, upload PDFs, export data, email members</li>
+        <li><strong>Cannot:</strong> Delete buckets, manage team members</li>
+      </ul>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Add Secretary</button>
+      <a href="/team" class="btn btn-outline">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<style>
+.permissions-info {
+  background: var(--bg-secondary);
+  padding: 1rem;
+  border-radius: var(--radius);
+  margin: 1.5rem 0;
+}
+.permissions-info h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+.permissions-info ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+.permissions-info li {
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+}
+</style>

@@ -1,0 +1,60 @@
+<%- include('../partials/header', { title: 'Manage Team', backLink: '/dashboard' }) %>
+
+<div class="action-bar">
+  <a href="/team/add" class="btn btn-primary">Add Secretary</a>
+</div>
+
+<div class="team-info">
+  <p class="text-muted">Secretaries can manage buckets and members but cannot delete buckets or manage team members.</p>
+</div>
+
+<% if (users.length === 0) { %>
+  <div class="empty-state">
+    <h3>No team members yet</h3>
+    <p>Add secretaries to help manage your union's data.</p>
+    <a href="/team/add" class="btn btn-primary">Add Secretary</a>
+  </div>
+<% } else { %>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Added</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.forEach(u => { %>
+        <tr>
+          <td><%= u.first_name || '' %> <%= u.last_name || '' %></td>
+          <td><%= u.email %></td>
+          <td>
+            <% if (u.role === 'union_president') { %>
+              <span class="badge badge-success">President</span>
+            <% } else { %>
+              <span class="badge badge-secondary">Secretary</span>
+            <% } %>
+          </td>
+          <td><%= new Date(u.created_at).toLocaleDateString() %></td>
+          <td>
+            <% if (u.role === 'union_secretary' && u.id !== user.id) { %>
+              <form action="/team/<%= u.id %>/remove" method="POST" class="inline-form" onsubmit="return confirm('Remove <%= u.first_name || u.email %> from your team?')">
+                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+              </form>
+            <% } else if (u.id === user.id) { %>
+              <span class="text-muted">(You)</span>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+
+<style>
+.team-info {
+  margin-bottom: 1.5rem;
+}
+</style>

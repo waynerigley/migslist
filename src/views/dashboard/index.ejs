@@ -19,6 +19,13 @@
   </div>
 </div>
 
+<% if (isPresident) { %>
+<div class="quick-actions">
+  <a href="/team" class="btn btn-outline">Manage Team</a>
+  <a href="/dashboard/search" class="btn btn-outline">Search Members</a>
+</div>
+<% } %>
+
 <section class="dashboard-section">
   <div class="section-header">
     <h2>Buckets</h2>

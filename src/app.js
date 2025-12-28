@@ -88,6 +88,7 @@ const dashboardRoutes = require('./routes/dashboard');
 const bucketsRoutes = require('./routes/buckets');
 const membersRoutes = require('./routes/members');
 const exportRoutes = require('./routes/export');
+const teamRoutes = require('./routes/team');
 
 app.use('/', authRoutes);
 app.use('/', signupRoutes);
@@ -96,6 +97,7 @@ app.use('/dashboard', dashboardRoutes);
 app.use('/buckets', bucketsRoutes);
 app.use('/members', membersRoutes);
 app.use('/export', exportRoutes);
+app.use('/team', teamRoutes);
 
 // Apply rate limiter to login route
 app.use('/login', loginLimiter);
