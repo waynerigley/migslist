@@ -122,19 +122,34 @@
         <thead>
           <tr>
             <th>Name</th>
-            <th>Status</th>
+            <th>Tier</th>
             <th>Buckets</th>
             <th>Members</th>
+            <th>Compliance</th>
+            <th>Expires</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <% activeUnions.slice(0, 5).forEach(union => { %>
+          <% activeUnions.slice(0, 10).forEach(union => { %>
+            <% const compliance = (union.member_count > 0) ? Math.round((union.good_standing_count || 0) / union.member_count * 100) : 0; %>
             <tr>
               <td><a href="/admin/unions/<%= union.id %>"><%= union.name %></a></td>
-              <td><span class="badge badge-success">Active</span></td>
+              <td>
+                <% if (union.payment_status === 'paid') { %>
+                  <span class="badge badge-success">Paid</span>
+                <% } else if (union.payment_status === 'free') { %>
+                  <span class="badge badge-primary">Free</span>
+                <% } else if (union.payment_status === 'trial') { %>
+                  <span class="badge badge-warning">Trial</span>
+                <% } else { %>
+                  <span class="badge badge-secondary">Unpaid</span>
+                <% } %>
+              </td>
               <td><%= union.bucket_count || 0 %></td>
               <td><%= union.member_count || 0 %></td>
+              <td><span class="compliance-rate"><%= compliance %>%</span></td>
+              <td><%= union.subscription_end ? new Date(union.subscription_end).toLocaleDateString() : '-' %></td>
               <td>
                 <a href="/admin/unions/<%= union.id %>" class="btn btn-outline btn-sm">View</a>
               </td>
@@ -170,7 +185,17 @@
             <tr>
               <td><%= u.email %></td>
               <td><%= u.first_name || '' %> <%= u.last_name || '' %></td>
-              <td><span class="badge badge-<%= u.role === 'super_admin' ? 'primary' : 'secondary' %>"><%= u.role === 'super_admin' ? 'Super Admin' : 'Union Admin' %></span></td>
+              <td>
+                <% if (u.role === 'super_admin') { %>
+                  <span class="badge badge-primary">Super Admin</span>
+                <% } else if (u.role === 'union_president') { %>
+                  <span class="badge badge-success">President</span>
+                <% } else if (u.role === 'union_secretary') { %>
+                  <span class="badge badge-secondary">Secretary</span>
+                <% } else { %>
+                  <span class="badge badge-secondary"><%= u.role %></span>
+                <% } %>
+              </td>
               <td><%= u.union_name || '-' %></td>
             </tr>
           <% }) %>

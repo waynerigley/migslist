@@ -19,13 +19,28 @@ function requireSuperAdmin(req, res, next) {
   next();
 }
 
+// Allows president, secretary, or super_admin
 function requireUnionAdmin(req, res, next) {
   if (!req.session.userId) {
     return res.redirect('/login');
   }
-  if (req.session.role !== 'union_admin' && req.session.role !== 'super_admin') {
+  const allowedRoles = ['union_president', 'union_secretary', 'super_admin'];
+  if (!allowedRoles.includes(req.session.role)) {
     return res.status(403).render('error', {
       message: 'Access denied.'
+    });
+  }
+  next();
+}
+
+// Only president or super_admin (for managing users, deleting buckets)
+function requireUnionPresident(req, res, next) {
+  if (!req.session.userId) {
+    return res.redirect('/login');
+  }
+  if (req.session.role !== 'union_president' && req.session.role !== 'super_admin') {
+    return res.status(403).render('error', {
+      message: 'Access denied. President privileges required.'
     });
   }
   next();
@@ -54,6 +69,8 @@ function addUserToLocals(req, res, next) {
   } : null;
   res.locals.isAuthenticated = !!req.session.userId;
   res.locals.isSuperAdmin = req.session.role === 'super_admin';
+  res.locals.isPresident = req.session.role === 'union_president' || req.session.role === 'super_admin';
+  res.locals.isSecretary = req.session.role === 'union_secretary';
   next();
 }
 
@@ -61,6 +78,7 @@ module.exports = {
   requireAuth,
   requireSuperAdmin,
   requireUnionAdmin,
+  requireUnionPresident,
   guestOnly,
   addUserToLocals
 };

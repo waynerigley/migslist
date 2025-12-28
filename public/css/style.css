@@ -891,6 +891,26 @@ address {
   text-decoration: none;
 }
 
+.btn-cta-secondary {
+  background: transparent;
+  border: 2px solid white;
+  margin-left: 1rem;
+}
+
+.btn-cta-secondary:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* Landing Logo */
+.landing-logo {
+  margin-bottom: 2rem;
+}
+
+.landing-logo img {
+  max-width: 200px;
+  height: auto;
+}
+
 /* Theme Toggle */
 .theme-toggle {
   background: var(--gray-100);

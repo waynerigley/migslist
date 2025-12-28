@@ -151,9 +151,14 @@ router.post('/:id', checkBucketAccess, async (req, res) => {
   }
 });
 
-// Delete bucket
+// Delete bucket (president only)
 router.post('/:id/delete', checkBucketAccess, async (req, res) => {
   try {
+    // Only presidents and super admins can delete buckets
+    if (req.session.role === 'union_secretary') {
+      req.session.error = 'Only the President can delete buckets';
+      return res.redirect(`/buckets/${req.params.id}/edit`);
+    }
     await Bucket.delete(req.params.id);
     req.session.success = 'Bucket deleted successfully';
     res.redirect('/dashboard');

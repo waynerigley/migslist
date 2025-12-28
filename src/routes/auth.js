@@ -20,6 +20,11 @@ router.get('/', (req, res) => {
   res.render('landing', { layout: false });
 });
 
+// Features page
+router.get('/features', (req, res) => {
+  res.render('features', { layout: false });
+});
+
 // Login page
 router.get('/login', guestOnly, (req, res) => {
   res.render('login', { layout: false });
