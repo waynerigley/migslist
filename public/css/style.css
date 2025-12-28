@@ -888,18 +888,18 @@ address {
 
 /* Theme Toggle */
 .theme-toggle {
-  background: none;
-  border: 1px solid var(--border-color);
+  background: var(--gray-100);
+  border: 2px solid var(--primary);
   border-radius: var(--radius);
   padding: 0.5rem;
   cursor: pointer;
-  color: var(--text-primary);
+  color: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  transition: background-color 0.2s;
+  width: 40px;
+  height: 40px;
+  transition: all 0.2s;
 }
 
 .theme-toggle:hover {
