@@ -1,0 +1,82 @@
+<%- include('../../partials/header', { title: 'Signup Requests', backLink: '/admin' }) %>
+
+<% const pending = signups.filter(s => s.status === 'pending'); %>
+<% const processed = signups.filter(s => s.status !== 'pending'); %>
+
+<% if (pending.length > 0) { %>
+  <section class="dashboard-section">
+    <div class="section-header">
+      <h2>Pending Requests (<%= pending.length %>)</h2>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Union Name</th>
+          <th>Contact</th>
+          <th>Admin Email</th>
+          <th>Submitted</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% pending.forEach(signup => { %>
+          <tr>
+            <td><strong><%= signup.union_name %></strong></td>
+            <td>
+              <%= signup.contact_name %><br>
+              <small><%= signup.contact_email %></small>
+            </td>
+            <td><%= signup.admin_email %></td>
+            <td><%= new Date(signup.created_at).toLocaleDateString() %></td>
+            <td class="actions">
+              <a href="/admin/signups/<%= signup.id %>" class="btn btn-primary btn-sm">Review</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </section>
+<% } else { %>
+  <div class="empty-state">
+    <h3>No pending requests</h3>
+    <p>New signup requests will appear here.</p>
+  </div>
+<% } %>
+
+<% if (processed.length > 0) { %>
+  <section class="dashboard-section" style="margin-top: 2rem;">
+    <div class="section-header">
+      <h2>Processed Requests</h2>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Union Name</th>
+          <th>Admin Email</th>
+          <th>Status</th>
+          <th>Processed</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% processed.forEach(signup => { %>
+          <tr>
+            <td><%= signup.union_name %></td>
+            <td><%= signup.admin_email %></td>
+            <td>
+              <span class="badge badge-<%= signup.status === 'approved' ? 'success' : 'secondary' %>">
+                <%= signup.status %>
+              </span>
+            </td>
+            <td><%= signup.processed_at ? new Date(signup.processed_at).toLocaleDateString() : '-' %></td>
+            <td class="actions">
+              <form action="/admin/signups/<%= signup.id %>/delete" method="POST" class="inline-form" onsubmit="return confirm('Delete this request?')">
+                <button type="submit" class="btn btn-outline btn-sm">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </section>
+<% } %>

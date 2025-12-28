@@ -1,9 +1,17 @@
 const express = require('express');
 const router = express.Router();
+const crypto = require('crypto');
 const { requireSuperAdmin } = require('../middleware/auth');
 const Union = require('../models/Union');
 const User = require('../models/User');
 const Bucket = require('../models/Bucket');
+const SignupRequest = require('../models/SignupRequest');
+const sgMail = require('@sendgrid/mail');
+
+// Initialize SendGrid
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
 
 // Apply super admin middleware to all routes
 router.use(requireSuperAdmin);
@@ -13,19 +21,23 @@ router.get('/', async (req, res) => {
   try {
     const unions = await Union.findAll();
     const users = await User.findAll();
+    const pendingSignups = await SignupRequest.findPending();
+    const pendingUnions = await Union.findPending();
 
     const stats = {
-      totalUnions: unions.length,
+      totalUnions: unions.filter(u => u.status === 'active').length,
       totalUsers: users.length,
       totalBuckets: unions.reduce((sum, u) => sum + parseInt(u.bucket_count || 0), 0),
-      totalMembers: unions.reduce((sum, u) => sum + parseInt(u.member_count || 0), 0)
+      totalMembers: unions.reduce((sum, u) => sum + parseInt(u.member_count || 0), 0),
+      pendingSignups: pendingSignups.length,
+      pendingPayments: pendingUnions.length
     };
 
-    res.render('admin/dashboard', { unions, users, stats });
+    res.render('admin/dashboard', { unions, users, stats, pendingSignups, pendingUnions });
   } catch (err) {
     console.error('Admin dashboard error:', err);
     req.session.error = 'Error loading dashboard';
-    res.render('admin/dashboard', { unions: [], users: [], stats: {} });
+    res.render('admin/dashboard', { unions: [], users: [], stats: {}, pendingSignups: [], pendingUnions: [] });
   }
 });
 
@@ -280,6 +292,166 @@ router.post('/users/:id/delete', async (req, res) => {
     console.error('Delete user error:', err);
     req.session.error = 'Error deleting user';
     res.redirect('/admin/users');
+  }
+});
+
+// === SIGNUP REQUESTS ===
+
+// List signup requests
+router.get('/signups', async (req, res) => {
+  try {
+    const signups = await SignupRequest.findAll();
+    res.render('admin/signups/list', { signups });
+  } catch (err) {
+    console.error('List signups error:', err);
+    req.session.error = 'Error loading signup requests';
+    res.render('admin/signups/list', { signups: [] });
+  }
+});
+
+// View signup request
+router.get('/signups/:id', async (req, res) => {
+  try {
+    const signup = await SignupRequest.findById(req.params.id);
+    if (!signup) {
+      req.session.error = 'Signup request not found';
+      return res.redirect('/admin/signups');
+    }
+    res.render('admin/signups/view', { signup });
+  } catch (err) {
+    console.error('View signup error:', err);
+    req.session.error = 'Error loading signup request';
+    res.redirect('/admin/signups');
+  }
+});
+
+// Approve signup request - creates union and admin user
+router.post('/signups/:id/approve', async (req, res) => {
+  try {
+    const { payment_reference } = req.body;
+    const signup = await SignupRequest.findById(req.params.id);
+
+    if (!signup) {
+      req.session.error = 'Signup request not found';
+      return res.redirect('/admin/signups');
+    }
+
+    // Create the union
+    const union = await Union.create({
+      name: signup.union_name,
+      contactEmail: signup.contact_email,
+      contactName: signup.contact_name,
+      contactPhone: signup.contact_phone,
+      status: 'pending',
+      paymentStatus: 'unpaid'
+    });
+
+    // Activate the union with payment info
+    await Union.activate(union.id, payment_reference || 'e-Transfer');
+
+    // Generate random password
+    const tempPassword = crypto.randomBytes(8).toString('hex');
+
+    // Create the admin user
+    const adminUser = await User.create({
+      email: signup.admin_email,
+      password: tempPassword,
+      firstName: signup.admin_first_name,
+      lastName: signup.admin_last_name,
+      role: 'union_admin',
+      unionId: union.id
+    });
+
+    // Mark signup as approved
+    await SignupRequest.approve(req.params.id);
+
+    // Send welcome email with credentials
+    if (process.env.SENDGRID_API_KEY) {
+      await sgMail.send({
+        to: signup.admin_email,
+        from: process.env.SENDGRID_FROM_EMAIL,
+        subject: 'Welcome to MigsList - Your Account is Ready!',
+        html: `
+          <h2>Welcome to MigsList!</h2>
+          <p>Your union account has been activated. Here are your login credentials:</p>
+          <p><strong>Login URL:</strong> ${process.env.APP_URL}/login</p>
+          <p><strong>Email:</strong> ${signup.admin_email}</p>
+          <p><strong>Temporary Password:</strong> ${tempPassword}</p>
+          <p>Please log in and change your password immediately.</p>
+          <h3>Your Subscription</h3>
+          <p><strong>Union:</strong> ${signup.union_name}</p>
+          <p><strong>Valid Until:</strong> ${new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toLocaleDateString()}</p>
+          <p>If you have any questions, please contact us at waynerigley@gmail.com</p>
+        `
+      });
+    }
+
+    req.session.success = `Union "${signup.union_name}" activated! Credentials sent to ${signup.admin_email}. Temp password: ${tempPassword}`;
+    res.redirect('/admin/signups');
+  } catch (err) {
+    console.error('Approve signup error:', err);
+    if (err.code === '23505') {
+      req.session.error = 'Admin email already exists in the system';
+    } else {
+      req.session.error = 'Error approving signup request';
+    }
+    res.redirect(`/admin/signups/${req.params.id}`);
+  }
+});
+
+// Reject signup request
+router.post('/signups/:id/reject', async (req, res) => {
+  try {
+    const { notes } = req.body;
+    await SignupRequest.reject(req.params.id, notes);
+    req.session.success = 'Signup request rejected';
+    res.redirect('/admin/signups');
+  } catch (err) {
+    console.error('Reject signup error:', err);
+    req.session.error = 'Error rejecting signup request';
+    res.redirect('/admin/signups');
+  }
+});
+
+// Delete signup request
+router.post('/signups/:id/delete', async (req, res) => {
+  try {
+    await SignupRequest.delete(req.params.id);
+    req.session.success = 'Signup request deleted';
+    res.redirect('/admin/signups');
+  } catch (err) {
+    console.error('Delete signup error:', err);
+    req.session.error = 'Error deleting signup request';
+    res.redirect('/admin/signups');
+  }
+});
+
+// === UNION ACTIVATION ===
+
+// Activate a pending union
+router.post('/unions/:id/activate', async (req, res) => {
+  try {
+    const { payment_reference } = req.body;
+    await Union.activate(req.params.id, payment_reference || 'Manual');
+    req.session.success = 'Union activated successfully';
+    res.redirect(`/admin/unions/${req.params.id}`);
+  } catch (err) {
+    console.error('Activate union error:', err);
+    req.session.error = 'Error activating union';
+    res.redirect(`/admin/unions/${req.params.id}`);
+  }
+});
+
+// Deactivate a union
+router.post('/unions/:id/deactivate', async (req, res) => {
+  try {
+    await Union.deactivate(req.params.id);
+    req.session.success = 'Union deactivated';
+    res.redirect(`/admin/unions/${req.params.id}`);
+  } catch (err) {
+    console.error('Deactivate union error:', err);
+    req.session.error = 'Error deactivating union';
+    res.redirect(`/admin/unions/${req.params.id}`);
   }
 });
 

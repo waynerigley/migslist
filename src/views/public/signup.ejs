@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - MigsList</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .signup-page {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      padding: 2rem;
+    }
+    .signup-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .signup-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .signup-header h1 {
+      color: #2563eb;
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .signup-header p {
+      color: #6b7280;
+    }
+    .signup-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 2rem;
+    }
+    .signup-card h2 {
+      font-size: 1.25rem;
+      color: #1f2937;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .price-summary {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .price-summary .label {
+      color: #0369a1;
+      font-weight: 500;
+    }
+    .price-summary .amount {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0369a1;
+    }
+    .nav-simple {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .nav-simple a {
+      color: #2563eb;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .form-section {
+      margin-bottom: 2rem;
+    }
+    .required-note {
+      font-size: 0.875rem;
+      color: #6b7280;
+      margin-bottom: 1rem;
+    }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 1.5rem;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body class="signup-page">
+  <div class="signup-container">
+    <nav class="nav-simple">
+      <a href="/">MigsList</a>
+    </nav>
+
+    <div class="signup-header">
+      <h1>Sign Up Your Union</h1>
+      <p>Complete the form below to get started</p>
+    </div>
+
+    <div class="signup-card">
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-error"><%= error %></div>
+      <% } %>
+
+      <div class="price-summary">
+        <span class="label">Annual Subscription</span>
+        <span class="amount">$400/year</span>
+      </div>
+
+      <form action="/signup" method="POST">
+        <div class="form-section">
+          <h2>Union Information</h2>
+          <p class="required-note">* Required fields</p>
+
+          <div class="form-group">
+            <label for="union_name">Union Local Name *</label>
+            <input type="text" id="union_name" name="union_name" required
+                   placeholder="e.g., Local 4508"
+                   value="<%= typeof formData !== 'undefined' ? formData.union_name || '' : '' %>">
+          </div>
+
+          <div class="form-group">
+            <label for="contact_name">Primary Contact Name *</label>
+            <input type="text" id="contact_name" name="contact_name" required
+                   value="<%= typeof formData !== 'undefined' ? formData.contact_name || '' : '' %>">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="contact_email">Contact Email *</label>
+              <input type="email" id="contact_email" name="contact_email" required
+                     value="<%= typeof formData !== 'undefined' ? formData.contact_email || '' : '' %>">
+            </div>
+            <div class="form-group">
+              <label for="contact_phone">Contact Phone</label>
+              <input type="tel" id="contact_phone" name="contact_phone"
+                     value="<%= typeof formData !== 'undefined' ? formData.contact_phone || '' : '' %>">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2>Admin Account</h2>
+          <p class="required-note">This person will be the primary admin for your union's account.</p>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="admin_first_name">First Name</label>
+              <input type="text" id="admin_first_name" name="admin_first_name"
+                     value="<%= typeof formData !== 'undefined' ? formData.admin_first_name || '' : '' %>">
+            </div>
+            <div class="form-group">
+              <label for="admin_last_name">Last Name</label>
+              <input type="text" id="admin_last_name" name="admin_last_name"
+                     value="<%= typeof formData !== 'undefined' ? formData.admin_last_name || '' : '' %>">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="admin_email">Admin Email *</label>
+            <input type="email" id="admin_email" name="admin_email" required
+                   placeholder="This will be the login email"
+                   value="<%= typeof formData !== 'undefined' ? formData.admin_email || '' : '' %>">
+            <small>Login credentials will be sent to this email after payment is confirmed.</small>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Continue to Payment Instructions</button>
+      </form>
+
+      <a href="/pricing" class="back-link">Back to pricing</a>
+    </div>
+  </div>
+</body>
+</html>

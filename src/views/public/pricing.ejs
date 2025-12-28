@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing - MigsList</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .pricing-page {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+    .pricing-header {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+    .pricing-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .pricing-header p {
+      font-size: 1.25rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .pricing-content {
+      max-width: 1200px;
+      margin: -3rem auto 0;
+      padding: 0 2rem 4rem;
+      position: relative;
+    }
+    .pricing-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      padding: 3rem;
+      max-width: 500px;
+      margin: 0 auto 3rem;
+      text-align: center;
+    }
+    .price {
+      font-size: 4rem;
+      font-weight: 700;
+      color: #1e40af;
+      line-height: 1;
+    }
+    .price-period {
+      font-size: 1.25rem;
+      color: #6b7280;
+      margin-bottom: 2rem;
+    }
+    .pricing-card .btn {
+      font-size: 1.125rem;
+      padding: 1rem 3rem;
+    }
+    .features-section {
+      padding: 4rem 0;
+    }
+    .features-section h2 {
+      text-align: center;
+      font-size: 2rem;
+      color: #1f2937;
+      margin-bottom: 3rem;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .feature-card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .feature-card h3 {
+      color: #1f2937;
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .feature-icon {
+      width: 24px;
+      height: 24px;
+      background: #dbeafe;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2563eb;
+      font-weight: bold;
+    }
+    .feature-card p {
+      color: #6b7280;
+      line-height: 1.6;
+    }
+    .included-list {
+      text-align: left;
+      margin: 2rem 0;
+    }
+    .included-list li {
+      padding: 0.5rem 0;
+      color: #374151;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .included-list li::before {
+      content: "✓";
+      color: #16a34a;
+      font-weight: bold;
+    }
+    .nav-simple {
+      background: transparent;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-simple a {
+      color: white;
+    }
+    .nav-simple .brand {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .cta-section {
+      background: #1e40af;
+      color: white;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .cta-section h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .cta-section p {
+      opacity: 0.9;
+      margin-bottom: 2rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cta-section .btn {
+      background: white;
+      color: #1e40af;
+      font-size: 1.125rem;
+      padding: 1rem 3rem;
+    }
+    .cta-section .btn:hover {
+      background: #f1f5f9;
+    }
+  </style>
+</head>
+<body class="pricing-page">
+  <div class="pricing-header">
+    <nav class="nav-simple">
+      <a href="/" class="brand">MigsList</a>
+      <a href="/login" class="btn btn-outline" style="border-color: white; color: white;">Sign In</a>
+    </nav>
+    <h1>Simple, Transparent Pricing</h1>
+    <p>Everything your union needs to manage member lists and track good standing status.</p>
+  </div>
+
+  <div class="pricing-content">
+    <div class="pricing-card">
+      <div class="price">$400</div>
+      <div class="price-period">per year</div>
+
+      <ul class="included-list">
+        <li>Unlimited buckets</li>
+        <li>Unlimited members</li>
+        <li>PDF document uploads</li>
+        <li>Good standing tracking</li>
+        <li>Excel export reports</li>
+        <li>Multiple admin accounts</li>
+        <li>Secure data storage</li>
+        <li>Email support</li>
+      </ul>
+
+      <a href="/signup" class="btn btn-primary">Get Started</a>
+    </div>
+
+    <section class="features-section">
+      <h2>Everything You Need</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3><span class="feature-icon">1</span> Organize by Buckets</h3>
+          <p>Create buckets to organize members by category, department, or any grouping that makes sense for your local. Each bucket tracks its own member list.</p>
+        </div>
+        <div class="feature-card">
+          <h3><span class="feature-icon">2</span> Track Member Info</h3>
+          <p>Store member details including name, email, phone, and mailing address. Perfect for locals that need to reach members who don't have email.</p>
+        </div>
+        <div class="feature-card">
+          <h3><span class="feature-icon">3</span> Document Upload</h3>
+          <p>Upload signed PDF documents for each member. When a member submits their signed paperwork, upload it and they're automatically marked as "in good standing."</p>
+        </div>
+        <div class="feature-card">
+          <h3><span class="feature-icon">4</span> Good Standing Reports</h3>
+          <p>Export Excel reports of members in good standing with one click. Perfect for submitting to your international or for internal record keeping.</p>
+        </div>
+        <div class="feature-card">
+          <h3><span class="feature-icon">5</span> Search & Find</h3>
+          <p>Quickly search across all your buckets to find any member by name or email. No more digging through spreadsheets.</p>
+        </div>
+        <div class="feature-card">
+          <h3><span class="feature-icon">6</span> Secure Access</h3>
+          <p>Your data is protected with industry-standard security. Create multiple admin accounts so your team can share the workload.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="cta-section">
+    <h2>Ready to Get Organized?</h2>
+    <p>Join other union locals using MigsList to streamline their member management.</p>
+    <a href="/signup" class="btn">Sign Up Now - $400/year</a>
+  </section>
+</body>
+</html>

@@ -769,3 +769,21 @@ address {
     padding-top: 1rem;
   }
 }
+
+/* Landing CTA */
+.landing-cta {
+  margin-top: 3rem;
+}
+
+.btn-cta {
+  background: white;
+  color: var(--primary);
+  font-size: 1.125rem;
+  padding: 1rem 2rem;
+  font-weight: 600;
+}
+
+.btn-cta:hover {
+  background: var(--gray-100);
+  text-decoration: none;
+}

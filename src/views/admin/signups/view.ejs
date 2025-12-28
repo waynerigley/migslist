@@ -1,0 +1,152 @@
+<%- include('../../partials/header', { title: 'Review Signup Request', backLink: '/admin/signups' }) %>
+
+<div class="detail-container">
+  <div class="status-banner status-<%= signup.status %>">
+    Status: <strong><%= signup.status.toUpperCase() %></strong>
+    <% if (signup.processed_at) { %>
+      <span> - Processed on <%= new Date(signup.processed_at).toLocaleDateString() %></span>
+    <% } %>
+  </div>
+
+  <div class="detail-grid">
+    <div class="detail-section">
+      <h3>Union Information</h3>
+      <dl class="detail-list">
+        <dt>Union Name</dt>
+        <dd><strong><%= signup.union_name %></strong></dd>
+        <dt>Contact Name</dt>
+        <dd><%= signup.contact_name %></dd>
+        <dt>Contact Email</dt>
+        <dd><a href="mailto:<%= signup.contact_email %>"><%= signup.contact_email %></a></dd>
+        <dt>Contact Phone</dt>
+        <dd><%= signup.contact_phone || 'Not provided' %></dd>
+      </dl>
+    </div>
+
+    <div class="detail-section">
+      <h3>Admin Account</h3>
+      <dl class="detail-list">
+        <dt>Admin Email</dt>
+        <dd><a href="mailto:<%= signup.admin_email %>"><%= signup.admin_email %></a></dd>
+        <dt>Admin Name</dt>
+        <dd><%= signup.admin_first_name || '' %> <%= signup.admin_last_name || '' %> <%= (!signup.admin_first_name && !signup.admin_last_name) ? 'Not provided' : '' %></dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="detail-section">
+    <h3>Submission Details</h3>
+    <dl class="detail-list">
+      <dt>Submitted</dt>
+      <dd><%= new Date(signup.created_at).toLocaleString() %></dd>
+      <dt>Amount Due</dt>
+      <dd><strong>$400.00 CAD</strong></dd>
+    </dl>
+  </div>
+
+  <% if (signup.notes) { %>
+    <div class="detail-section">
+      <h3>Notes</h3>
+      <p><%= signup.notes %></p>
+    </div>
+  <% } %>
+
+  <% if (signup.status === 'pending') { %>
+    <div class="action-section">
+      <h3>Actions</h3>
+      <p class="text-muted">Once you receive the e-Transfer payment, approve this request to create the union and send login credentials.</p>
+
+      <div class="action-cards">
+        <div class="action-card action-approve">
+          <h4>Approve & Activate</h4>
+          <form action="/admin/signups/<%= signup.id %>/approve" method="POST">
+            <div class="form-group">
+              <label for="payment_reference">Payment Reference (optional)</label>
+              <input type="text" id="payment_reference" name="payment_reference" placeholder="e.g., e-Transfer confirmation #">
+            </div>
+            <button type="submit" class="btn btn-primary">Approve & Send Credentials</button>
+          </form>
+        </div>
+
+        <div class="action-card action-reject">
+          <h4>Reject Request</h4>
+          <form action="/admin/signups/<%= signup.id %>/reject" method="POST">
+            <div class="form-group">
+              <label for="notes">Reason (optional)</label>
+              <input type="text" id="notes" name="notes" placeholder="Reason for rejection">
+            </div>
+            <button type="submit" class="btn btn-danger">Reject</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  <% } %>
+</div>
+
+<style>
+.detail-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+.status-banner {
+  padding: 1rem 1.5rem;
+  font-size: 0.875rem;
+}
+.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+.status-approved {
+  background: #dcfce7;
+  color: #166534;
+}
+.status-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.detail-container .detail-section {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+.detail-container .detail-section:last-child {
+  border-bottom: none;
+}
+.detail-container .detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border-bottom: 1px solid #e5e7eb;
+}
+.detail-container .detail-grid .detail-section {
+  border-bottom: none;
+}
+.detail-container .detail-grid .detail-section:first-child {
+  border-right: 1px solid #e5e7eb;
+}
+.action-section {
+  padding: 1.5rem;
+  background: #f9fafb;
+}
+.action-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.action-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+.action-card h4 {
+  margin-bottom: 1rem;
+}
+.action-approve {
+  border-color: #86efac;
+}
+.action-reject {
+  border-color: #fca5a5;
+}
+</style>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Your Payment - MigsList</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .success-page {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      padding: 2rem;
+    }
+    .success-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .success-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .success-header .check-icon {
+      width: 80px;
+      height: 80px;
+      background: #16a34a;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2.5rem;
+      color: white;
+    }
+    .success-header h1 {
+      color: #166534;
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+    .success-header p {
+      color: #4b5563;
+    }
+    .success-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 2rem;
+    }
+    .success-card h2 {
+      font-size: 1.25rem;
+      color: #1f2937;
+      margin-bottom: 1.5rem;
+    }
+    .payment-box {
+      background: #fef3c7;
+      border: 2px solid #f59e0b;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .payment-box h3 {
+      color: #92400e;
+      margin-bottom: 1rem;
+      font-size: 1.125rem;
+    }
+    .payment-details {
+      background: white;
+      border-radius: 6px;
+      padding: 1rem;
+    }
+    .payment-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .payment-row:last-child {
+      border-bottom: none;
+      font-weight: 600;
+      font-size: 1.125rem;
+    }
+    .payment-row .label {
+      color: #6b7280;
+    }
+    .payment-row .value {
+      color: #1f2937;
+      font-weight: 500;
+    }
+    .etransfer-email {
+      background: #1e40af;
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 1rem 0;
+      word-break: break-all;
+    }
+    .steps-list {
+      margin: 1.5rem 0;
+    }
+    .steps-list li {
+      padding: 0.75rem 0;
+      padding-left: 2rem;
+      position: relative;
+      color: #374151;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .steps-list li:last-child {
+      border-bottom: none;
+    }
+    .steps-list li::before {
+      content: attr(data-step);
+      position: absolute;
+      left: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      background: #2563eb;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+    .note-box {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1.5rem;
+    }
+    .note-box h4 {
+      color: #0369a1;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+    .note-box p {
+      color: #0c4a6e;
+      font-size: 0.875rem;
+      margin: 0;
+    }
+    .nav-simple {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .nav-simple a {
+      color: #16a34a;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .footer-link {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+    .footer-link a {
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body class="success-page">
+  <div class="success-container">
+    <nav class="nav-simple">
+      <a href="/">MigsList</a>
+    </nav>
+
+    <div class="success-header">
+      <div class="check-icon">✓</div>
+      <h1>Request Received!</h1>
+      <p>Complete your payment to activate your account</p>
+    </div>
+
+    <div class="success-card">
+      <div class="payment-box">
+        <h3>Payment Required</h3>
+        <div class="payment-details">
+          <div class="payment-row">
+            <span class="label">Subscription</span>
+            <span class="value">Annual (1 year)</span>
+          </div>
+          <div class="payment-row">
+            <span class="label">Amount Due</span>
+            <span class="value">$400.00 CAD</span>
+          </div>
+        </div>
+      </div>
+
+      <h2>Send Interac e-Transfer To:</h2>
+      <div class="etransfer-email">waynerigley@gmail.com</div>
+
+      <ol class="steps-list">
+        <li data-step="1">Log in to your online banking</li>
+        <li data-step="2">Select Interac e-Transfer</li>
+        <li data-step="3">Send <strong>$400.00 CAD</strong> to <strong>waynerigley@gmail.com</strong></li>
+        <li data-step="4">In the message field, include your <strong>Union Local name</strong></li>
+        <li data-step="5">Complete the transfer</li>
+      </ol>
+
+      <div class="note-box">
+        <h4>What happens next?</h4>
+        <p>Once we receive your e-Transfer, we'll activate your account and send login credentials to the admin email you provided. This typically takes 1-2 business days.</p>
+      </div>
+
+      <div class="note-box">
+        <h4>Questions?</h4>
+        <p>If you have any questions about your signup or payment, please contact us at waynerigley@gmail.com</p>
+      </div>
+    </div>
+
+    <div class="footer-link">
+      <a href="/">Return to homepage</a>
+    </div>
+  </div>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <div class="stats-grid">
   <div class="stat-card">
     <div class="stat-value"><%= stats.totalUnions || 0 %></div>
-    <div class="stat-label">Unions</div>
+    <div class="stat-label">Active Unions</div>
   </div>
   <div class="stat-card">
     <div class="stat-value"><%= stats.totalUsers || 0 %></div>
@@ -19,28 +19,69 @@
   </div>
 </div>
 
+<% if (pendingSignups && pendingSignups.length > 0) { %>
+<div class="alert-banner">
+  <strong><%= pendingSignups.length %> pending signup request<%= pendingSignups.length > 1 ? 's' : '' %></strong> awaiting payment confirmation.
+  <a href="/admin/signups">Review now</a>
+</div>
+<% } %>
+
 <div class="dashboard-sections">
+  <% if (pendingSignups && pendingSignups.length > 0) { %>
+  <section class="dashboard-section highlight-section">
+    <div class="section-header">
+      <h2>Pending Signups</h2>
+      <a href="/admin/signups" class="btn btn-primary btn-sm">View All</a>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Union Name</th>
+          <th>Contact</th>
+          <th>Submitted</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% pendingSignups.slice(0, 5).forEach(signup => { %>
+          <tr>
+            <td><strong><%= signup.union_name %></strong></td>
+            <td><%= signup.contact_email %></td>
+            <td><%= new Date(signup.created_at).toLocaleDateString() %></td>
+            <td>
+              <a href="/admin/signups/<%= signup.id %>" class="btn btn-primary btn-sm">Review</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </section>
+  <% } %>
+
   <section class="dashboard-section">
     <div class="section-header">
-      <h2>Unions</h2>
+      <h2>Active Unions</h2>
       <a href="/admin/unions/new" class="btn btn-primary btn-sm">Add Union</a>
     </div>
-    <% if (unions.length === 0) { %>
-      <p class="empty-message">No unions yet. Create your first union to get started.</p>
+    <% const activeUnions = unions.filter(u => u.status === 'active'); %>
+    <% if (activeUnions.length === 0) { %>
+      <p class="empty-message">No active unions yet.</p>
     <% } else { %>
       <table class="data-table">
         <thead>
           <tr>
             <th>Name</th>
+            <th>Status</th>
             <th>Buckets</th>
             <th>Members</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <% unions.slice(0, 5).forEach(union => { %>
+          <% activeUnions.slice(0, 5).forEach(union => { %>
             <tr>
               <td><a href="/admin/unions/<%= union.id %>"><%= union.name %></a></td>
+              <td><span class="badge badge-success">Active</span></td>
               <td><%= union.bucket_count || 0 %></td>
               <td><%= union.member_count || 0 %></td>
               <td>
@@ -50,8 +91,8 @@
           <% }) %>
         </tbody>
       </table>
-      <% if (unions.length > 5) { %>
-        <p><a href="/admin/unions">View all <%= unions.length %> unions</a></p>
+      <% if (activeUnions.length > 5) { %>
+        <p><a href="/admin/unions">View all <%= activeUnions.length %> unions</a></p>
       <% } %>
     <% } %>
   </section>
@@ -90,3 +131,25 @@
     <% } %>
   </section>
 </div>
+
+<style>
+.alert-banner {
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+  color: #92400e;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.alert-banner a {
+  color: #92400e;
+  font-weight: 600;
+}
+.highlight-section {
+  border: 2px solid #f59e0b;
+  background: #fffbeb;
+}
+</style>

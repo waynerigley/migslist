@@ -77,6 +77,7 @@ app.use((req, res, next) => {
 
 // Routes
 const authRoutes = require('./routes/auth');
+const signupRoutes = require('./routes/signup');
 const adminRoutes = require('./routes/admin');
 const dashboardRoutes = require('./routes/dashboard');
 const bucketsRoutes = require('./routes/buckets');
@@ -84,6 +85,7 @@ const membersRoutes = require('./routes/members');
 const exportRoutes = require('./routes/export');
 
 app.use('/', authRoutes);
+app.use('/', signupRoutes);
 app.use('/admin', adminRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/buckets', bucketsRoutes);

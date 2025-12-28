@@ -8,7 +8,32 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE unions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
+    contact_email VARCHAR(255),
+    contact_name VARCHAR(255),
+    contact_phone VARCHAR(50),
+    status VARCHAR(50) DEFAULT 'pending' CHECK (status IN ('pending', 'active', 'expired', 'cancelled')),
+    payment_status VARCHAR(50) DEFAULT 'unpaid' CHECK (payment_status IN ('unpaid', 'paid', 'expired')),
+    subscription_start DATE,
+    subscription_end DATE,
+    payment_reference VARCHAR(255),
+    payment_date TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Signup requests table (before union is created)
+CREATE TABLE signup_requests (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    union_name VARCHAR(255) NOT NULL,
+    contact_name VARCHAR(255) NOT NULL,
+    contact_email VARCHAR(255) NOT NULL,
+    contact_phone VARCHAR(50),
+    admin_email VARCHAR(255) NOT NULL,
+    admin_first_name VARCHAR(100),
+    admin_last_name VARCHAR(100),
+    status VARCHAR(50) DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+    notes TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    processed_at TIMESTAMP WITH TIME ZONE
 );
 
 -- Users table (Super Admins & Union Admins)
@@ -71,6 +96,8 @@ CREATE INDEX idx_users_union_id ON users(union_id);
 CREATE INDEX idx_buckets_union_id ON buckets(union_id);
 CREATE INDEX idx_members_bucket_id ON members(bucket_id);
 CREATE INDEX idx_members_good_standing ON members(bucket_id) WHERE pdf_filename IS NOT NULL;
+CREATE INDEX idx_unions_status ON unions(status);
+CREATE INDEX idx_signup_requests_status ON signup_requests(status);
 
 -- Update timestamp trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()
