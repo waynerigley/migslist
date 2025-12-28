@@ -5,6 +5,10 @@
     <div class="stat-value"><%= stats.totalUnions || 0 %></div>
     <div class="stat-label">Active Unions</div>
   </div>
+  <div class="stat-card stat-card-trial">
+    <div class="stat-value"><%= stats.totalTrials || 0 %></div>
+    <div class="stat-label">On Trial</div>
+  </div>
   <div class="stat-card">
     <div class="stat-value"><%= stats.totalUsers || 0 %></div>
     <div class="stat-label">Users</div>
@@ -55,6 +59,53 @@
         <% }) %>
       </tbody>
     </table>
+  </section>
+  <% } %>
+
+  <% if (typeof trials !== 'undefined' && trials && trials.length > 0) { %>
+  <section class="dashboard-section trial-section">
+    <div class="section-header">
+      <h2>Trial Unions</h2>
+      <a href="/admin/trials" class="btn btn-outline btn-sm">View All</a>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Union Name</th>
+          <th>Contact</th>
+          <th>Days Left</th>
+          <th>Usage</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% trials.slice(0, 5).forEach(trial => { %>
+          <% const daysLeft = Math.max(0, Math.floor(trial.days_remaining || 0)); %>
+          <tr>
+            <td><a href="/admin/unions/<%= trial.id %>"><strong><%= trial.name %></strong></a></td>
+            <td><%= trial.contact_email || '-' %></td>
+            <td>
+              <% if (daysLeft <= 7) { %>
+                <span class="badge badge-danger"><%= daysLeft %> days</span>
+              <% } else if (daysLeft <= 14) { %>
+                <span class="badge badge-warning"><%= daysLeft %> days</span>
+              <% } else { %>
+                <span class="badge badge-success"><%= daysLeft %> days</span>
+              <% } %>
+            </td>
+            <td><%= trial.bucket_count || 0 %> buckets, <%= trial.member_count || 0 %> members</td>
+            <td>
+              <form action="/admin/unions/<%= trial.id %>/grant-free-year" method="POST" class="inline-form" onsubmit="return confirm('Grant free year to <%= trial.name %>?')">
+                <button type="submit" class="btn btn-success btn-sm">Grant Year</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <% if (trials.length > 5) { %>
+      <p><a href="/admin/trials">View all <%= trials.length %> trials</a></p>
+    <% } %>
   </section>
   <% } %>
 
@@ -151,5 +202,20 @@
 .highlight-section {
   border: 2px solid #f59e0b;
   background: #fffbeb;
+}
+.trial-section {
+  border: 2px solid #3b82f6;
+  background: #eff6ff;
+}
+.stat-card-trial {
+  border-left: 4px solid #3b82f6;
+}
+[data-theme="dark"] .trial-section {
+  background: #1e3a5f;
+  border-color: #3b82f6;
+}
+[data-theme="dark"] .highlight-section {
+  background: #422006;
+  border-color: #f59e0b;
 }
 </style>

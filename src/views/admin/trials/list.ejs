@@ -1,0 +1,73 @@
+<%- include('../../partials/header', { title: 'Trial Unions', backLink: '/admin' }) %>
+
+<div class="section-header">
+  <h2>Trial Unions</h2>
+  <span class="badge badge-info"><%= trials.length %> active trial<%= trials.length !== 1 ? 's' : '' %></span>
+</div>
+
+<% if (trials.length === 0) { %>
+  <div class="empty-state">
+    <h3>No active trials</h3>
+    <p>There are no unions currently on trial.</p>
+  </div>
+<% } else { %>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Union Name</th>
+        <th>Contact</th>
+        <th>Started</th>
+        <th>Days Left</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% trials.forEach(trial => { %>
+        <% const daysLeft = Math.max(0, Math.floor(trial.days_remaining || 0)); %>
+        <tr>
+          <td><a href="/admin/unions/<%= trial.id %>"><strong><%= trial.name %></strong></a></td>
+          <td>
+            <div><%= trial.contact_email || '-' %></div>
+            <small class="text-muted"><%= trial.contact_name || '' %></small>
+          </td>
+          <td><%= trial.subscription_start ? new Date(trial.subscription_start).toLocaleDateString() : '-' %></td>
+          <td>
+            <% if (daysLeft <= 7) { %>
+              <span class="badge badge-danger"><%= daysLeft %> days</span>
+            <% } else if (daysLeft <= 14) { %>
+              <span class="badge badge-warning"><%= daysLeft %> days</span>
+            <% } else { %>
+              <span class="badge badge-success"><%= daysLeft %> days</span>
+            <% } %>
+          </td>
+          <td>
+            <div><%= trial.bucket_count || 0 %> buckets</div>
+            <small class="text-muted"><%= trial.member_count || 0 %> members</small>
+          </td>
+          <td class="action-buttons">
+            <form action="/admin/unions/<%= trial.id %>/grant-free-year" method="POST" class="inline-form" onsubmit="return confirm('Grant free year to <%= trial.name %>?')">
+              <button type="submit" class="btn btn-success btn-sm">Grant Free Year</button>
+            </form>
+            <form action="/admin/unions/<%= trial.id %>/extend" method="POST" class="inline-form">
+              <input type="hidden" name="days" value="30">
+              <button type="submit" class="btn btn-outline btn-sm">+30 Days</button>
+            </form>
+            <a href="/admin/unions/<%= trial.id %>" class="btn btn-outline btn-sm">View</a>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+
+<style>
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.text-muted {
+  color: var(--text-muted);
+}
+</style>

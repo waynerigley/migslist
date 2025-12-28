@@ -91,8 +91,8 @@
     </nav>
 
     <div class="signup-header">
-      <h1>Sign Up Your Union</h1>
-      <p>Complete the form below to get started</p>
+      <h1>Start Your Free Trial</h1>
+      <p>30 days free, no credit card required</p>
     </div>
 
     <div class="signup-card">
@@ -100,9 +100,9 @@
         <div class="alert alert-error"><%= error %></div>
       <% } %>
 
-      <div class="price-summary">
-        <span class="label">Annual Subscription</span>
-        <span class="amount">$400/year</span>
+      <div class="price-summary" style="background: #dcfce7; border-color: #86efac;">
+        <span class="label" style="color: #166534;">30-Day Free Trial</span>
+        <span class="amount" style="color: #166534;">Then $400/year</span>
       </div>
 
       <form action="/signup" method="POST">
@@ -139,7 +139,7 @@
 
         <div class="form-section">
           <h2>Admin Account</h2>
-          <p class="required-note">This person will be the primary admin for your union's account.</p>
+          <p class="required-note">Create your login credentials.</p>
 
           <div class="form-row">
             <div class="form-group">
@@ -155,15 +155,20 @@
           </div>
 
           <div class="form-group">
-            <label for="admin_email">Admin Email *</label>
+            <label for="admin_email">Email *</label>
             <input type="email" id="admin_email" name="admin_email" required
-                   placeholder="This will be the login email"
+                   placeholder="This will be your login email"
                    value="<%= typeof formData !== 'undefined' ? formData.admin_email || '' : '' %>">
-            <small>Login credentials will be sent to this email after payment is confirmed.</small>
+          </div>
+
+          <div class="form-group">
+            <label for="admin_password">Password *</label>
+            <input type="password" id="admin_password" name="admin_password" required
+                   placeholder="Minimum 8 characters" minlength="8">
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-block">Continue to Payment Instructions</button>
+        <button type="submit" class="btn btn-primary btn-block">Start Free Trial</button>
       </form>
 
       <a href="/pricing" class="back-link">Back to pricing</a>

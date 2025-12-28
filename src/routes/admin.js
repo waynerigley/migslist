@@ -50,6 +50,7 @@ router.get('/', async (req, res) => {
     const users = await User.findAll();
     const pendingSignups = await SignupRequest.findPending();
     const pendingUnions = await Union.findPending();
+    const trials = await Union.findTrials();
 
     const stats = {
       totalUnions: unions.filter(u => u.status === 'active').length,
@@ -57,14 +58,15 @@ router.get('/', async (req, res) => {
       totalBuckets: unions.reduce((sum, u) => sum + parseInt(u.bucket_count || 0), 0),
       totalMembers: unions.reduce((sum, u) => sum + parseInt(u.member_count || 0), 0),
       pendingSignups: pendingSignups.length,
-      pendingPayments: pendingUnions.length
+      pendingPayments: pendingUnions.length,
+      totalTrials: trials.length
     };
 
-    res.render('admin/dashboard', { unions, users, stats, pendingSignups, pendingUnions });
+    res.render('admin/dashboard', { unions, users, stats, pendingSignups, pendingUnions, trials });
   } catch (err) {
     console.error('Admin dashboard error:', err);
     req.session.error = 'Error loading dashboard';
-    res.render('admin/dashboard', { unions: [], users: [], stats: {}, pendingSignups: [], pendingUnions: [] });
+    res.render('admin/dashboard', { unions: [], users: [], stats: {}, pendingSignups: [], pendingUnions: [], trials: [] });
   }
 });
 
@@ -479,6 +481,48 @@ router.post('/unions/:id/deactivate', async (req, res) => {
     console.error('Deactivate union error:', err);
     req.session.error = 'Error deactivating union';
     res.redirect(`/admin/unions/${req.params.id}`);
+  }
+});
+
+// Extend subscription
+router.post('/unions/:id/extend', async (req, res) => {
+  try {
+    const { days } = req.body;
+    const daysNum = parseInt(days) || 30;
+    await Union.extendSubscription(req.params.id, daysNum);
+    req.session.success = `Subscription extended by ${daysNum} days`;
+    res.redirect(`/admin/unions/${req.params.id}`);
+  } catch (err) {
+    console.error('Extend subscription error:', err);
+    req.session.error = 'Error extending subscription';
+    res.redirect(`/admin/unions/${req.params.id}`);
+  }
+});
+
+// Grant free year
+router.post('/unions/:id/grant-free-year', async (req, res) => {
+  try {
+    await Union.grantFreeYear(req.params.id);
+    req.session.success = 'Free year granted successfully';
+    res.redirect(`/admin/unions/${req.params.id}`);
+  } catch (err) {
+    console.error('Grant free year error:', err);
+    req.session.error = 'Error granting free year';
+    res.redirect(`/admin/unions/${req.params.id}`);
+  }
+});
+
+// === TRIALS ===
+
+// List trial unions
+router.get('/trials', async (req, res) => {
+  try {
+    const trials = await Union.findTrials();
+    res.render('admin/trials/list', { trials });
+  } catch (err) {
+    console.error('List trials error:', err);
+    req.session.error = 'Error loading trial unions';
+    res.render('admin/trials/list', { trials: [] });
   }
 });
 

@@ -1,5 +1,64 @@
 <%- include('../../partials/header', { title: union.name, backLink: '/admin/unions' }) %>
 
+<div class="subscription-card">
+  <div class="subscription-header">
+    <h3>Subscription Status</h3>
+    <% if (union.payment_status === 'trial') { %>
+      <span class="badge badge-info">Trial</span>
+    <% } else if (union.payment_status === 'paid') { %>
+      <span class="badge badge-success">Paid</span>
+    <% } else if (union.payment_status === 'free') { %>
+      <span class="badge badge-success">Free</span>
+    <% } else if (union.status === 'expired') { %>
+      <span class="badge badge-danger">Expired</span>
+    <% } else { %>
+      <span class="badge badge-secondary">Unpaid</span>
+    <% } %>
+  </div>
+  <div class="subscription-details">
+    <div class="detail-row">
+      <span class="label">Status:</span>
+      <span class="value"><%= union.status || 'pending' %></span>
+    </div>
+    <% if (union.subscription_start) { %>
+    <div class="detail-row">
+      <span class="label">Started:</span>
+      <span class="value"><%= new Date(union.subscription_start).toLocaleDateString() %></span>
+    </div>
+    <% } %>
+    <% if (union.subscription_end) { %>
+    <div class="detail-row">
+      <span class="label">Expires:</span>
+      <span class="value"><%= new Date(union.subscription_end).toLocaleDateString() %></span>
+    </div>
+    <% } %>
+    <% if (union.payment_reference) { %>
+    <div class="detail-row">
+      <span class="label">Reference:</span>
+      <span class="value"><%= union.payment_reference %></span>
+    </div>
+    <% } %>
+  </div>
+  <div class="subscription-actions">
+    <form action="/admin/unions/<%= union.id %>/grant-free-year" method="POST" class="inline-form" onsubmit="return confirm('Grant free year?')">
+      <button type="submit" class="btn btn-success btn-sm">Grant Free Year</button>
+    </form>
+    <form action="/admin/unions/<%= union.id %>/extend" method="POST" class="inline-form">
+      <input type="number" name="days" value="30" min="1" max="365" style="width: 60px;">
+      <button type="submit" class="btn btn-outline btn-sm">Extend Days</button>
+    </form>
+    <% if (union.status === 'active') { %>
+    <form action="/admin/unions/<%= union.id %>/deactivate" method="POST" class="inline-form" onsubmit="return confirm('Deactivate this union?')">
+      <button type="submit" class="btn btn-warning btn-sm">Deactivate</button>
+    </form>
+    <% } else { %>
+    <form action="/admin/unions/<%= union.id %>/activate" method="POST" class="inline-form">
+      <button type="submit" class="btn btn-primary btn-sm">Activate</button>
+    </form>
+    <% } %>
+  </div>
+</div>
+
 <div class="stats-grid stats-grid-3">
   <div class="stat-card">
     <div class="stat-value"><%= stats.bucket_count || 0 %></div>

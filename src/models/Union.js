@@ -89,6 +89,66 @@ const Union = {
     return result.rows[0];
   },
 
+  async startTrial(id) {
+    const subscriptionStart = new Date();
+    const subscriptionEnd = new Date();
+    subscriptionEnd.setDate(subscriptionEnd.getDate() + 30); // 30-day trial
+
+    const result = await db.query(
+      `UPDATE unions SET
+       status = 'active',
+       payment_status = 'trial',
+       subscription_start = $1,
+       subscription_end = $2
+       WHERE id = $3 RETURNING *`,
+      [subscriptionStart, subscriptionEnd, id]
+    );
+    return result.rows[0];
+  },
+
+  async extendSubscription(id, days) {
+    const result = await db.query(
+      `UPDATE unions SET
+       subscription_end = COALESCE(subscription_end, NOW()) + interval '1 day' * $1,
+       status = 'active'
+       WHERE id = $2 RETURNING *`,
+      [days, id]
+    );
+    return result.rows[0];
+  },
+
+  async grantFreeYear(id) {
+    const subscriptionEnd = new Date();
+    subscriptionEnd.setFullYear(subscriptionEnd.getFullYear() + 1);
+
+    const result = await db.query(
+      `UPDATE unions SET
+       status = 'active',
+       payment_status = 'free',
+       subscription_end = $1,
+       payment_reference = 'Free year granted by admin'
+       WHERE id = $2 RETURNING *`,
+      [subscriptionEnd, id]
+    );
+    return result.rows[0];
+  },
+
+  async findTrials() {
+    const result = await db.query(
+      `SELECT u.*,
+              COUNT(DISTINCT b.id) as bucket_count,
+              COUNT(DISTINCT m.id) as member_count,
+              GREATEST(0, EXTRACT(DAY FROM subscription_end - NOW())) as days_remaining
+       FROM unions u
+       LEFT JOIN buckets b ON u.id = b.union_id
+       LEFT JOIN members m ON b.id = m.bucket_id
+       WHERE u.payment_status = 'trial'
+       GROUP BY u.id
+       ORDER BY u.subscription_end ASC`
+    );
+    return result.rows;
+  },
+
   async deactivate(id) {
     const result = await db.query(
       `UPDATE unions SET status = 'expired', payment_status = 'expired' WHERE id = $1 RETURNING *`,
