@@ -7,6 +7,13 @@
 <div class="action-bar">
   <a href="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/members/new" class="btn btn-primary">Add Member</a>
   <a href="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/edit" class="btn btn-outline">Edit Bucket</a>
+  <div class="dropdown">
+    <button class="btn btn-outline">Export</button>
+    <div class="dropdown-menu">
+      <a href="/export/bucket/<%= bucket.id %>">Good Standing Only</a>
+      <a href="/export/bucket/<%= bucket.id %>/all">All Members</a>
+    </div>
+  </div>
 </div>
 
 <% if (members.length === 0) { %>

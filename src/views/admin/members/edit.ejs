@@ -5,7 +5,7 @@
 }) %>
 
 <div class="form-container">
-  <form action="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/members<%= member ? '/' + member.id : '' %>" method="POST">
+  <form action="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/members<%= member ? '/' + member.id : '' %>" method="POST" enctype="multipart/form-data">
 
     <div class="form-row">
       <div class="form-group">
@@ -54,6 +54,16 @@
         <input type="text" id="zip" name="zip" value="<%= member ? member.zip || '' : '' %>" maxlength="10">
       </div>
     </div>
+
+    <% if (!member) { %>
+    <hr class="form-divider">
+    <h3>Signed Document (Optional)</h3>
+    <div class="form-group">
+      <label for="pdf">Upload PDF</label>
+      <input type="file" id="pdf" name="pdf" accept=".pdf">
+      <small>Upload now to mark member as good standing. PDF only, max 5MB.</small>
+    </div>
+    <% } %>
 
     <div class="form-actions">
       <button type="submit" class="btn btn-primary"><%= member ? 'Update' : 'Add' %> Member</button>

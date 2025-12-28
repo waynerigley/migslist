@@ -616,8 +616,8 @@ router.get('/unions/:unionId/buckets/:bucketId/members/new', async (req, res) =>
   }
 });
 
-// Create member
-router.post('/unions/:unionId/buckets/:bucketId/members', async (req, res) => {
+// Create member (with optional PDF)
+router.post('/unions/:unionId/buckets/:bucketId/members', upload.single('pdf'), async (req, res) => {
   try {
     const {
       first_name, last_name, email, phone,
@@ -629,7 +629,7 @@ router.post('/unions/:unionId/buckets/:bucketId/members', async (req, res) => {
       return res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}/members/new`);
     }
 
-    await Member.create({
+    const member = await Member.create({
       bucketId: req.params.bucketId,
       firstName: first_name.trim(),
       lastName: last_name.trim(),
@@ -641,6 +641,11 @@ router.post('/unions/:unionId/buckets/:bucketId/members', async (req, res) => {
       state: state?.trim(),
       zip: zip?.trim()
     });
+
+    // If PDF was uploaded, attach it to the member
+    if (req.file) {
+      await Member.updatePdf(member.id, req.file.filename);
+    }
 
     req.session.success = 'Member added successfully';
     res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}`);

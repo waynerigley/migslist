@@ -91,8 +91,8 @@ router.get('/new', async (req, res) => {
   }
 });
 
-// Create member
-router.post('/', async (req, res) => {
+// Create member (with optional PDF)
+router.post('/', upload.single('pdf'), async (req, res) => {
   try {
     const {
       bucket_id, first_name, last_name, email, phone,
@@ -116,7 +116,7 @@ router.post('/', async (req, res) => {
       return res.redirect('/dashboard');
     }
 
-    await Member.create({
+    const member = await Member.create({
       bucketId: bucket_id,
       firstName: first_name.trim(),
       lastName: last_name.trim(),
@@ -128,6 +128,11 @@ router.post('/', async (req, res) => {
       state: state?.trim(),
       zip: zip?.trim()
     });
+
+    // If PDF was uploaded, attach it to the member
+    if (req.file) {
+      await Member.updatePdf(member.id, req.file.filename);
+    }
 
     req.session.success = 'Member added successfully';
     res.redirect(`/buckets/${bucket_id}`);
