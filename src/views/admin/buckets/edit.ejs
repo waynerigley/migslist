@@ -1,0 +1,25 @@
+<%- include('../../partials/header', { title: bucket ? 'Edit Bucket' : 'New Bucket', backLink: '/admin/unions/' + union.id }) %>
+
+<div class="form-container">
+  <h2><%= bucket ? 'Edit Bucket' : 'New Bucket' %></h2>
+  <p class="text-muted">Union: <%= union.name %></p>
+
+  <form action="/admin/unions/<%= union.id %>/buckets<%= bucket ? '/' + bucket.id : '' %>" method="POST">
+    <div class="form-group">
+      <label for="number">Bucket Number</label>
+      <input type="text" id="number" name="number" value="<%= bucket ? bucket.number : '' %>" required>
+      <small>A unique identifier for this bucket (e.g., "1", "A", "North")</small>
+    </div>
+
+    <div class="form-group">
+      <label for="name">Bucket Name</label>
+      <input type="text" id="name" name="name" value="<%= bucket ? bucket.name : '' %>" required>
+      <small>A descriptive name for this bucket</small>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary"><%= bucket ? 'Update Bucket' : 'Create Bucket' %></button>
+      <a href="/admin/unions/<%= union.id %>" class="btn btn-outline">Cancel</a>
+    </div>
+  </form>
+</div>

@@ -455,4 +455,101 @@ router.post('/unions/:id/deactivate', async (req, res) => {
   }
 });
 
+// === BUCKETS (for super admin) ===
+
+// New bucket form for a union
+router.get('/unions/:unionId/buckets/new', async (req, res) => {
+  try {
+    const union = await Union.findById(req.params.unionId);
+    if (!union) {
+      req.session.error = 'Union not found';
+      return res.redirect('/admin/unions');
+    }
+    res.render('admin/buckets/edit', { union, bucket: null });
+  } catch (err) {
+    console.error('New bucket form error:', err);
+    req.session.error = 'Error loading form';
+    res.redirect(`/admin/unions/${req.params.unionId}`);
+  }
+});
+
+// Create bucket for a union
+router.post('/unions/:unionId/buckets', async (req, res) => {
+  try {
+    const { number, name } = req.body;
+    const unionId = req.params.unionId;
+
+    if (!number || !name) {
+      req.session.error = 'Bucket number and name are required';
+      return res.redirect(`/admin/unions/${unionId}/buckets/new`);
+    }
+
+    await Bucket.create({ unionId, number: number.trim(), name: name.trim() });
+    req.session.success = 'Bucket created successfully';
+    res.redirect(`/admin/unions/${unionId}`);
+  } catch (err) {
+    console.error('Create bucket error:', err);
+    if (err.code === '23505') {
+      req.session.error = 'A bucket with this number already exists';
+    } else {
+      req.session.error = 'Error creating bucket';
+    }
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/new`);
+  }
+});
+
+// Edit bucket form
+router.get('/unions/:unionId/buckets/:id/edit', async (req, res) => {
+  try {
+    const union = await Union.findById(req.params.unionId);
+    const bucket = await Bucket.findById(req.params.id);
+    if (!union || !bucket) {
+      req.session.error = 'Union or bucket not found';
+      return res.redirect('/admin/unions');
+    }
+    res.render('admin/buckets/edit', { union, bucket });
+  } catch (err) {
+    console.error('Edit bucket form error:', err);
+    req.session.error = 'Error loading form';
+    res.redirect(`/admin/unions/${req.params.unionId}`);
+  }
+});
+
+// Update bucket
+router.post('/unions/:unionId/buckets/:id', async (req, res) => {
+  try {
+    const { number, name } = req.body;
+
+    if (!number || !name) {
+      req.session.error = 'Bucket number and name are required';
+      return res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}/edit`);
+    }
+
+    await Bucket.update(req.params.id, { number: number.trim(), name: name.trim() });
+    req.session.success = 'Bucket updated successfully';
+    res.redirect(`/admin/unions/${req.params.unionId}`);
+  } catch (err) {
+    console.error('Update bucket error:', err);
+    if (err.code === '23505') {
+      req.session.error = 'A bucket with this number already exists';
+    } else {
+      req.session.error = 'Error updating bucket';
+    }
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}/edit`);
+  }
+});
+
+// Delete bucket
+router.post('/unions/:unionId/buckets/:id/delete', async (req, res) => {
+  try {
+    await Bucket.delete(req.params.id);
+    req.session.success = 'Bucket deleted successfully';
+    res.redirect(`/admin/unions/${req.params.unionId}`);
+  } catch (err) {
+    console.error('Delete bucket error:', err);
+    req.session.error = 'Error deleting bucket';
+    res.redirect(`/admin/unions/${req.params.unionId}`);
+  }
+});
+
 module.exports = router;
