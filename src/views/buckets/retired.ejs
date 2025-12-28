@@ -1,0 +1,89 @@
+<%- include('../partials/header', {
+  title: 'Retired Members - #' + bucket.number + ' - ' + bucket.name,
+  subtitle: bucket.union_name,
+  backLink: '/buckets/' + bucket.id
+}) %>
+
+<div class="action-bar">
+  <a href="/buckets/<%= bucket.id %>" class="btn btn-outline">Back to Active Members</a>
+</div>
+
+<% if (members.length === 0) { %>
+  <div class="empty-state">
+    <h3>No retired members</h3>
+    <p>When members are retired, they will appear here for your records.</p>
+  </div>
+<% } else { %>
+  <div class="filter-bar">
+    <span class="member-count"><%= members.length %> retired member<%= members.length !== 1 ? 's' : '' %></span>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Retired Date</th>
+        <th>Reason</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% members.forEach(member => { %>
+        <tr class="retired-row">
+          <td><%= member.last_name %>, <%= member.first_name %></td>
+          <td><%= member.email || '-' %></td>
+          <td><%= member.retired_at ? new Date(member.retired_at).toLocaleDateString() : '-' %></td>
+          <td><%= member.retired_reason || '-' %></td>
+          <td class="actions">
+            <a href="/members/<%= member.id %>" class="btn btn-outline btn-sm">View</a>
+            <form action="/members/<%= member.id %>/restore" method="POST" class="inline-form" onsubmit="return confirm('Restore <%= member.first_name %> <%= member.last_name %> to active members?')">
+              <button type="submit" class="btn btn-success btn-sm" title="Restore to active">Restore</button>
+            </form>
+            <form action="/members/<%= member.id %>/delete" method="POST" class="inline-form" onsubmit="return confirm('Permanently delete <%= member.first_name %> <%= member.last_name %>? This cannot be undone.')">
+              <button type="submit" class="btn btn-danger btn-sm" title="Permanently delete">Delete</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+
+<style>
+.retired-row {
+  opacity: 0.85;
+}
+.btn-success {
+  background: var(--success);
+  color: white;
+  border: none;
+}
+.btn-success:hover {
+  background: #16a34a;
+}
+.btn-warning {
+  background: #f59e0b;
+  color: white;
+  border: none;
+}
+.btn-warning:hover {
+  background: #d97706;
+}
+.btn-danger {
+  background: var(--danger);
+  color: white;
+  border: none;
+}
+.btn-danger:hover {
+  background: #b91c1c;
+}
+.btn-muted {
+  opacity: 0.7;
+}
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+</style>

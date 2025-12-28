@@ -113,11 +113,24 @@ router.post('/', upload.single('master_pdf'), async (req, res) => {
 router.get('/:id', checkBucketAccess, async (req, res) => {
   try {
     const members = await Member.findByBucketId(req.params.id);
-    res.render('buckets/view', { bucket: req.bucket, members });
+    const retiredMembers = await Member.findRetiredByBucketId(req.params.id);
+    res.render('buckets/view', { bucket: req.bucket, members, retiredCount: retiredMembers.length });
   } catch (err) {
     console.error('View bucket error:', err);
     req.session.error = 'Error loading bucket';
     res.redirect('/dashboard');
+  }
+});
+
+// View retired members
+router.get('/:id/retired', checkBucketAccess, async (req, res) => {
+  try {
+    const members = await Member.findRetiredByBucketId(req.params.id);
+    res.render('buckets/retired', { bucket: req.bucket, members });
+  } catch (err) {
+    console.error('View retired members error:', err);
+    req.session.error = 'Error loading retired members';
+    res.redirect(`/buckets/${req.params.id}`);
   }
 });
 

@@ -250,6 +250,37 @@ router.post('/:id/remove-pdf', checkMemberAccess, async (req, res) => {
   }
 });
 
+// Retire member (move to retired list)
+router.post('/:id/retire', checkMemberAccess, async (req, res) => {
+  try {
+    const { reason } = req.body;
+    const bucketId = req.member.bucket_id;
+
+    await Member.retire(req.params.id, reason || 'Retired/Left Union');
+    req.session.success = `${req.member.first_name} ${req.member.last_name} has been moved to retired members`;
+    res.redirect(`/buckets/${bucketId}`);
+  } catch (err) {
+    console.error('Retire member error:', err);
+    req.session.error = 'Error retiring member';
+    res.redirect(`/buckets/${req.member.bucket_id}`);
+  }
+});
+
+// Restore retired member
+router.post('/:id/restore', checkMemberAccess, async (req, res) => {
+  try {
+    const bucketId = req.member.bucket_id;
+
+    await Member.restore(req.params.id);
+    req.session.success = `${req.member.first_name} ${req.member.last_name} has been restored to active members`;
+    res.redirect(`/buckets/${bucketId}/retired`);
+  } catch (err) {
+    console.error('Restore member error:', err);
+    req.session.error = 'Error restoring member';
+    res.redirect(`/buckets/${req.member.bucket_id}/retired`);
+  }
+});
+
 // Delete member
 router.post('/:id/delete', checkMemberAccess, async (req, res) => {
   try {

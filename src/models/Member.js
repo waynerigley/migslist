@@ -31,7 +31,7 @@ const Member = {
 
   async findByBucketId(bucketId) {
     const result = await db.query(
-      `SELECT * FROM members WHERE bucket_id = $1 ORDER BY last_name, first_name`,
+      `SELECT * FROM members WHERE bucket_id = $1 AND retired_at IS NULL ORDER BY last_name, first_name`,
       [bucketId]
     );
     return result.rows;
@@ -40,11 +40,35 @@ const Member = {
   async findGoodStandingByBucketId(bucketId) {
     const result = await db.query(
       `SELECT * FROM members
-       WHERE bucket_id = $1 AND pdf_filename IS NOT NULL
+       WHERE bucket_id = $1 AND pdf_filename IS NOT NULL AND retired_at IS NULL
        ORDER BY last_name, first_name`,
       [bucketId]
     );
     return result.rows;
+  },
+
+  async findRetiredByBucketId(bucketId) {
+    const result = await db.query(
+      `SELECT * FROM members WHERE bucket_id = $1 AND retired_at IS NOT NULL ORDER BY retired_at DESC`,
+      [bucketId]
+    );
+    return result.rows;
+  },
+
+  async retire(id, reason) {
+    const result = await db.query(
+      `UPDATE members SET retired_at = NOW(), retired_reason = $1 WHERE id = $2 RETURNING *`,
+      [reason || 'Retired', id]
+    );
+    return result.rows[0];
+  },
+
+  async restore(id) {
+    const result = await db.query(
+      `UPDATE members SET retired_at = NULL, retired_reason = NULL WHERE id = $1 RETURNING *`,
+      [id]
+    );
+    return result.rows[0];
   },
 
   async update(id, data) {
@@ -93,6 +117,7 @@ const Member = {
        FROM members m
        JOIN buckets b ON m.bucket_id = b.id
        WHERE b.union_id = $1
+         AND m.retired_at IS NULL
          AND (m.first_name ILIKE $2 OR m.last_name ILIKE $2 OR m.email ILIKE $2)
        ORDER BY m.last_name, m.first_name
        LIMIT 50`,
