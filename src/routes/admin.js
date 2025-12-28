@@ -1,12 +1,39 @@
 const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const { requireSuperAdmin } = require('../middleware/auth');
 const Union = require('../models/Union');
 const User = require('../models/User');
 const Bucket = require('../models/Bucket');
+const Member = require('../models/Member');
 const SignupRequest = require('../models/SignupRequest');
 const sgMail = require('@sendgrid/mail');
+
+// Configure multer for PDF uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, '../../uploads/pdfs'));
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PDF files are allowed'));
+    }
+  }
+});
 
 // Initialize SendGrid
 if (process.env.SENDGRID_API_KEY) {
@@ -549,6 +576,244 @@ router.post('/unions/:unionId/buckets/:id/delete', async (req, res) => {
     console.error('Delete bucket error:', err);
     req.session.error = 'Error deleting bucket';
     res.redirect(`/admin/unions/${req.params.unionId}`);
+  }
+});
+
+// View bucket with members
+router.get('/unions/:unionId/buckets/:id', async (req, res) => {
+  try {
+    const union = await Union.findById(req.params.unionId);
+    const bucket = await Bucket.findById(req.params.id);
+    if (!union || !bucket) {
+      req.session.error = 'Union or bucket not found';
+      return res.redirect('/admin/unions');
+    }
+    const members = await Member.findByBucketId(req.params.id);
+    res.render('admin/buckets/view', { union, bucket, members });
+  } catch (err) {
+    console.error('View bucket error:', err);
+    req.session.error = 'Error loading bucket';
+    res.redirect(`/admin/unions/${req.params.unionId}`);
+  }
+});
+
+// === MEMBERS (for super admin) ===
+
+// New member form
+router.get('/unions/:unionId/buckets/:bucketId/members/new', async (req, res) => {
+  try {
+    const union = await Union.findById(req.params.unionId);
+    const bucket = await Bucket.findById(req.params.bucketId);
+    if (!union || !bucket) {
+      req.session.error = 'Union or bucket not found';
+      return res.redirect('/admin/unions');
+    }
+    res.render('admin/members/edit', { union, bucket, member: null });
+  } catch (err) {
+    console.error('New member form error:', err);
+    req.session.error = 'Error loading form';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}`);
+  }
+});
+
+// Create member
+router.post('/unions/:unionId/buckets/:bucketId/members', async (req, res) => {
+  try {
+    const {
+      first_name, last_name, email, phone,
+      address_line1, address_line2, city, state, zip
+    } = req.body;
+
+    if (!first_name || !last_name) {
+      req.session.error = 'First name and last name are required';
+      return res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}/members/new`);
+    }
+
+    await Member.create({
+      bucketId: req.params.bucketId,
+      firstName: first_name.trim(),
+      lastName: last_name.trim(),
+      email: email?.trim(),
+      phone: phone?.trim(),
+      addressLine1: address_line1?.trim(),
+      addressLine2: address_line2?.trim(),
+      city: city?.trim(),
+      state: state?.trim(),
+      zip: zip?.trim()
+    });
+
+    req.session.success = 'Member added successfully';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}`);
+  } catch (err) {
+    console.error('Create member error:', err);
+    req.session.error = 'Error adding member';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}/members/new`);
+  }
+});
+
+// View member
+router.get('/unions/:unionId/buckets/:bucketId/members/:id', async (req, res) => {
+  try {
+    const union = await Union.findById(req.params.unionId);
+    const bucket = await Bucket.findById(req.params.bucketId);
+    const member = await Member.findById(req.params.id);
+    if (!union || !bucket || !member) {
+      req.session.error = 'Not found';
+      return res.redirect('/admin/unions');
+    }
+    res.render('admin/members/view', { union, bucket, member });
+  } catch (err) {
+    console.error('View member error:', err);
+    req.session.error = 'Error loading member';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}`);
+  }
+});
+
+// Edit member form
+router.get('/unions/:unionId/buckets/:bucketId/members/:id/edit', async (req, res) => {
+  try {
+    const union = await Union.findById(req.params.unionId);
+    const bucket = await Bucket.findById(req.params.bucketId);
+    const member = await Member.findById(req.params.id);
+    if (!union || !bucket || !member) {
+      req.session.error = 'Not found';
+      return res.redirect('/admin/unions');
+    }
+    res.render('admin/members/edit', { union, bucket, member });
+  } catch (err) {
+    console.error('Edit member form error:', err);
+    req.session.error = 'Error loading form';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}`);
+  }
+});
+
+// Update member
+router.post('/unions/:unionId/buckets/:bucketId/members/:id', async (req, res) => {
+  try {
+    const {
+      first_name, last_name, email, phone,
+      address_line1, address_line2, city, state, zip
+    } = req.body;
+
+    if (!first_name || !last_name) {
+      req.session.error = 'First name and last name are required';
+      return res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}/members/${req.params.id}/edit`);
+    }
+
+    await Member.update(req.params.id, {
+      firstName: first_name.trim(),
+      lastName: last_name.trim(),
+      email: email?.trim(),
+      phone: phone?.trim(),
+      addressLine1: address_line1?.trim(),
+      addressLine2: address_line2?.trim(),
+      city: city?.trim(),
+      state: state?.trim(),
+      zip: zip?.trim()
+    });
+
+    req.session.success = 'Member updated successfully';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}/members/${req.params.id}`);
+  } catch (err) {
+    console.error('Update member error:', err);
+    req.session.error = 'Error updating member';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}/members/${req.params.id}/edit`);
+  }
+});
+
+// Upload PDF
+router.post('/unions/:unionId/buckets/:bucketId/members/:id/upload-pdf', upload.single('pdf'), async (req, res) => {
+  try {
+    const member = await Member.findById(req.params.id);
+    if (!member) {
+      req.session.error = 'Member not found';
+      return res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}`);
+    }
+
+    if (!req.file) {
+      req.session.error = 'Please select a PDF file';
+      return res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}/members/${req.params.id}`);
+    }
+
+    // Delete old PDF if exists
+    if (member.pdf_filename) {
+      const oldPath = path.join(__dirname, '../../uploads/pdfs', member.pdf_filename);
+      if (fs.existsSync(oldPath)) {
+        fs.unlinkSync(oldPath);
+      }
+    }
+
+    await Member.updatePdf(req.params.id, req.file.filename);
+    req.session.success = 'PDF uploaded successfully';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}/members/${req.params.id}`);
+  } catch (err) {
+    console.error('Upload PDF error:', err);
+    req.session.error = 'Error uploading PDF';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}/members/${req.params.id}`);
+  }
+});
+
+// Download PDF
+router.get('/unions/:unionId/buckets/:bucketId/members/:id/pdf', async (req, res) => {
+  try {
+    const member = await Member.findById(req.params.id);
+    if (!member || !member.pdf_filename) {
+      req.session.error = 'No PDF on file';
+      return res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}/members/${req.params.id}`);
+    }
+
+    const filePath = path.join(__dirname, '../../uploads/pdfs', member.pdf_filename);
+    if (!fs.existsSync(filePath)) {
+      req.session.error = 'PDF file not found';
+      return res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}/members/${req.params.id}`);
+    }
+
+    const downloadName = `${member.last_name}_${member.first_name}_document.pdf`;
+    res.download(filePath, downloadName);
+  } catch (err) {
+    console.error('Download PDF error:', err);
+    req.session.error = 'Error downloading PDF';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}/members/${req.params.id}`);
+  }
+});
+
+// Remove PDF
+router.post('/unions/:unionId/buckets/:bucketId/members/:id/remove-pdf', async (req, res) => {
+  try {
+    const member = await Member.findById(req.params.id);
+    if (member && member.pdf_filename) {
+      const filePath = path.join(__dirname, '../../uploads/pdfs', member.pdf_filename);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+      await Member.removePdf(req.params.id);
+    }
+    req.session.success = 'PDF removed successfully';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}/members/${req.params.id}`);
+  } catch (err) {
+    console.error('Remove PDF error:', err);
+    req.session.error = 'Error removing PDF';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}/members/${req.params.id}`);
+  }
+});
+
+// Delete member
+router.post('/unions/:unionId/buckets/:bucketId/members/:id/delete', async (req, res) => {
+  try {
+    const member = await Member.findById(req.params.id);
+    if (member && member.pdf_filename) {
+      const filePath = path.join(__dirname, '../../uploads/pdfs', member.pdf_filename);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+    await Member.delete(req.params.id);
+    req.session.success = 'Member deleted successfully';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}`);
+  } catch (err) {
+    console.error('Delete member error:', err);
+    req.session.error = 'Error deleting member';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}`);
   }
 });
 
