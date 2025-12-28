@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MigsList - Union Member Management</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <% if (isAuthenticated) { %>
+    <%- include('../partials/nav') %>
+  <% } %>
+
+  <main class="container">
+    <% if (typeof success !== 'undefined' && success) { %>
+      <div class="alert alert-success"><%= success %></div>
+    <% } %>
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="alert alert-error"><%= error %></div>
+    <% } %>
+
+    <%- body %>
+  </main>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

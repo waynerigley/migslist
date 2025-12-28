@@ -1,0 +1,13 @@
+# Cloudflare Tunnel Configuration
+# Replace TUNNEL_ID with your actual tunnel ID after running:
+#   cloudflared tunnel create migslist
+
+tunnel: TUNNEL_ID
+credentials-file: /root/.cloudflared/TUNNEL_ID.json
+
+ingress:
+  - hostname: migslist.com
+    service: http://localhost:3000
+  - hostname: www.migslist.com
+    service: http://localhost:3000
+  - service: http_status:404

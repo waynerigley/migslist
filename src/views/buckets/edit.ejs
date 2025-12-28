@@ -1,0 +1,34 @@
+<%- include('../partials/header', {
+  title: bucket ? 'Edit Bucket' : 'Create Bucket',
+  backLink: '/dashboard'
+}) %>
+
+<div class="form-container">
+  <form action="<%= bucket ? '/buckets/' + bucket.id : '/buckets' %>" method="POST">
+    <div class="form-row">
+      <div class="form-group" style="flex: 0 0 120px;">
+        <label for="number">Number</label>
+        <input type="text" id="number" name="number" value="<%= bucket ? bucket.number : '' %>" required placeholder="e.g., 1">
+      </div>
+      <div class="form-group" style="flex: 1;">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" value="<%= bucket ? bucket.name : '' %>" required autofocus placeholder="e.g., Active Members">
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary"><%= bucket ? 'Update' : 'Create' %> Bucket</button>
+      <a href="/dashboard" class="btn btn-outline">Cancel</a>
+    </div>
+  </form>
+
+  <% if (bucket) { %>
+    <hr class="form-divider">
+
+    <h3>Danger Zone</h3>
+    <p class="text-muted">Deleting this bucket will also delete all members in it.</p>
+    <form action="/buckets/<%= bucket.id %>/delete" method="POST" onsubmit="return confirm('Delete this bucket and all its members?')">
+      <button type="submit" class="btn btn-danger">Delete Bucket</button>
+    </form>
+  <% } %>
+</div>

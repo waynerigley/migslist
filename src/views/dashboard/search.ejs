@@ -1,0 +1,51 @@
+<%- include('../partials/header', { title: 'Search Members', backLink: '/dashboard' }) %>
+
+<div class="search-container">
+  <form action="/dashboard/search" method="GET" class="search-form">
+    <input type="text" name="q" value="<%= query %>" placeholder="Search by name or email..." autofocus>
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+</div>
+
+<% if (query && query.length >= 2) { %>
+  <% if (members.length === 0) { %>
+    <div class="empty-state">
+      <h3>No results found</h3>
+      <p>No members match "<%= query %>"</p>
+    </div>
+  <% } else { %>
+    <p class="search-results-count">Found <%= members.length %> result<%= members.length !== 1 ? 's' : '' %></p>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Bucket</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% members.forEach(member => { %>
+          <tr>
+            <td><%= member.last_name %>, <%= member.first_name %></td>
+            <td><%= member.email || '-' %></td>
+            <td>#<%= member.bucket_number %> - <%= member.bucket_name %></td>
+            <td>
+              <% if (member.pdf_filename) { %>
+                <span class="badge badge-success">Good Standing</span>
+              <% } else { %>
+                <span class="badge badge-warning">Pending</span>
+              <% } %>
+            </td>
+            <td>
+              <a href="/members/<%= member.id %>" class="btn btn-outline btn-sm">View</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+<% } else if (query) { %>
+  <p class="search-hint">Enter at least 2 characters to search.</p>
+<% } %>

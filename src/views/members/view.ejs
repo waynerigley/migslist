@@ -1,0 +1,71 @@
+<%- include('../partials/header', {
+  title: member.first_name + ' ' + member.last_name,
+  subtitle: '#' + member.bucket_number + ' - ' + member.bucket_name,
+  backLink: '/buckets/' + member.bucket_id
+}) %>
+
+<div class="member-detail">
+  <div class="member-status">
+    <% if (member.pdf_filename) { %>
+      <span class="badge badge-success badge-lg">Good Standing</span>
+    <% } else { %>
+      <span class="badge badge-warning badge-lg">Pending PDF</span>
+    <% } %>
+  </div>
+
+  <div class="detail-grid">
+    <div class="detail-section">
+      <h3>Contact Information</h3>
+      <dl class="detail-list">
+        <dt>Email</dt>
+        <dd><%= member.email || 'Not provided' %></dd>
+        <dt>Phone</dt>
+        <dd><%= member.phone || 'Not provided' %></dd>
+      </dl>
+    </div>
+
+    <div class="detail-section">
+      <h3>Address</h3>
+      <% if (member.address_line1 || member.city) { %>
+        <address>
+          <% if (member.address_line1) { %><%= member.address_line1 %><br><% } %>
+          <% if (member.address_line2) { %><%= member.address_line2 %><br><% } %>
+          <% if (member.city) { %><%= member.city %>, <% } %>
+          <% if (member.state) { %><%= member.state %> <% } %>
+          <% if (member.zip) { %><%= member.zip %><% } %>
+        </address>
+      <% } else { %>
+        <p class="text-muted">No address on file</p>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="detail-section">
+    <h3>Signed Document</h3>
+    <% if (member.pdf_filename) { %>
+      <p>PDF uploaded on <%= new Date(member.pdf_uploaded_at).toLocaleDateString() %></p>
+      <div class="pdf-actions">
+        <a href="/members/<%= member.id %>/pdf" class="btn btn-primary">Download PDF</a>
+        <form action="/members/<%= member.id %>/remove-pdf" method="POST" class="inline-form" onsubmit="return confirm('Remove this PDF?')">
+          <button type="submit" class="btn btn-outline">Remove PDF</button>
+        </form>
+      </div>
+    <% } else { %>
+      <p class="text-muted">No PDF on file. Upload the signed document to mark as good standing.</p>
+      <form action="/members/<%= member.id %>/upload-pdf" method="POST" enctype="multipart/form-data" class="upload-form">
+        <div class="form-group">
+          <input type="file" name="pdf" accept=".pdf" required>
+          <small>PDF only, max 5MB</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Upload PDF</button>
+      </form>
+    <% } %>
+  </div>
+
+  <div class="action-bar">
+    <a href="/members/<%= member.id %>/edit" class="btn btn-outline">Edit Member</a>
+    <form action="/members/<%= member.id %>/delete" method="POST" class="inline-form" onsubmit="return confirm('Delete this member?')">
+      <button type="submit" class="btn btn-danger">Delete Member</button>
+    </form>
+  </div>
+</div>

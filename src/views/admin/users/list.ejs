@@ -1,0 +1,41 @@
+<%- include('../../partials/header', { title: 'Manage Users', backLink: '/admin' }) %>
+
+<div class="section-header">
+  <div></div>
+  <a href="/admin/users/new" class="btn btn-primary">Add User</a>
+</div>
+
+<% if (users.length === 0) { %>
+  <div class="empty-state">
+    <h3>No users yet</h3>
+    <p>Create your first user to get started.</p>
+    <a href="/admin/users/new" class="btn btn-primary">Create User</a>
+  </div>
+<% } else { %>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Union</th>
+        <th>Created</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.forEach(u => { %>
+        <tr>
+          <td><%= u.email %></td>
+          <td><%= u.first_name || '' %> <%= u.last_name || '' %></td>
+          <td><span class="badge badge-<%= u.role === 'super_admin' ? 'primary' : 'secondary' %>"><%= u.role === 'super_admin' ? 'Super Admin' : 'Union Admin' %></span></td>
+          <td><%= u.union_name || '-' %></td>
+          <td><%= new Date(u.created_at).toLocaleDateString() %></td>
+          <td class="actions">
+            <a href="/admin/users/<%= u.id %>/edit" class="btn btn-outline btn-sm">Edit</a>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>

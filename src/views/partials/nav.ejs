@@ -1,0 +1,26 @@
+<nav class="navbar">
+  <div class="nav-brand">
+    <a href="<%= isSuperAdmin ? '/admin' : '/dashboard' %>">MigsList</a>
+  </div>
+
+  <div class="nav-links">
+    <% if (isSuperAdmin) { %>
+      <a href="/admin">Dashboard</a>
+      <a href="/admin/unions">Unions</a>
+      <a href="/admin/users">Users</a>
+    <% } else { %>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/dashboard/search">Search</a>
+    <% } %>
+  </div>
+
+  <div class="nav-user">
+    <span class="user-info">
+      <%= user.firstName || user.email %>
+      <% if (!isSuperAdmin && user.unionName) { %>
+        <small>(<%= user.unionName %>)</small>
+      <% } %>
+    </span>
+    <a href="/logout" class="btn btn-outline btn-sm">Logout</a>
+  </div>
+</nav>

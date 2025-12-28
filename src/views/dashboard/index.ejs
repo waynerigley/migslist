@@ -1,0 +1,62 @@
+<%- include('../partials/header', { title: union ? union.name : 'Dashboard' }) %>
+
+<% if (!union) { %>
+  <div class="alert alert-error">No union assigned. Please contact an administrator.</div>
+<% } else { %>
+
+<div class="stats-grid stats-grid-3">
+  <div class="stat-card">
+    <div class="stat-value"><%= stats.bucket_count || 0 %></div>
+    <div class="stat-label">Buckets</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= stats.total_members || 0 %></div>
+    <div class="stat-label">Total Members</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= stats.good_standing_count || 0 %></div>
+    <div class="stat-label">Good Standing</div>
+  </div>
+</div>
+
+<section class="dashboard-section">
+  <div class="section-header">
+    <h2>Buckets</h2>
+    <a href="/buckets/new" class="btn btn-primary">Add Bucket</a>
+  </div>
+
+  <% if (buckets.length === 0) { %>
+    <div class="empty-state">
+      <h3>No buckets yet</h3>
+      <p>Create your first bucket to start adding members.</p>
+      <a href="/buckets/new" class="btn btn-primary">Create Bucket</a>
+    </div>
+  <% } else { %>
+    <div class="bucket-grid">
+      <% buckets.forEach(bucket => { %>
+        <div class="bucket-card">
+          <div class="bucket-header">
+            <span class="bucket-number">#<%= bucket.number %></span>
+            <h3><%= bucket.name %></h3>
+          </div>
+          <div class="bucket-stats">
+            <div class="bucket-stat">
+              <span class="stat-value"><%= bucket.member_count || 0 %></span>
+              <span class="stat-label">Members</span>
+            </div>
+            <div class="bucket-stat">
+              <span class="stat-value"><%= bucket.good_standing_count || 0 %></span>
+              <span class="stat-label">Good Standing</span>
+            </div>
+          </div>
+          <div class="bucket-actions">
+            <a href="/buckets/<%= bucket.id %>" class="btn btn-primary btn-sm">View Members</a>
+            <a href="/export/bucket/<%= bucket.id %>" class="btn btn-outline btn-sm">Export</a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+
+<% } %>

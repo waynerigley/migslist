@@ -1,0 +1,9 @@
+<header class="page-header">
+  <% if (typeof backLink !== 'undefined' && backLink) { %>
+    <a href="<%= backLink %>" class="back-link">&larr; Back</a>
+  <% } %>
+  <h1><%= typeof title !== 'undefined' ? title : 'MigsList' %></h1>
+  <% if (typeof subtitle !== 'undefined' && subtitle) { %>
+    <p class="subtitle"><%= subtitle %></p>
+  <% } %>
+</header>

@@ -1,0 +1,87 @@
+#!/bin/bash
+# MigsList Bootstrap Script
+# Run this on a fresh Ubuntu/Debian server
+
+set -e
+
+echo "=== MigsList Server Setup ==="
+echo ""
+
+# Check if running as root
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run as root (sudo ./init)"
+    exit 1
+fi
+
+# Update system
+echo "[1/7] Updating system packages..."
+apt-get update && apt-get upgrade -y
+
+# Install Node.js 20.x
+echo "[2/7] Installing Node.js 20.x..."
+if ! command -v node &> /dev/null; then
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+    apt-get install -y nodejs
+fi
+echo "Node.js version: $(node --version)"
+
+# Install PostgreSQL
+echo "[3/7] Installing PostgreSQL..."
+if ! command -v psql &> /dev/null; then
+    apt-get install -y postgresql postgresql-contrib
+fi
+systemctl enable postgresql
+systemctl start postgresql
+
+# Install cloudflared
+echo "[4/7] Installing cloudflared..."
+if ! command -v cloudflared &> /dev/null; then
+    curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | tee /usr/share/keyrings/cloudflare-archive-keyring.gpg > /dev/null
+    echo "deb [signed-by=/usr/share/keyrings/cloudflare-archive-keyring.gpg] https://pkg.cloudflare.com/cloudflared $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/cloudflared.list
+    apt-get update && apt-get install -y cloudflared
+fi
+
+# Create database and user
+echo "[5/7] Setting up PostgreSQL database..."
+sudo -u postgres psql -c "CREATE USER migslist WITH PASSWORD 'changeme';" 2>/dev/null || echo "User already exists"
+sudo -u postgres psql -c "CREATE DATABASE migslist OWNER migslist;" 2>/dev/null || echo "Database already exists"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE migslist TO migslist;"
+
+# Run schema
+echo "[6/7] Running database schema..."
+PGPASSWORD=changeme psql -U migslist -h localhost -d migslist -f sql/schema.sql
+
+# Install npm dependencies
+echo "[7/7] Installing npm dependencies..."
+npm install
+
+# Create uploads directory
+mkdir -p uploads/pdfs
+chmod 755 uploads/pdfs
+
+# Create .env from example if not exists
+if [ ! -f .env ]; then
+    cp .env.example .env
+    # Generate random session secret
+    SESSION_SECRET=$(openssl rand -hex 32)
+    sed -i "s/your-super-secret-session-key-change-this/$SESSION_SECRET/" .env
+    echo ""
+    echo "Created .env file. Please update with your settings:"
+    echo "  - DATABASE_URL (update password if changed)"
+    echo "  - SENDGRID_API_KEY"
+    echo "  - SENDGRID_FROM_EMAIL"
+fi
+
+echo ""
+echo "=== Setup Complete! ==="
+echo ""
+echo "Next steps:"
+echo "1. Edit .env with your configuration"
+echo "2. Update PostgreSQL password in .env if needed"
+echo "3. Run: npm start"
+echo ""
+echo "To set up Cloudflare tunnel:"
+echo "  cloudflared tunnel login"
+echo "  cloudflared tunnel create migslist"
+echo "  cloudflared tunnel route dns migslist migslist.com"
+echo ""

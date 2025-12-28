@@ -1,0 +1,40 @@
+<%- include('../../partials/header', { title: 'Manage Unions', backLink: '/admin' }) %>
+
+<div class="section-header">
+  <div></div>
+  <a href="/admin/unions/new" class="btn btn-primary">Add Union</a>
+</div>
+
+<% if (unions.length === 0) { %>
+  <div class="empty-state">
+    <h3>No unions yet</h3>
+    <p>Create your first union to get started.</p>
+    <a href="/admin/unions/new" class="btn btn-primary">Create Union</a>
+  </div>
+<% } else { %>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Buckets</th>
+        <th>Members</th>
+        <th>Created</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% unions.forEach(union => { %>
+        <tr>
+          <td><a href="/admin/unions/<%= union.id %>"><%= union.name %></a></td>
+          <td><%= union.bucket_count || 0 %></td>
+          <td><%= union.member_count || 0 %></td>
+          <td><%= new Date(union.created_at).toLocaleDateString() %></td>
+          <td class="actions">
+            <a href="/admin/unions/<%= union.id %>" class="btn btn-outline btn-sm">View</a>
+            <a href="/admin/unions/<%= union.id %>/edit" class="btn btn-outline btn-sm">Edit</a>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>

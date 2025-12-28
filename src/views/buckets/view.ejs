@@ -1,0 +1,64 @@
+<%- include('../partials/header', {
+  title: '#' + bucket.number + ' - ' + bucket.name,
+  subtitle: bucket.union_name,
+  backLink: '/dashboard'
+}) %>
+
+<div class="action-bar">
+  <a href="/members/new?bucket_id=<%= bucket.id %>" class="btn btn-primary">Add Member</a>
+  <a href="/buckets/<%= bucket.id %>/edit" class="btn btn-outline">Edit Bucket</a>
+  <div class="dropdown">
+    <button class="btn btn-outline dropdown-toggle">Export</button>
+    <div class="dropdown-menu">
+      <a href="/export/bucket/<%= bucket.id %>">Good Standing Only</a>
+      <a href="/export/bucket/<%= bucket.id %>/all">All Members</a>
+    </div>
+  </div>
+</div>
+
+<% if (members.length === 0) { %>
+  <div class="empty-state">
+    <h3>No members yet</h3>
+    <p>Add members to this bucket to get started.</p>
+    <a href="/members/new?bucket_id=<%= bucket.id %>" class="btn btn-primary">Add Member</a>
+  </div>
+<% } else { %>
+  <div class="filter-bar">
+    <span class="member-count"><%= members.length %> member<%= members.length !== 1 ? 's' : '' %></span>
+    <span class="good-standing-count">
+      (<%= members.filter(m => m.pdf_filename).length %> in good standing)
+    </span>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% members.forEach(member => { %>
+        <tr>
+          <td><a href="/members/<%= member.id %>"><%= member.last_name %>, <%= member.first_name %></a></td>
+          <td><%= member.email || '-' %></td>
+          <td><%= member.phone || '-' %></td>
+          <td>
+            <% if (member.pdf_filename) { %>
+              <span class="badge badge-success">Good Standing</span>
+            <% } else { %>
+              <span class="badge badge-warning">Pending PDF</span>
+            <% } %>
+          </td>
+          <td class="actions">
+            <a href="/members/<%= member.id %>" class="btn btn-outline btn-sm">View</a>
+            <a href="/members/<%= member.id %>/edit" class="btn btn-outline btn-sm">Edit</a>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>

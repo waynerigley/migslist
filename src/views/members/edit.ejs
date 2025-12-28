@@ -1,0 +1,66 @@
+<%- include('../partials/header', {
+  title: member ? 'Edit Member' : 'Add Member',
+  subtitle: '#' + bucket.number + ' - ' + bucket.name,
+  backLink: member ? '/members/' + member.id : '/buckets/' + bucket.id
+}) %>
+
+<div class="form-container">
+  <form action="<%= member ? '/members/' + member.id : '/members' %>" method="POST">
+    <% if (!member) { %>
+      <input type="hidden" name="bucket_id" value="<%= bucket.id %>">
+    <% } %>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="first_name">First Name *</label>
+        <input type="text" id="first_name" name="first_name" value="<%= member ? member.first_name : '' %>" required autofocus>
+      </div>
+      <div class="form-group">
+        <label for="last_name">Last Name *</label>
+        <input type="text" id="last_name" name="last_name" value="<%= member ? member.last_name : '' %>" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" value="<%= member ? member.email || '' : '' %>">
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone</label>
+        <input type="tel" id="phone" name="phone" value="<%= member ? member.phone || '' : '' %>">
+      </div>
+    </div>
+
+    <h3>Address</h3>
+    <div class="form-group">
+      <label for="address_line1">Address Line 1</label>
+      <input type="text" id="address_line1" name="address_line1" value="<%= member ? member.address_line1 || '' : '' %>">
+    </div>
+
+    <div class="form-group">
+      <label for="address_line2">Address Line 2</label>
+      <input type="text" id="address_line2" name="address_line2" value="<%= member ? member.address_line2 || '' : '' %>">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group" style="flex: 2;">
+        <label for="city">City</label>
+        <input type="text" id="city" name="city" value="<%= member ? member.city || '' : '' %>">
+      </div>
+      <div class="form-group" style="flex: 1;">
+        <label for="state">State</label>
+        <input type="text" id="state" name="state" value="<%= member ? member.state || '' : '' %>" maxlength="2">
+      </div>
+      <div class="form-group" style="flex: 1;">
+        <label for="zip">ZIP</label>
+        <input type="text" id="zip" name="zip" value="<%= member ? member.zip || '' : '' %>" maxlength="10">
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary"><%= member ? 'Update' : 'Add' %> Member</button>
+      <a href="<%= member ? '/members/' + member.id : '/buckets/' + bucket.id %>" class="btn btn-outline">Cancel</a>
+    </div>
+  </form>
+</div>

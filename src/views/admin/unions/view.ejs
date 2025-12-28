@@ -1,0 +1,81 @@
+<%- include('../../partials/header', { title: union.name, backLink: '/admin/unions' }) %>
+
+<div class="stats-grid stats-grid-3">
+  <div class="stat-card">
+    <div class="stat-value"><%= stats.bucket_count || 0 %></div>
+    <div class="stat-label">Buckets</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= stats.total_members || 0 %></div>
+    <div class="stat-label">Total Members</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= stats.good_standing_count || 0 %></div>
+    <div class="stat-label">Good Standing</div>
+  </div>
+</div>
+
+<div class="action-bar">
+  <a href="/admin/unions/<%= union.id %>/edit" class="btn btn-outline">Edit Union</a>
+  <form action="/admin/unions/<%= union.id %>/delete" method="POST" class="inline-form" onsubmit="return confirm('Delete this union and all its data?')">
+    <button type="submit" class="btn btn-danger">Delete Union</button>
+  </form>
+</div>
+
+<section class="dashboard-section">
+  <div class="section-header">
+    <h2>Buckets</h2>
+  </div>
+  <% if (buckets.length === 0) { %>
+    <p class="empty-message">No buckets yet.</p>
+  <% } else { %>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Number</th>
+          <th>Name</th>
+          <th>Members</th>
+          <th>Good Standing</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% buckets.forEach(bucket => { %>
+          <tr>
+            <td><%= bucket.number %></td>
+            <td><%= bucket.name %></td>
+            <td><%= bucket.member_count || 0 %></td>
+            <td><%= bucket.good_standing_count || 0 %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</section>
+
+<section class="dashboard-section">
+  <div class="section-header">
+    <h2>Union Admins</h2>
+  </div>
+  <% if (users.length === 0) { %>
+    <p class="empty-message">No admins assigned to this union.</p>
+  <% } else { %>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Name</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach(u => { %>
+          <tr>
+            <td><%= u.email %></td>
+            <td><%= u.first_name || '' %> <%= u.last_name || '' %></td>
+            <td><%= new Date(u.created_at).toLocaleDateString() %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</section>

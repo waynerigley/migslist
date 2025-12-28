@@ -1,0 +1,92 @@
+<%- include('../partials/header', { title: 'Admin Dashboard' }) %>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-value"><%= stats.totalUnions || 0 %></div>
+    <div class="stat-label">Unions</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= stats.totalUsers || 0 %></div>
+    <div class="stat-label">Users</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= stats.totalBuckets || 0 %></div>
+    <div class="stat-label">Buckets</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= stats.totalMembers || 0 %></div>
+    <div class="stat-label">Members</div>
+  </div>
+</div>
+
+<div class="dashboard-sections">
+  <section class="dashboard-section">
+    <div class="section-header">
+      <h2>Unions</h2>
+      <a href="/admin/unions/new" class="btn btn-primary btn-sm">Add Union</a>
+    </div>
+    <% if (unions.length === 0) { %>
+      <p class="empty-message">No unions yet. Create your first union to get started.</p>
+    <% } else { %>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Buckets</th>
+            <th>Members</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% unions.slice(0, 5).forEach(union => { %>
+            <tr>
+              <td><a href="/admin/unions/<%= union.id %>"><%= union.name %></a></td>
+              <td><%= union.bucket_count || 0 %></td>
+              <td><%= union.member_count || 0 %></td>
+              <td>
+                <a href="/admin/unions/<%= union.id %>" class="btn btn-outline btn-sm">View</a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% if (unions.length > 5) { %>
+        <p><a href="/admin/unions">View all <%= unions.length %> unions</a></p>
+      <% } %>
+    <% } %>
+  </section>
+
+  <section class="dashboard-section">
+    <div class="section-header">
+      <h2>Recent Users</h2>
+      <a href="/admin/users/new" class="btn btn-primary btn-sm">Add User</a>
+    </div>
+    <% if (users.length === 0) { %>
+      <p class="empty-message">No users yet.</p>
+    <% } else { %>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Union</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.slice(0, 5).forEach(u => { %>
+            <tr>
+              <td><%= u.email %></td>
+              <td><%= u.first_name || '' %> <%= u.last_name || '' %></td>
+              <td><span class="badge badge-<%= u.role === 'super_admin' ? 'primary' : 'secondary' %>"><%= u.role === 'super_admin' ? 'Super Admin' : 'Union Admin' %></span></td>
+              <td><%= u.union_name || '-' %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% if (users.length > 5) { %>
+        <p><a href="/admin/users">View all <%= users.length %> users</a></p>
+      <% } %>
+    <% } %>
+  </section>
+</div>

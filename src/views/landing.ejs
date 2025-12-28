@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MigsList - Union Member Management</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="landing-page">
+  <div class="landing-container">
+    <div class="landing-info">
+      <h1>MigsList</h1>
+      <p class="tagline">Union Member Management System</p>
+
+      <div class="features">
+        <div class="feature">
+          <h3>Track Members</h3>
+          <p>Manage member information organized by buckets within your union local.</p>
+        </div>
+        <div class="feature">
+          <h3>Good Standing</h3>
+          <p>Track which members have submitted their signed documents.</p>
+        </div>
+        <div class="feature">
+          <h3>Export to Excel</h3>
+          <p>Generate reports of members in good standing for easy sharing.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="landing-login">
+      <div class="login-box">
+        <h2>Sign In</h2>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="alert alert-error"><%= error %></div>
+        <% } %>
+        <% if (typeof success !== 'undefined' && success) { %>
+          <div class="alert alert-success"><%= success %></div>
+        <% } %>
+
+        <form action="/login" method="POST">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required autofocus>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+        </form>
+
+        <div class="login-footer">
+          <a href="/forgot-password">Forgot password?</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
