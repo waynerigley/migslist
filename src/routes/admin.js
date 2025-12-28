@@ -544,8 +544,8 @@ router.get('/unions/:unionId/buckets/new', async (req, res) => {
   }
 });
 
-// Create bucket for a union
-router.post('/unions/:unionId/buckets', async (req, res) => {
+// Create bucket for a union (with optional master PDF)
+router.post('/unions/:unionId/buckets', upload.single('master_pdf'), async (req, res) => {
   try {
     const { number, name } = req.body;
     const unionId = req.params.unionId;
@@ -555,7 +555,13 @@ router.post('/unions/:unionId/buckets', async (req, res) => {
       return res.redirect(`/admin/unions/${unionId}/buckets/new`);
     }
 
-    await Bucket.create({ unionId, number: number.trim(), name: name.trim() });
+    const bucket = await Bucket.create({ unionId, number: number.trim(), name: name.trim() });
+
+    // If master PDF was uploaded, attach it
+    if (req.file) {
+      await Bucket.updateMasterPdf(bucket.id, req.file.filename);
+    }
+
     req.session.success = 'Bucket created successfully';
     res.redirect(`/admin/unions/${unionId}`);
   } catch (err) {

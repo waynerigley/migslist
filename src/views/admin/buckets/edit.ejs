@@ -4,7 +4,7 @@
   <h2><%= bucket ? 'Edit Bucket' : 'New Bucket' %></h2>
   <p class="text-muted">Union: <%= union.name %></p>
 
-  <form action="/admin/unions/<%= union.id %>/buckets<%= bucket ? '/' + bucket.id : '' %>" method="POST">
+  <form action="/admin/unions/<%= union.id %>/buckets<%= bucket ? '/' + bucket.id : '' %>" method="POST" enctype="multipart/form-data">
     <div class="form-group">
       <label for="number">Bucket Number</label>
       <input type="text" id="number" name="number" value="<%= bucket ? bucket.number : '' %>" required>
@@ -16,6 +16,16 @@
       <input type="text" id="name" name="name" value="<%= bucket ? bucket.name : '' %>" required>
       <small>A descriptive name for this bucket</small>
     </div>
+
+    <% if (!bucket) { %>
+      <hr class="form-divider">
+      <h3>Master PDF Document</h3>
+      <p class="text-muted">Upload a PDF document that will be emailed to members not in good standing. (Optional - can be added later)</p>
+      <div class="form-group">
+        <label for="master_pdf">Upload PDF (optional)</label>
+        <input type="file" id="master_pdf" name="master_pdf" accept=".pdf">
+      </div>
+    <% } %>
 
     <div class="form-actions">
       <button type="submit" class="btn btn-primary"><%= bucket ? 'Update Bucket' : 'Create Bucket' %></button>

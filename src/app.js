@@ -24,6 +24,7 @@ app.use(helmet({
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       scriptSrc: ["'self'", "'unsafe-inline'", "https://static.cloudflareinsights.com"],
+      scriptSrcAttr: ["'unsafe-inline'"],
       imgSrc: ["'self'", "data:"],
       connectSrc: ["'self'", "https://cloudflareinsights.com"],
     },

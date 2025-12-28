@@ -931,3 +931,13 @@ address {
 [data-theme="dark"] .theme-toggle .moon-icon {
   display: none;
 }
+
+/* Compliance Rate */
+.compliance-stat .compliance-rate {
+  color: #32cd32 !important;  /* Lime green */
+  font-weight: 700;
+}
+
+[data-theme="dark"] .compliance-stat .compliance-rate {
+  color: #7fff00 !important;  /* Brighter lime for dark mode */
+}

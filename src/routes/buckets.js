@@ -70,11 +70,11 @@ async function checkBucketAccess(req, res, next) {
 
 // New bucket form
 router.get('/new', (req, res) => {
-  res.render('buckets/edit', { bucket: null });
+  res.render('buckets/edit', { bucket: null, memberCount: 0 });
 });
 
-// Create bucket
-router.post('/', async (req, res) => {
+// Create bucket (with optional master PDF)
+router.post('/', upload.single('master_pdf'), async (req, res) => {
   try {
     const { number, name } = req.body;
     const unionId = req.session.unionId;
@@ -89,7 +89,13 @@ router.post('/', async (req, res) => {
       return res.redirect('/buckets/new');
     }
 
-    await Bucket.create({ unionId, number: number.trim(), name: name.trim() });
+    const bucket = await Bucket.create({ unionId, number: number.trim(), name: name.trim() });
+
+    // If master PDF was uploaded, attach it
+    if (req.file) {
+      await Bucket.updateMasterPdf(bucket.id, req.file.filename);
+    }
+
     req.session.success = 'Bucket created successfully';
     res.redirect('/dashboard');
   } catch (err) {

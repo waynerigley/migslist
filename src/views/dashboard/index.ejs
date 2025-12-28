@@ -48,6 +48,13 @@
               <span class="stat-value"><%= bucket.good_standing_count || 0 %></span>
               <span class="stat-label">Good Standing</span>
             </div>
+            <div class="bucket-stat compliance-stat">
+              <% const memberCount = parseInt(bucket.member_count) || 0; %>
+              <% const goodCount = parseInt(bucket.good_standing_count) || 0; %>
+              <% const rate = memberCount > 0 ? Math.round((goodCount / memberCount) * 100) : 0; %>
+              <span class="stat-value compliance-rate"><%= rate %>%</span>
+              <span class="stat-label">Compliance</span>
+            </div>
           </div>
           <div class="bucket-actions">
             <a href="/buckets/<%= bucket.id %>" class="btn btn-primary btn-sm">View Members</a>
