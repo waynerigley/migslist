@@ -682,11 +682,30 @@ router.get('/unions/:unionId/buckets/:id', async (req, res) => {
       return res.redirect('/admin/unions');
     }
     const members = await Member.findByBucketId(req.params.id);
-    res.render('admin/buckets/view', { union, bucket, members });
+    const retiredMembers = await Member.findRetiredByBucketId(req.params.id);
+    res.render('admin/buckets/view', { union, bucket, members, retiredCount: retiredMembers.length });
   } catch (err) {
     console.error('View bucket error:', err);
     req.session.error = 'Error loading bucket';
     res.redirect(`/admin/unions/${req.params.unionId}`);
+  }
+});
+
+// View retired members
+router.get('/unions/:unionId/buckets/:id/retired', async (req, res) => {
+  try {
+    const union = await Union.findById(req.params.unionId);
+    const bucket = await Bucket.findById(req.params.id);
+    if (!union || !bucket) {
+      req.session.error = 'Union or bucket not found';
+      return res.redirect('/admin/unions');
+    }
+    const members = await Member.findRetiredByBucketId(req.params.id);
+    res.render('admin/buckets/retired', { union, bucket, members });
+  } catch (err) {
+    console.error('View retired members error:', err);
+    req.session.error = 'Error loading retired members';
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}`);
   }
 });
 

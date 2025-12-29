@@ -17,6 +17,7 @@
       <a href="/export/bucket/<%= bucket.id %>/all">All Members</a>
     </div>
   </div>
+  <a href="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/retired" class="btn btn-outline btn-muted">View Retired (<%= typeof retiredCount !== 'undefined' ? retiredCount : 0 %>)</a>
 </div>
 
 <% if (!bucket.master_pdf_filename) { %>
@@ -70,6 +71,9 @@
                 <button type="submit" class="btn btn-primary btn-sm" title="Email document to member">Email</button>
               </form>
             <% } %>
+            <form action="/members/<%= member.id %>/retire" method="POST" class="inline-form" onsubmit="return confirm('Retire <%= member.first_name %> <%= member.last_name %>? They will be moved to the retired list.')">
+              <button type="submit" class="btn btn-warning btn-sm" title="Move to retired">Retire</button>
+            </form>
           </td>
         </tr>
       <% }) %>
@@ -102,5 +106,16 @@
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+.btn-warning {
+  background: #f59e0b;
+  color: white;
+  border: none;
+}
+.btn-warning:hover {
+  background: #d97706;
+}
+.btn-muted {
+  opacity: 0.7;
 }
 </style>
