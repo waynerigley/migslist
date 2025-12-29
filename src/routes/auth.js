@@ -1,12 +1,101 @@
 const express = require('express');
 const router = express.Router();
+const nodemailer = require('nodemailer');
 const User = require('../models/User');
 const { guestOnly, requireAuth } = require('../middleware/auth');
-const sgMail = require('@sendgrid/mail');
 
-// Initialize SendGrid
-if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// Create email transporter
+let transporter = null;
+if (process.env.SMTP_HOST) {
+  transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT) || 587,
+    secure: false,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS
+    }
+  });
+}
+
+// Password reset email template
+function getPasswordResetEmailHtml(recipientName, resetUrl, appUrl) {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); padding: 40px; border-radius: 12px 12px 0 0; text-align: center;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700;">MIGS List</h1>
+              <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0; font-size: 16px;">Member Management System</p>
+            </td>
+          </tr>
+          
+          <!-- Body -->
+          <tr>
+            <td style="padding: 40px;">
+              <h2 style="color: #1a1a2e; margin: 0 0 20px; font-size: 24px;">Password Reset Request</h2>
+              
+              <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px;">
+                Hi${recipientName ? ' ' + recipientName : ''},
+              </p>
+              
+              <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 30px;">
+                We received a request to reset your password. Click the button below to create a new password:
+              </p>
+              
+              <!-- CTA Button -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding: 10px 0 30px;">
+                    <a href="${resetUrl}" style="display: inline-block; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);">Reset My Password</a>
+                  </td>
+                </tr>
+              </table>
+              
+              <!-- Security notice -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #fef3c7; border-radius: 8px; margin-bottom: 30px;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <p style="color: #92400e; font-size: 14px; margin: 0;">
+                      <strong>Security Notice:</strong> This link expires in 1 hour. If you didn't request a password reset, you can safely ignore this email - your password will remain unchanged.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+              
+              <!-- Manual link -->
+              <p style="color: #9ca3af; font-size: 14px; line-height: 1.6; margin: 0;">
+                If the button doesn't work, copy and paste this link into your browser:<br>
+                <a href="${resetUrl}" style="color: #2563eb; word-break: break-all;">${resetUrl}</a>
+              </p>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #f8fafc; padding: 30px 40px; border-radius: 0 0 12px 12px; border-top: 1px solid #e5e7eb;">
+              <p style="color: #9ca3af; font-size: 13px; margin: 0;">
+                <a href="${appUrl}" style="color: #2563eb;">MIGS List</a> - Union Member Management
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
 }
 
 // Landing page
@@ -97,21 +186,19 @@ router.post('/forgot-password', guestOnly, async (req, res) => {
     // Always show success message (don't reveal if email exists)
     req.session.success = 'If an account exists with that email, you will receive a password reset link.';
 
-    if (result && process.env.SENDGRID_API_KEY) {
-      const resetUrl = `${process.env.APP_URL}/reset-password/${result.token}`;
+    if (result && transporter) {
+      const resetUrl = `${process.env.APP_URL || 'https://migslist.com'}/reset-password/${result.token}`;
+      const appUrl = process.env.APP_URL || 'https://migslist.com';
 
-      await sgMail.send({
+      // Get user info for personalization
+      const user = await User.findByEmail(email);
+      const recipientName = user?.first_name || '';
+
+      await transporter.sendMail({
+        from: `"MIGS List" <${process.env.SMTP_FROM}>`,
         to: email,
-        from: process.env.SENDGRID_FROM_EMAIL,
-        subject: 'MIGS List Password Reset',
-        text: `Reset your password by clicking: ${resetUrl}\n\nThis link expires in 1 hour.`,
-        html: `
-          <h2>Password Reset</h2>
-          <p>Click the link below to reset your password:</p>
-          <p><a href="${resetUrl}">${resetUrl}</a></p>
-          <p>This link expires in 1 hour.</p>
-          <p>If you didn't request this, please ignore this email.</p>
-        `
+        subject: 'MIGS List - Password Reset Request',
+        html: getPasswordResetEmailHtml(recipientName, resetUrl, appUrl)
       });
     }
 
