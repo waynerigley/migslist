@@ -1,10 +1,12 @@
 #!/bin/bash
 # MigsList Bootstrap Script
 # Run this on a fresh Ubuntu/Debian server
+# Version: 1.2.1
 
 set -e
+VERSION="1.2.1"
 
-echo "=== MigsList Server Setup ==="
+echo "=== MigsList Server Setup v${VERSION} ==="
 echo ""
 
 # Check if running as root
