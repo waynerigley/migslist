@@ -1,13 +1,22 @@
 const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 const { requireUnionPresident } = require('../middleware/auth');
 const User = require('../models/User');
-const sgMail = require('@sendgrid/mail');
 
-// Initialize SendGrid
-if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// Create email transporter
+let transporter = null;
+if (process.env.SMTP_HOST) {
+  transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT) || 587,
+    secure: false,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS
+    }
+  });
 }
 
 // Only presidents can manage team
@@ -259,7 +268,7 @@ router.post('/:id/send-email', async (req, res) => {
       return res.redirect('/team');
     }
 
-    if (!process.env.SENDGRID_API_KEY) {
+    if (!transporter) {
       req.session.error = 'Email service not configured. Please copy the link manually.';
       return res.redirect('/team');
     }
@@ -272,15 +281,18 @@ router.post('/:id/send-email', async (req, res) => {
     const recipientName = user.first_name ? `${user.first_name} ${user.last_name || ''}`.trim() : 'Team Member';
     const presidentName = req.session.firstName ? `${req.session.firstName} ${req.session.lastName || ''}`.trim() : 'Your President';
 
-    await sgMail.send({
+    await transporter.sendMail({
+      from: `MIGS List <${process.env.SMTP_FROM}>`,
       to: user.email,
-      from: process.env.SENDGRID_FROM_EMAIL,
       subject: `Welcome to MIGS List - Set Up Your Account for ${req.session.unionName}`,
       html: getWelcomeEmailHtml(recipientName, req.session.unionName, setupUrl, presidentName, appUrl)
     });
 
     req.session.success = `Welcome email sent to ${user.email}!`;
     req.session.emailSent = true;
+    req.session.setupLink = setupUrl;
+    req.session.setupEmail = user.email;
+    req.session.setupName = recipientName;
     res.redirect('/team');
   } catch (err) {
     console.error('Send email error:', err);
