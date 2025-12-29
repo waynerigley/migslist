@@ -1,0 +1,121 @@
+<%- include('../partials/header', {
+  title: '#' + bucket.number + ' - ' + bucket.name,
+  subtitle: bucket.union_name,
+  backLink: '/dashboard'
+}) %>
+
+<div class="action-bar">
+  <a href="/members/new?bucket_id=<%= bucket.id %>" class="btn btn-primary">Add Member</a>
+  <a href="/buckets/<%= bucket.id %>/edit" class="btn btn-outline">Edit Bucket</a>
+  <% if (bucket.master_pdf_filename) { %>
+    <a href="/buckets/<%= bucket.id %>/master-pdf" class="btn btn-outline">Download Master PDF</a>
+  <% } %>
+  <div class="dropdown">
+    <button class="btn btn-outline dropdown-toggle">Export</button>
+    <div class="dropdown-menu">
+      <a href="/export/bucket/<%= bucket.id %>">Good Standing Only</a>
+      <a href="/export/bucket/<%= bucket.id %>/all">All Members</a>
+    </div>
+  </div>
+  <a href="/buckets/<%= bucket.id %>/retired" class="btn btn-outline btn-muted">View Retired (<%= typeof retiredCount !== 'undefined' ? retiredCount : 0 %>)</a>
+</div>
+
+<% if (!bucket.master_pdf_filename) { %>
+  <div class="alert alert-info">
+    <strong>Tip:</strong> Upload a master PDF in <a href="/buckets/<%= bucket.id %>/edit">bucket settings</a> to enable emailing documents to members.
+  </div>
+<% } %>
+
+<% if (members.length === 0) { %>
+  <div class="empty-state">
+    <h3>No members yet</h3>
+    <p>Add members to this bucket to get started.</p>
+    <a href="/members/new?bucket_id=<%= bucket.id %>" class="btn btn-primary">Add Member</a>
+  </div>
+<% } else { %>
+  <div class="filter-bar">
+    <span class="member-count"><%= members.length %> member<%= members.length !== 1 ? 's' : '' %></span>
+    <span class="good-standing-count">
+      (<%= members.filter(m => m.pdf_filename).length %> in good standing)
+    </span>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% members.forEach(member => { %>
+        <tr>
+          <td><a href="/members/<%= member.id %>"><%= member.last_name %>, <%= member.first_name %></a></td>
+          <td><%= member.email || '-' %></td>
+          <td><%= member.phone || '-' %></td>
+          <td>
+            <% if (member.pdf_filename) { %>
+              <span class="badge badge-success">Good Standing</span>
+            <% } else { %>
+              <span class="badge badge-warning">Pending PDF</span>
+            <% } %>
+          </td>
+          <td class="actions">
+            <a href="/members/<%= member.id %>" class="btn btn-outline btn-sm">View</a>
+            <a href="/members/<%= member.id %>/edit" class="btn btn-outline btn-sm">Edit</a>
+            <% if (!member.pdf_filename && bucket.master_pdf_filename && member.email) { %>
+              <form action="/buckets/<%= bucket.id %>/email-member/<%= member.id %>" method="POST" class="inline-form" onsubmit="return confirm('Send document to <%= member.first_name %> at <%= member.email %>?')">
+                <button type="submit" class="btn btn-primary btn-sm" title="Email document to member">Email</button>
+              </form>
+            <% } %>
+            <form action="/members/<%= member.id %>/retire" method="POST" class="inline-form" onsubmit="return confirm('Retire <%= member.first_name %> <%= member.last_name %>? They will be moved to the retired list.')">
+              <button type="submit" class="btn btn-warning btn-sm" title="Move to retired">Retire</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+
+<style>
+.alert-info {
+  background: #eff6ff;
+  border: 1px solid #3b82f6;
+  color: #1e40af;
+  padding: 1rem;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+.alert-info a {
+  color: #1e40af;
+  font-weight: 600;
+}
+[data-theme="dark"] .alert-info {
+  background: #1e3a5f;
+  border-color: #3b82f6;
+  color: #93c5fd;
+}
+[data-theme="dark"] .alert-info a {
+  color: #93c5fd;
+}
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.btn-warning {
+  background: #f59e0b;
+  color: white;
+  border: none;
+}
+.btn-warning:hover {
+  background: #d97706;
+}
+.btn-muted {
+  opacity: 0.7;
+}
+</style>

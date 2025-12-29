@@ -168,7 +168,7 @@ router.post('/:id', checkBucketAccess, async (req, res) => {
 router.post('/:id/delete', checkBucketAccess, async (req, res) => {
   try {
     // Only presidents and super admins can delete buckets
-    if (!['union_president', 'union_admin', 'super_admin'].includes(req.session.role)) {
+    if (req.session.role === 'union_secretary') {
       req.session.error = 'Only the President can delete buckets';
       return res.redirect(`/buckets/${req.params.id}/edit`);
     }

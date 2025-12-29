@@ -1,7 +1,7 @@
-<%- include('../partials/header', { title: 'Add Secretary', backLink: '/team' }) %>
+<%- include('../partials/header', { title: 'Add Recording Secretary', backLink: '/team' }) %>
 
 <div class="form-container">
-  <h2>Add Secretary</h2>
+  <h2>Add Recording Secretary</h2>
   <p class="text-muted">Add a secretary to help manage your union's buckets and members.</p>
 
   <form action="/team" method="POST">
@@ -23,7 +23,7 @@
     </div>
 
     <div class="permissions-info">
-      <h4>Secretary Permissions</h4>
+      <h4>Recording Secretary Permissions</h4>
       <ul>
         <li><strong>Can:</strong> Add/edit buckets, add/edit members, upload PDFs, export data, email members</li>
         <li><strong>Cannot:</strong> Delete buckets, manage team members</li>
@@ -31,7 +31,7 @@
     </div>
 
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary">Add Secretary</button>
+      <button type="submit" class="btn btn-primary">Add Recording Secretary</button>
       <a href="/team" class="btn btn-outline">Cancel</a>
     </div>
   </form>

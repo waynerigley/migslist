@@ -103,7 +103,7 @@ router.post('/forgot-password', guestOnly, async (req, res) => {
       await sgMail.send({
         to: email,
         from: process.env.SENDGRID_FROM_EMAIL,
-        subject: 'MigsList Password Reset',
+        subject: 'MIGS List Password Reset',
         text: `Reset your password by clicking: ${resetUrl}\n\nThis link expires in 1 hour.`,
         html: `
           <h2>Password Reset</h2>

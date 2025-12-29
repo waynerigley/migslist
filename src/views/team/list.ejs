@@ -1,18 +1,18 @@
 <%- include('../partials/header', { title: 'Manage Team', backLink: '/dashboard' }) %>
 
 <div class="action-bar">
-  <a href="/team/add" class="btn btn-primary">Add Secretary</a>
+  <a href="/team/add" class="btn btn-primary">Add Recording Secretary</a>
 </div>
 
 <div class="team-info">
-  <p class="text-muted">Secretaries can manage buckets and members but cannot delete buckets or manage team members.</p>
+  <p class="text-muted">Recording Secretaries can manage buckets and members but cannot delete buckets or manage team members.</p>
 </div>
 
 <% if (users.length === 0) { %>
   <div class="empty-state">
     <h3>No team members yet</h3>
     <p>Add secretaries to help manage your union's data.</p>
-    <a href="/team/add" class="btn btn-primary">Add Secretary</a>
+    <a href="/team/add" class="btn btn-primary">Add Recording Secretary</a>
   </div>
 <% } else { %>
   <table class="data-table">
@@ -34,7 +34,7 @@
             <% if (u.role === 'union_president') { %>
               <span class="badge badge-success">President</span>
             <% } else { %>
-              <span class="badge badge-secondary">Secretary</span>
+              <span class="badge badge-secondary">Recording Secretary</span>
             <% } %>
           </td>
           <td><%= new Date(u.created_at).toLocaleDateString() %></td>

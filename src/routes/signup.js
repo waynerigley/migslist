@@ -25,12 +25,12 @@ router.get('/signup', (req, res) => {
 router.post('/signup', async (req, res) => {
   try {
     const {
-      union_name, contact_name, contact_email, contact_phone,
-      admin_email, admin_password, admin_first_name, admin_last_name
+      union_name,
+      admin_email, admin_password, admin_first_name, admin_last_name, admin_phone
     } = req.body;
 
     // Validation
-    if (!union_name || !contact_name || !contact_email || !admin_email || !admin_password) {
+    if (!union_name || !admin_email || !admin_password || !admin_first_name || !admin_last_name) {
       return res.render('public/signup', {
         layout: false,
         error: 'Please fill in all required fields',
@@ -56,12 +56,12 @@ router.post('/signup', async (req, res) => {
       });
     }
 
-    // Create the union
+    // Create the union (use President info as contact)
     const union = await Union.create({
       name: union_name.trim(),
-      contactEmail: contact_email.trim(),
-      contactName: contact_name.trim(),
-      contactPhone: contact_phone?.trim(),
+      contactEmail: admin_email.trim(),
+      contactName: (admin_first_name + ' ' + admin_last_name).trim(),
+      contactPhone: admin_phone?.trim() || null,
       status: 'pending',
       paymentStatus: 'unpaid'
     });
@@ -69,22 +69,22 @@ router.post('/signup', async (req, res) => {
     // Start 30-day trial
     await Union.startTrial(union.id);
 
-    // Create the admin user
+    // Create the president user
     await User.create({
       email: admin_email.trim(),
       password: admin_password,
       firstName: admin_first_name?.trim(),
       lastName: admin_last_name?.trim(),
-      role: 'union_admin',
+      role: 'union_president',
       unionId: union.id
     });
 
     // Also log it as a signup request for admin tracking
     await SignupRequest.create({
       unionName: union_name.trim(),
-      contactName: contact_name.trim(),
-      contactEmail: contact_email.trim(),
-      contactPhone: contact_phone?.trim(),
+      contactName: (admin_first_name + ' ' + admin_last_name).trim(),
+      contactEmail: admin_email.trim(),
+      contactPhone: admin_phone?.trim() || null,
       adminEmail: admin_email.trim(),
       adminFirstName: admin_first_name?.trim(),
       adminLastName: admin_last_name?.trim(),
@@ -97,17 +97,25 @@ router.post('/signup', async (req, res) => {
         await sgMail.send({
           to: admin_email.trim(),
           from: process.env.SENDGRID_FROM_EMAIL,
-          subject: 'Welcome to MigsList - Your 30-Day Trial Has Started!',
+          subject: 'Welcome to MIGS List - Your 30-Day Trial Has Started!',
           html: `
-            <h2>Welcome to MigsList!</h2>
-            <p>Your 30-day free trial is now active.</p>
-            <p><strong>Login URL:</strong> ${process.env.APP_URL}/login</p>
+            <h2>Welcome to MIGS List!</h2>
+            <p>Hi ${admin_first_name},</p>
+            <p>Your 30-day free trial is now active for <strong>${union_name}</strong>.</p>
+            <h3>Login Details</h3>
+            <p><strong>Login URL:</strong> ${process.env.APP_URL}</p>
             <p><strong>Email:</strong> ${admin_email}</p>
-            <h3>Your Trial Details</h3>
-            <p><strong>Union:</strong> ${union_name}</p>
+            <h3>Getting Started</h3>
+            <ol>
+              <li>Log in with the credentials you created</li>
+              <li>Create buckets to organize your members</li>
+              <li>Add your members and upload their signed documents</li>
+              <li>Need help with data entry? Go to <strong>Team</strong> to add Recording Secretaries</li>
+            </ol>
+            <h3>Your Trial</h3>
             <p><strong>Trial Ends:</strong> ${new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString()}</p>
-            <p>After your trial, continue for just $400/year CAD.</p>
-            <p>If you have any questions, contact us at waynerigley@gmail.com</p>
+            <p>After your trial, continue for just <strong>$400/year CAD</strong>.</p>
+            <p>Questions? Contact us at waynerigley@gmail.com</p>
           `
         });
       } catch (emailErr) {

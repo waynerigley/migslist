@@ -78,16 +78,16 @@ router.post('/', async (req, res) => {
         await sgMail.send({
           to: email,
           from: process.env.SENDGRID_FROM_EMAIL,
-          subject: 'Welcome to MigsList - Your Secretary Account',
+          subject: 'Welcome to MIGS List - Your Recording Secretary Account',
           html: `
-            <h2>Welcome to MigsList!</h2>
-            <p>You've been added as a Secretary for <strong>${req.session.unionName}</strong>.</p>
+            <h2>Welcome to MIGS List!</h2>
+            <p>You've been added as a Recording Secretary for <strong>${req.session.unionName}</strong>.</p>
             <p>Here are your login credentials:</p>
             <p><strong>Login URL:</strong> ${process.env.APP_URL}/login</p>
             <p><strong>Email:</strong> ${email}</p>
             <p><strong>Temporary Password:</strong> ${tempPassword}</p>
             <p>Please log in and change your password immediately using the "Forgot password" link.</p>
-            <p>As a Secretary, you can:</p>
+            <p>As a Recording Secretary, you can:</p>
             <ul>
               <li>Add and edit buckets</li>
               <li>Add and edit members</li>
@@ -97,13 +97,13 @@ router.post('/', async (req, res) => {
             <p>If you have any questions, contact your Union President.</p>
           `
         });
-        req.session.success = `Secretary added! Credentials sent to ${email}`;
+        req.session.success = `Recording Secretary added! Credentials sent to ${email}`;
       } catch (emailErr) {
         console.error('Email send error:', emailErr);
-        req.session.success = `Secretary added! Temp password: ${tempPassword} (email failed to send)`;
+        req.session.success = `Recording Secretary added! Temp password: ${tempPassword} (email failed to send)`;
       }
     } else {
-      req.session.success = `Secretary added! Temp password: ${tempPassword}`;
+      req.session.success = `Recording Secretary added! Temp password: ${tempPassword}`;
     }
 
     res.redirect('/team');

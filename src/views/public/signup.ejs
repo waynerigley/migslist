@@ -3,176 +3,627 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Up - MigsList</title>
+  <title>Sign Up - MIGS List</title>
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="signup-page">
+  <!-- Navigation -->
+  <nav class="signup-nav">
+    <div class="nav-container">
+      <a href="/" class="nav-brand-link">
+        <img src="/logo.png" alt="MIGS List" class="nav-logo">
+        <span>MIGS List</span>
+      </a>
+      <div class="nav-actions">
+        <a href="/" class="btn btn-outline">Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="signup-container">
+    <div class="signup-header">
+      <span class="hero-badge">30-Day Free Trial</span>
+      <h1>Start Your Free Trial</h1>
+      <p>No credit card required. Get your local set up in minutes.</p>
+    </div>
+
+    <div class="signup-content">
+      <div class="signup-card">
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="alert alert-error"><%= error %></div>
+        <% } %>
+
+        <form action="/signup" method="POST">
+          <div class="form-section">
+            <div class="section-title">
+              <span class="section-number">1</span>
+              <h2>Union Information</h2>
+            </div>
+
+            <div class="form-group">
+              <label for="union_name">Union Local Name <span class="required">*</span></label>
+              <input type="text" id="union_name" name="union_name" required
+                     placeholder="e.g., CUPE 4705, CAW 200"
+                     value="<%= typeof formData !== 'undefined' ? formData.union_name || '' : '' %>">
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="section-title">
+              <span class="section-number">2</span>
+              <h2>President Account</h2>
+            </div>
+            <p class="section-note">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              As the President, you are the primary account holder. You can add Recording Secretaries (data entry staff) after signing up.
+            </p>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="admin_first_name">First Name <span class="required">*</span></label>
+                <input type="text" id="admin_first_name" name="admin_first_name" required
+                       value="<%= typeof formData !== 'undefined' ? formData.admin_first_name || '' : '' %>">
+              </div>
+              <div class="form-group">
+                <label for="admin_last_name">Last Name <span class="required">*</span></label>
+                <input type="text" id="admin_last_name" name="admin_last_name" required
+                       value="<%= typeof formData !== 'undefined' ? formData.admin_last_name || '' : '' %>">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="admin_email">Email <span class="required">*</span></label>
+                <input type="email" id="admin_email" name="admin_email" required
+                       placeholder="your@email.com"
+                       autocomplete="email"
+                       value="<%= typeof formData !== 'undefined' ? formData.admin_email || '' : '' %>">
+              </div>
+              <div class="form-group">
+                <label for="admin_phone">Phone</label>
+                <input type="tel" id="admin_phone" name="admin_phone"
+                       placeholder="(555) 123-4567"
+                       value="<%= typeof formData !== 'undefined' ? formData.admin_phone || '' : '' %>">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="admin_password">Password <span class="required">*</span></label>
+              <input type="password" id="admin_password" name="admin_password" required
+                     placeholder="Minimum 8 characters" minlength="8"
+                     autocomplete="new-password">
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Start 30-Day Free Trial</button>
+            <p class="form-note">By signing up, you agree to our terms of service.</p>
+          </div>
+        </form>
+      </div>
+
+      <div class="signup-sidebar">
+        <div class="info-card">
+          <div class="info-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <h3>Role-Based Access</h3>
+          </div>
+          <div class="role-item">
+            <strong>President (You)</strong>
+            <ul>
+              <li>Full account control</li>
+              <li>Add/remove Recording Secretaries</li>
+              <li>Delete buckets</li>
+              <li>All data access</li>
+            </ul>
+          </div>
+          <div class="role-item">
+            <strong>Recording Secretaries (Data Entry)</strong>
+            <ul>
+              <li>Create buckets</li>
+              <li>Add/edit members</li>
+              <li>Upload documents</li>
+              <li>Export reports</li>
+            </ul>
+          </div>
+          <p class="info-note">Add Recording Secretaries anytime from your Team page after signup.</p>
+        </div>
+
+        <div class="price-card">
+          <div class="price-header">After Trial</div>
+          <div class="price-amount">
+            <span class="currency">$</span>
+            <span class="value">400</span>
+            <span class="period">/year</span>
+          </div>
+          <ul class="price-features">
+            <li>Unlimited members</li>
+            <li>Unlimited buckets</li>
+            <li>Unlimited users</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     .signup-page {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f8fafc;
       min-height: 100vh;
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-      padding: 2rem;
+      color: #1a1a2e;
+      line-height: 1.6;
     }
-    .signup-container {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    .signup-header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    .signup-header h1 {
-      color: #2563eb;
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-    .signup-header p {
-      color: #6b7280;
-    }
-    .signup-card {
+
+    .signup-nav {
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      padding: 2rem;
-    }
-    .signup-card h2 {
-      font-size: 1.25rem;
-      color: #1f2937;
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.75rem;
       border-bottom: 1px solid #e5e7eb;
     }
-    .price-summary {
-      background: #f0f9ff;
-      border: 1px solid #bae6fd;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 2rem;
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .price-summary .label {
-      color: #0369a1;
-      font-weight: 500;
-    }
-    .price-summary .amount {
-      font-size: 1.5rem;
+
+    .nav-brand-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.25rem;
       font-weight: 700;
-      color: #0369a1;
+      color: #1a1a2e;
+      text-decoration: none;
     }
-    .nav-simple {
+
+    .nav-logo {
+      height: 36px;
+      width: auto;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.625rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9375rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #4b5563;
+      border: 1px solid #d1d5db;
+    }
+
+    .btn-outline:hover {
+      background: #f9fafb;
+    }
+
+    .btn-lg {
+      padding: 0.875rem 1.75rem;
+      font-size: 1rem;
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    .signup-container {
+      max-width: 950px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .signup-header {
       text-align: center;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
     }
-    .nav-simple a {
-      color: #2563eb;
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
-    .form-section {
-      margin-bottom: 2rem;
-    }
-    .required-note {
+
+    .hero-badge {
+      display: inline-block;
+      background: #dcfce7;
+      color: #166534;
+      padding: 0.375rem 1rem;
+      border-radius: 100px;
       font-size: 0.875rem;
-      color: #6b7280;
+      font-weight: 600;
       margin-bottom: 1rem;
     }
-    .back-link {
-      display: block;
-      text-align: center;
-      margin-top: 1.5rem;
+
+    .signup-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .signup-header p {
       color: #6b7280;
+      font-size: 1.0625rem;
+    }
+
+    .signup-content {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .signup-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      padding: 2rem;
+    }
+
+    .form-section {
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .form-section:last-of-type {
+      border-bottom: none;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-number {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .section-title h2 {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+
+    .section-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+      padding: 0.875rem;
+      font-size: 0.875rem;
+      color: #0369a1;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-note svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.375rem;
+      color: #374151;
+    }
+
+    .required {
+      color: #dc2626;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.9375rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-actions {
+      text-align: center;
+    }
+
+    .form-note {
+      font-size: 0.8125rem;
+      color: #9ca3af;
+      margin-top: 1rem;
+    }
+
+    .signup-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .info-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .info-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .info-header svg {
+      width: 20px;
+      height: 20px;
+      color: #2563eb;
+    }
+
+    .info-header h3 {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .role-item {
+      margin-bottom: 1rem;
+    }
+
+    .role-item strong {
+      display: block;
+      font-size: 0.875rem;
+      color: #1a1a2e;
+      margin-bottom: 0.375rem;
+    }
+
+    .role-item ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .role-item li {
+      font-size: 0.8125rem;
+      color: #6b7280;
+      padding: 0.25rem 0;
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .role-item li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #22c55e;
+      font-size: 0.75rem;
+    }
+
+    .info-note {
+      font-size: 0.8125rem;
+      color: #6b7280;
+      background: #f9fafb;
+      padding: 0.75rem;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+    }
+
+    .price-card {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .price-header {
+      font-size: 0.8125rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.9;
+      margin-bottom: 0.5rem;
+    }
+
+    .price-amount {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .price-amount .currency {
+      font-size: 1.25rem;
+      margin-top: 0.375rem;
+    }
+
+    .price-amount .value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .price-amount .period {
+      font-size: 1rem;
+      opacity: 0.9;
+      margin-top: 0.75rem;
+    }
+
+    .price-features {
+      list-style: none;
+      font-size: 0.875rem;
+      opacity: 0.9;
+    }
+
+    .price-features li {
+      padding: 0.25rem 0;
+    }
+
+    .alert {
+      padding: 0.875rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      font-size: 0.9375rem;
+    }
+
+    .alert-error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+    }
+
+    @media (max-width: 768px) {
+      .signup-content {
+        grid-template-columns: 1fr;
+      }
+
+      .signup-sidebar {
+        order: -1;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .signup-header h1 {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .signup-page {
+        background: #0f172a;
+        color: #e2e8f0;
+      }
+
+      .signup-nav {
+        background: #1e293b;
+        border-bottom-color: #334155;
+      }
+
+      .nav-brand-link {
+        color: #e2e8f0;
+      }
+
+      .signup-header h1 {
+        color: #e2e8f0;
+      }
+
+      .signup-header p {
+        color: #94a3b8;
+      }
+
+      .signup-card, .info-card {
+        background: #1e293b;
+      }
+
+      .form-section {
+        border-bottom-color: #334155;
+      }
+
+      .section-title h2 {
+        color: #e2e8f0;
+      }
+
+      .section-note {
+        background: #1e3a5f;
+        border-color: #1e40af;
+        color: #93c5fd;
+      }
+
+      .form-group label {
+        color: #cbd5e1;
+      }
+
+      .form-group input {
+        background: #0f172a;
+        border-color: #475569;
+        color: #e2e8f0;
+      }
+
+      .form-group input:focus {
+        border-color: #3b82f6;
+      }
+
+      .info-header {
+        border-bottom-color: #334155;
+      }
+
+      .info-header h3 {
+        color: #e2e8f0;
+      }
+
+      .role-item strong {
+        color: #e2e8f0;
+      }
+
+      .role-item li {
+        color: #94a3b8;
+      }
+
+      .info-note {
+        background: #0f172a;
+        color: #94a3b8;
+      }
+
+      .btn-outline {
+        color: #94a3b8;
+        border-color: #475569;
+      }
     }
   </style>
-</head>
-<body class="signup-page">
-  <div class="signup-container">
-    <nav class="nav-simple">
-      <a href="/">MigsList</a>
-    </nav>
-
-    <div class="signup-header">
-      <h1>Start Your Free Trial</h1>
-      <p>30 days free, no credit card required</p>
-    </div>
-
-    <div class="signup-card">
-      <% if (typeof error !== 'undefined' && error) { %>
-        <div class="alert alert-error"><%= error %></div>
-      <% } %>
-
-      <div class="price-summary" style="background: #dcfce7; border-color: #86efac;">
-        <span class="label" style="color: #166534;">30-Day Free Trial</span>
-        <span class="amount" style="color: #166534;">Then $400/year</span>
-      </div>
-
-      <form action="/signup" method="POST">
-        <div class="form-section">
-          <h2>Union Information</h2>
-          <p class="required-note">* Required fields</p>
-
-          <div class="form-group">
-            <label for="union_name">Union Local Name *</label>
-            <input type="text" id="union_name" name="union_name" required
-                   placeholder="e.g., Local 4508"
-                   value="<%= typeof formData !== 'undefined' ? formData.union_name || '' : '' %>">
-          </div>
-
-          <div class="form-group">
-            <label for="contact_name">Primary Contact Name *</label>
-            <input type="text" id="contact_name" name="contact_name" required
-                   value="<%= typeof formData !== 'undefined' ? formData.contact_name || '' : '' %>">
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="contact_email">Contact Email *</label>
-              <input type="email" id="contact_email" name="contact_email" required
-                     value="<%= typeof formData !== 'undefined' ? formData.contact_email || '' : '' %>">
-            </div>
-            <div class="form-group">
-              <label for="contact_phone">Contact Phone</label>
-              <input type="tel" id="contact_phone" name="contact_phone"
-                     value="<%= typeof formData !== 'undefined' ? formData.contact_phone || '' : '' %>">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <h2>Admin Account</h2>
-          <p class="required-note">Create your login credentials.</p>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="admin_first_name">First Name</label>
-              <input type="text" id="admin_first_name" name="admin_first_name"
-                     value="<%= typeof formData !== 'undefined' ? formData.admin_first_name || '' : '' %>">
-            </div>
-            <div class="form-group">
-              <label for="admin_last_name">Last Name</label>
-              <input type="text" id="admin_last_name" name="admin_last_name"
-                     value="<%= typeof formData !== 'undefined' ? formData.admin_last_name || '' : '' %>">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="admin_email">Email *</label>
-            <input type="email" id="admin_email" name="admin_email" required
-                   placeholder="This will be your login email"
-                   value="<%= typeof formData !== 'undefined' ? formData.admin_email || '' : '' %>">
-          </div>
-
-          <div class="form-group">
-            <label for="admin_password">Password *</label>
-            <input type="password" id="admin_password" name="admin_password" required
-                   placeholder="Minimum 8 characters" minlength="8">
-          </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-block">Start Free Trial</button>
-      </form>
-
-      <a href="/pricing" class="back-link">Back to pricing</a>
-    </div>
-  </div>
 </body>
 </html>
