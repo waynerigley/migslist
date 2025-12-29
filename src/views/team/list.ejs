@@ -1,60 +1,329 @@
 <%- include('../partials/header', { title: 'Manage Team', backLink: '/dashboard' }) %>
 
+<% if (typeof setupLink !== 'undefined' && setupLink) { %>
+  <div class="setup-link-box">
+    <h3><%= typeof emailSent !== 'undefined' && emailSent ? 'Welcome Email Sent!' : 'Setup Link Generated' %></h3>
+    <% if (typeof emailSent !== 'undefined' && emailSent) { %>
+      <p>A professional welcome email has been sent to <strong><%= setupName %></strong> with instructions to set up their password.</p>
+    <% } else { %>
+      <p>Share this link with <strong><%= setupName %></strong> so they can set their password:</p>
+    <% } %>
+    <div class="link-container">
+      <input type="text" value="<%= setupLink %>" id="setupLinkInput" readonly>
+      <button type="button" class="btn btn-outline btn-sm" onclick="copyLink()">Copy</button>
+    </div>
+    <div class="email-actions">
+      <% 
+        // Find the user id for this email to send the welcome email
+        const secretaryForEmail = secretaries.find(s => s.email === setupEmail);
+      %>
+      <% if (secretaryForEmail && !(typeof emailSent !== 'undefined' && emailSent)) { %>
+        <form action="/team/<%= secretaryForEmail.id %>/send-email" method="POST" class="inline-form">
+          <button type="submit" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;margin-right:6px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            Send Welcome Email
+          </button>
+        </form>
+        <span class="or-divider">or</span>
+      <% } %>
+      <a href="mailto:<%= setupEmail %>?subject=Your%20MIGS%20List%20Account&body=Hi%20<%= encodeURIComponent(setupName) %>,%0A%0AYou've%20been%20added%20as%20a%20Recording%20Secretary%20for%20our%20union.%0A%0APlease%20click%20this%20link%20to%20set%20your%20password%20and%20access%20your%20account:%0A<%= encodeURIComponent(setupLink) %>%0A%0AOnce%20you've%20set%20your%20password,%20you%20can%20log%20in%20at:%0A<%= encodeURIComponent(appUrl) %>%0A%0AThanks!" class="btn btn-outline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;margin-right:6px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12" y2="18"></line></svg>
+        Open in Email App
+      </a>
+    </div>
+    <p class="link-note">This link expires in 1 hour. You can generate a new one anytime.</p>
+  </div>
+<% } %>
+
 <div class="action-bar">
   <a href="/team/add" class="btn btn-primary">Add Recording Secretary</a>
 </div>
 
-<div class="team-info">
-  <p class="text-muted">Recording Secretaries can manage buckets and members but cannot delete buckets or manage team members.</p>
-</div>
+<!-- President Section -->
+<section class="team-section">
+  <h2 class="section-title">President</h2>
+  <% if (president) { %>
+    <div class="team-card president-card">
+      <div class="team-member-info">
+        <div class="member-avatar president-avatar">
+          <%= president.first_name ? president.first_name.charAt(0).toUpperCase() : 'P' %>
+        </div>
+        <div class="member-details">
+          <h3><%= president.first_name || '' %> <%= president.last_name || '' %></h3>
+          <p class="member-email"><%= president.email %></p>
+          <span class="badge badge-success">President</span>
+        </div>
+      </div>
+      <div class="member-meta">
+        <span class="text-muted">Account holder since <%= new Date(president.created_at).toLocaleDateString() %></span>
+        <% if (president.id === user.id) { %>
+          <span class="badge badge-outline">(You)</span>
+        <% } %>
+      </div>
+    </div>
+  <% } %>
+</section>
 
-<% if (users.length === 0) { %>
-  <div class="empty-state">
-    <h3>No team members yet</h3>
-    <p>Add secretaries to help manage your union's data.</p>
-    <a href="/team/add" class="btn btn-primary">Add Recording Secretary</a>
+<!-- Recording Secretaries Section -->
+<section class="team-section">
+  <div class="section-header">
+    <h2 class="section-title">Recording Secretaries</h2>
+    <span class="member-count"><%= secretaries.length %> member<%= secretaries.length !== 1 ? 's' : '' %></span>
   </div>
-<% } else { %>
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Role</th>
-        <th>Added</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% users.forEach(u => { %>
-        <tr>
-          <td><%= u.first_name || '' %> <%= u.last_name || '' %></td>
-          <td><%= u.email %></td>
-          <td>
-            <% if (u.role === 'union_president') { %>
-              <span class="badge badge-success">President</span>
-            <% } else { %>
+  
+  <p class="section-note">Recording Secretaries can manage buckets and members but cannot delete buckets or manage team members.</p>
+
+  <% if (secretaries.length === 0) { %>
+    <div class="empty-state">
+      <h3>No Recording Secretaries yet</h3>
+      <p>Add Recording Secretaries to help manage your union's data.</p>
+      <a href="/team/add" class="btn btn-primary">Add Recording Secretary</a>
+    </div>
+  <% } else { %>
+    <div class="team-grid">
+      <% secretaries.forEach(u => { %>
+        <div class="team-card">
+          <div class="team-member-info">
+            <div class="member-avatar">
+              <%= u.first_name ? u.first_name.charAt(0).toUpperCase() : u.email.charAt(0).toUpperCase() %>
+            </div>
+            <div class="member-details">
+              <h3><%= u.first_name || '' %> <%= u.last_name || '' %> <% if (!u.first_name && !u.last_name) { %><%= u.email %><% } %></h3>
+              <% if (u.first_name || u.last_name) { %>
+                <p class="member-email"><%= u.email %></p>
+              <% } %>
               <span class="badge badge-secondary">Recording Secretary</span>
-            <% } %>
-          </td>
-          <td><%= new Date(u.created_at).toLocaleDateString() %></td>
-          <td>
-            <% if (u.role === 'union_secretary' && u.id !== user.id) { %>
-              <form action="/team/<%= u.id %>/remove" method="POST" class="inline-form" onsubmit="return confirm('Remove <%= u.first_name || u.email %> from your team?')">
-                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
-              </form>
-            <% } else if (u.id === user.id) { %>
-              <span class="text-muted">(You)</span>
-            <% } %>
-          </td>
-        </tr>
+            </div>
+          </div>
+          <div class="member-meta">
+            <span class="text-muted">Added <%= new Date(u.created_at).toLocaleDateString() %></span>
+          </div>
+          <div class="member-actions">
+            <form action="/team/<%= u.id %>/send-email" method="POST" class="inline-form">
+              <button type="submit" class="btn btn-primary btn-sm" title="Send professional welcome email">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;margin-right:4px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                Send Welcome Email
+              </button>
+            </form>
+            <form action="/team/<%= u.id %>/setup-link" method="POST" class="inline-form">
+              <button type="submit" class="btn btn-outline btn-sm" title="Generate link to copy manually">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;margin-right:4px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                Get Link
+              </button>
+            </form>
+            <form action="/team/<%= u.id %>/remove" method="POST" class="inline-form" onsubmit="return confirm('Remove <%= u.first_name || u.email %> from your team?')">
+              <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+            </form>
+          </div>
+        </div>
       <% }) %>
-    </tbody>
-  </table>
-<% } %>
+    </div>
+  <% } %>
+</section>
 
 <style>
-.team-info {
+.setup-link-box {
+  background: #f0fdf4;
+  border: 2px solid #22c55e;
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+.setup-link-box h3 {
+  color: #166534;
+  margin-bottom: 0.5rem;
+}
+.setup-link-box p {
+  margin-bottom: 1rem;
+}
+.link-container {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.link-container input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  background: white;
+}
+.email-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.email-actions .btn {
+  display: inline-flex;
+  align-items: center;
+}
+.or-divider {
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+.link-note {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.team-section {
+  margin-bottom: 2.5rem;
+}
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: 0.5rem;
+}
+.member-count {
+  color: var(--gray-500);
+  font-size: 0.875rem;
+}
+.section-note {
+  color: var(--gray-500);
+  font-size: 0.875rem;
   margin-bottom: 1.5rem;
 }
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+}
+.team-card {
+  background: var(--bg-primary);
+  border: 2px solid var(--primary);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.team-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
+}
+.president-card {
+  border-color: #22c55e;
+  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+}
+.president-card:hover {
+  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.15);
+}
+
+.team-member-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.member-avatar {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.president-avatar {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+}
+.member-details h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+.member-email {
+  color: var(--gray-500);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+.member-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8125rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--gray-200);
+}
+.member-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--gray-200);
+  flex-wrap: wrap;
+}
+.inline-form {
+  display: inline;
+}
+
+.badge-outline {
+  background: transparent;
+  border: 1px solid var(--gray-300);
+  color: var(--gray-600);
+}
+
+@media (max-width: 640px) {
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+  .member-actions {
+    flex-direction: column;
+  }
+  .member-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .email-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .or-divider {
+    text-align: center;
+  }
+}
+
+[data-theme="dark"] .setup-link-box {
+  background: #14532d;
+  border-color: #22c55e;
+}
+[data-theme="dark"] .setup-link-box h3 {
+  color: #86efac;
+}
+[data-theme="dark"] .link-container input {
+  background: #1e293b;
+  border-color: #475569;
+  color: #e2e8f0;
+}
+[data-theme="dark"] .president-card {
+  background: linear-gradient(135deg, #14532d 0%, #1e293b 100%);
+}
 </style>
+
+<script>
+function copyLink() {
+  const input = document.getElementById('setupLinkInput');
+  input.select();
+  input.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(input.value);
+  
+  const btn = event.target;
+  const originalText = btn.textContent;
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = originalText, 2000);
+}
+</script>
