@@ -41,13 +41,13 @@
   <section class="stats-section">
     <div class="stats-container">
       <div class="stat-item">
-        <span class="stat-number">100%</span>
-        <span class="stat-label">Cloud-Based Access</span>
+        <span class="stat-number">99.999%</span>
+        <span class="stat-label">Uptime Guaranteed</span>
       </div>
       <div class="stat-divider"></div>
       <div class="stat-item">
-        <span class="stat-number">24/7</span>
-        <span class="stat-label">Availability</span>
+        <span class="stat-number">Daily</span>
+        <span class="stat-label">Automatic Backups</span>
       </div>
       <div class="stat-divider"></div>
       <div class="stat-item">
@@ -174,6 +174,75 @@
           </div>
           <h3>Automatic Backups</h3>
           <p>Your data is automatically backed up to secure offsite servers daily. Never worry about losing member records - your information is always protected and recoverable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video Tutorials Section -->
+  <section class="tutorials-section">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-label">Video Tutorials</span>
+        <h2>See MIGS List in Action</h2>
+        <p>Watch quick tutorials to see how easy it is to manage your union members with MIGS List.</p>
+      </div>
+
+      <div class="video-grid">
+        <div class="video-card">
+          <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/Y-x0efG1seA" title="Getting Started" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <h3>Getting Started</h3>
+          <p>How to sign up and set up your account</p>
+        </div>
+
+        <div class="video-card">
+          <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/Y-x0efG1seA" title="Team Access" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <h3>Team Access</h3>
+          <p>Adding recording secretaries and setting permissions</p>
+        </div>
+
+        <div class="video-card">
+          <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/Y-x0efG1seA" title="Creating Buckets" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <h3>Creating Buckets</h3>
+          <p>Organizing members by department or location</p>
+        </div>
+
+        <div class="video-card">
+          <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/Y-x0efG1seA" title="Managing Lists" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <h3>Managing Lists</h3>
+          <p>Working with member lists and filters</p>
+        </div>
+
+        <div class="video-card">
+          <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/Y-x0efG1seA" title="Member Management" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <h3>Member Management</h3>
+          <p>Adding, editing, and tracking members</p>
+        </div>
+
+        <div class="video-card">
+          <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/Y-x0efG1seA" title="PDF Uploads" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <h3>PDF Uploads</h3>
+          <p>Uploading members in good standing documents</p>
+        </div>
+
+        <div class="video-card">
+          <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/Y-x0efG1seA" title="Election Prep" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <h3>Election Prep</h3>
+          <p>Getting your voter rolls ready for an election</p>
         </div>
       </div>
     </div>
@@ -610,6 +679,59 @@
       line-height: 1.6;
     }
 
+    /* Video Tutorials Section */
+    .tutorials-section {
+      padding: 6rem 2rem;
+      background: #f8fafc;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    .video-card {
+      background: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .video-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+      height: 0;
+      overflow: hidden;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .video-card h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #1a1a2e;
+      padding: 1.25rem 1.25rem 0.5rem;
+    }
+
+    .video-card p {
+      font-size: 0.9375rem;
+      color: #6b7280;
+      padding: 0 1.25rem 1.25rem;
+    }
+
     /* Election Section */
     .election-section {
       padding: 6rem 2rem;
@@ -1016,6 +1138,27 @@
 
       .stats-section {
         background: #0f172a;
+      }
+
+      .tutorials-section {
+        background: #1e293b;
+      }
+
+      .video-card {
+        background: #0f172a;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .video-card:hover {
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      }
+
+      .video-card h3 {
+        color: #e2e8f0;
+      }
+
+      .video-card p {
+        color: #94a3b8;
       }
     }
   </style>

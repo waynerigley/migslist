@@ -1,0 +1,31 @@
+ Note - save these credentials:
+  - Server IP: 155.138.149.116
+  - SSH: ssh wayne@155.138.149.116 (key auth) or root
+  - DB password: Migs2025Secure#DB
+  - App location: /var/www/migs
+  - PM2 commands: pm2 list, pm2 logs migs, pm2 restart migs
+
+● Done! Your site is live at https://migslist.com
+
+  Everything is set up:
+  - HTTPS with Cloudflare Origin Certificate (valid until 2040)
+  - Full SSL mode (encrypted all the way)
+  - Auto-restart on crash/reboot via PM2
+  - Firewall + fail2ban for security
+
+  Quick reference:
+  | What         | Details                   |
+  |--------------|---------------------------|
+  | Site         | https://migslist.com      |
+  | Server IP    | 155.138.149.116           |
+  | SSH          | ssh wayne@155.138.149.116 |
+  | App location | /var/www/migs             |
+  | Logs         | pm2 logs migs             |
+  | Restart app  | pm2 restart migs          |
+  | DB password  | Migs2025Secure#DB         |
+
+  To deploy updates later:
+  ssh wayne@155.138.149.116
+  cd /var/www/migs
+  git pull
+  pm2 restart migs
