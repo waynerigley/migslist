@@ -17,7 +17,7 @@
       <a href="/export/bucket/<%= bucket.id %>/all">All Members</a>
     </div>
   </div>
-  <a href="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/retired" class="btn btn-outline btn-muted">View Retired (<%= typeof retiredCount !== 'undefined' ? retiredCount : 0 %>)</a>
+  <a href="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/retired" class="btn btn-outline btn-muted">View Non-Active (<%= typeof retiredCount !== 'undefined' ? retiredCount : 0 %>)</a>
 </div>
 
 <% if (!bucket.master_pdf_filename) { %>
