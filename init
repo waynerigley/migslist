@@ -1,10 +1,10 @@
 #!/bin/bash
 # MigsList Bootstrap Script
-# Run this on a fresh Ubuntu/Debian server
-# Version: 1.5.0
+# Run this on a fresh Ubuntu 24.04 VPS (Vultr, DigitalOcean, etc.)
+# Version: 1.6.0
 
 set -e
-VERSION="1.5.0"
+VERSION="1.6.0"
 
 echo "=== MigsList Server Setup v${VERSION} ==="
 echo ""
@@ -16,11 +16,11 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # Update system
-echo "[1/7] Updating system packages..."
+echo "[1/8] Updating system packages..."
 apt-get update && apt-get upgrade -y
 
 # Install Node.js 20.x
-echo "[2/7] Installing Node.js 20.x..."
+echo "[2/8] Installing Node.js 20.x..."
 if ! command -v node &> /dev/null; then
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
     apt-get install -y nodejs
@@ -28,34 +28,50 @@ fi
 echo "Node.js version: $(node --version)"
 
 # Install PostgreSQL
-echo "[3/7] Installing PostgreSQL..."
+echo "[3/8] Installing PostgreSQL..."
 if ! command -v psql &> /dev/null; then
     apt-get install -y postgresql postgresql-contrib
 fi
 systemctl enable postgresql
 systemctl start postgresql
 
-# Install cloudflared
-echo "[4/7] Installing cloudflared..."
-if ! command -v cloudflared &> /dev/null; then
-    curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | tee /usr/share/keyrings/cloudflare-archive-keyring.gpg > /dev/null
-    echo "deb [signed-by=/usr/share/keyrings/cloudflare-archive-keyring.gpg] https://pkg.cloudflare.com/cloudflared $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/cloudflared.list
-    apt-get update && apt-get install -y cloudflared
+# Install Nginx
+echo "[4/8] Installing Nginx..."
+if ! command -v nginx &> /dev/null; then
+    apt-get install -y nginx
+fi
+systemctl enable nginx
+systemctl start nginx
+
+# Install PM2
+echo "[5/8] Installing PM2..."
+if ! command -v pm2 &> /dev/null; then
+    npm install -g pm2
 fi
 
+# Install security tools
+echo "[6/8] Installing security tools..."
+apt-get install -y ufw fail2ban
+ufw allow OpenSSH
+ufw allow 'Nginx Full'
+ufw --force enable
+systemctl enable fail2ban
+systemctl start fail2ban
+
 # Create database and user
-echo "[5/7] Setting up PostgreSQL database..."
-sudo -u postgres psql -c "CREATE USER migslist WITH PASSWORD 'changeme';" 2>/dev/null || echo "User already exists"
+echo "[7/8] Setting up PostgreSQL database..."
+DB_PASSWORD=$(openssl rand -base64 24 | tr -d '/+=' | cut -c1-20)
+sudo -u postgres psql -c "CREATE USER migslist WITH PASSWORD '${DB_PASSWORD}';" 2>/dev/null || echo "User already exists"
 sudo -u postgres psql -c "CREATE DATABASE migslist OWNER migslist;" 2>/dev/null || echo "Database already exists"
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE migslist TO migslist;"
 
 # Run schema
-echo "[6/7] Running database schema..."
-PGPASSWORD=changeme psql -U migslist -h localhost -d migslist -f sql/schema.sql
+echo "[8/8] Running database schema..."
+PGPASSWORD="${DB_PASSWORD}" psql -U migslist -h localhost -d migslist -f sql/schema.sql 2>/dev/null || echo "Schema already applied or will be applied after .env setup"
 
 # Install npm dependencies
-echo "[7/7] Installing npm dependencies..."
-npm install
+echo "Installing npm dependencies..."
+npm install --production
 
 # Create uploads directory
 mkdir -p uploads/pdfs
@@ -67,22 +83,62 @@ if [ ! -f .env ]; then
     # Generate random session secret
     SESSION_SECRET=$(openssl rand -hex 32)
     sed -i "s/your-super-secret-session-key-change-this/$SESSION_SECRET/" .env
+    # Update database password (URL encode special chars)
+    sed -i "s|postgresql://migslist:password@localhost|postgresql://migslist:${DB_PASSWORD}@localhost|" .env
     echo ""
-    echo "Created .env file. Please update with your settings:"
-    echo "  - DATABASE_URL (update password if changed)"
-    echo "  - SMTP settings (Brevo recommended - 300 emails/day free)"
+    echo "Created .env file with generated credentials."
 fi
+
+# Create nginx config
+cat > /etc/nginx/sites-available/migs << 'NGINXCONF'
+server {
+    listen 80;
+    server_name _;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+NGINXCONF
+
+ln -sf /etc/nginx/sites-available/migs /etc/nginx/sites-enabled/
+rm -f /etc/nginx/sites-enabled/default
+nginx -t && systemctl reload nginx
 
 echo ""
 echo "=== Setup Complete! ==="
 echo ""
-echo "Next steps:"
-echo "1. Edit .env with your configuration"
-echo "2. Update PostgreSQL password in .env if needed"
-echo "3. Run: npm start"
+echo "Database password: ${DB_PASSWORD}"
+echo "(Save this - it's in your .env file)"
 echo ""
-echo "To set up Cloudflare tunnel:"
-echo "  cloudflared tunnel login"
-echo "  cloudflared tunnel create migslist"
-echo "  cloudflared tunnel route dns migslist migslist.com"
+echo "Next steps:"
+echo ""
+echo "1. Update .env with your SMTP settings (Brevo recommended):"
+echo "   SMTP_HOST=smtp-relay.brevo.com"
+echo "   SMTP_PORT=587"
+echo "   SMTP_USER=your-brevo-smtp-login"
+echo "   SMTP_PASS=your-brevo-smtp-key"
+echo "   SMTP_FROM=support@yourdomain.com"
+echo ""
+echo "2. Start the app with PM2:"
+echo "   pm2 start src/app.js --name migs"
+echo "   pm2 save"
+echo "   pm2 startup"
+echo ""
+echo "3. Set up SSL with Cloudflare:"
+echo "   - Point your domain A record to this server's IP"
+echo "   - In Cloudflare SSL/TLS > Origin Server, create Origin Certificate"
+echo "   - Save cert to /etc/ssl/cloudflare/cert.pem"
+echo "   - Save key to /etc/ssl/cloudflare/key.pem"
+echo "   - Update nginx config to use SSL (see docs)"
+echo ""
+echo "4. Test your site at http://YOUR_SERVER_IP"
 echo ""
