@@ -114,6 +114,11 @@ router.get('/features', (req, res) => {
   res.render('features', { layout: false });
 });
 
+// Video tutorials page
+router.get('/tutorials', (req, res) => {
+  res.render('tutorials', { layout: false });
+});
+
 // Login page
 router.get('/login', guestOnly, (req, res) => {
   res.render('login', { layout: false });
