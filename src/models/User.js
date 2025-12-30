@@ -17,6 +17,7 @@ const User = {
   },
 
   async findByEmail(email) {
+    if (!email) return null;
     const result = await db.query(
       `SELECT u.*, un.name as union_name
        FROM users u
