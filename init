@@ -1,10 +1,10 @@
 #!/bin/bash
 # MigsList Bootstrap Script
 # Run this on a fresh Ubuntu/Debian server
-# Version: 1.3.3
+# Version: 1.4.0
 
 set -e
-VERSION="1.3.3"
+VERSION="1.4.0"
 
 echo "=== MigsList Server Setup v${VERSION} ==="
 echo ""
@@ -70,8 +70,7 @@ if [ ! -f .env ]; then
     echo ""
     echo "Created .env file. Please update with your settings:"
     echo "  - DATABASE_URL (update password if changed)"
-    echo "  - SENDGRID_API_KEY"
-    echo "  - SENDGRID_FROM_EMAIL"
+    echo "  - SMTP settings (Brevo recommended - 300 emails/day free)"
 fi
 
 echo ""
