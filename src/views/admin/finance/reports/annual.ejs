@@ -1,0 +1,267 @@
+<%- include('../../../partials/header', { title: 'Tax Reports', backLink: '/admin/finance' }) %>
+
+<div class="reports-container">
+  <div class="year-selector">
+    <h3>Select Year</h3>
+    <div class="year-buttons">
+      <% availableYears.forEach(year => { %>
+        <a href="/admin/finance/reports/year/<%= year %>"
+           class="btn <%= selectedYear === year ? 'btn-primary' : 'btn-outline' %>">
+          <%= year %>
+        </a>
+      <% }) %>
+    </div>
+  </div>
+
+  <% if (report) { %>
+    <div class="report-header">
+      <h2><%= report.year %> Annual Report</h2>
+      <p class="text-muted">Calendar Year (January 1 - December 31)</p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+      <div class="summary-card income">
+        <div class="card-label">Total Income</div>
+        <div class="card-value">$<%= report.totalIncome.toLocaleString('en-CA', { minimumFractionDigits: 2 }) %></div>
+      </div>
+      <div class="summary-card expenses">
+        <div class="card-label">Total Expenses</div>
+        <div class="card-value">$<%= report.totalExpenses.toLocaleString('en-CA', { minimumFractionDigits: 2 }) %></div>
+      </div>
+      <div class="summary-card <%= report.netProfit >= 0 ? 'profit' : 'loss' %>">
+        <div class="card-label">Net <%= report.netProfit >= 0 ? 'Profit' : 'Loss' %></div>
+        <div class="card-value">$<%= Math.abs(report.netProfit).toLocaleString('en-CA', { minimumFractionDigits: 2 }) %></div>
+      </div>
+    </div>
+
+    <!-- Income Section -->
+    <div class="report-section">
+      <h3>Income Details</h3>
+      <% if (report.income.length === 0) { %>
+        <p class="text-muted">No income recorded for <%= report.year %></p>
+      <% } else { %>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Method</th>
+              <th>Reference</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% report.income.forEach(inc => { %>
+              <tr>
+                <td><%= new Date(inc.received_date).toLocaleDateString('en-CA') %></td>
+                <td><%= inc.union_name || '-' %></td>
+                <td><%= inc.payment_method %></td>
+                <td><%= inc.reference || '-' %></td>
+                <td class="text-success">$<%= parseFloat(inc.amount).toFixed(2) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4" style="text-align: right;"><strong>Total Income:</strong></td>
+              <td class="text-success"><strong>$<%= report.totalIncome.toFixed(2) %></strong></td>
+            </tr>
+          </tfoot>
+        </table>
+      <% } %>
+    </div>
+
+    <!-- Expenses by Category -->
+    <div class="report-section">
+      <h3>Expenses by Category</h3>
+      <% if (report.expensesByCategory.length === 0) { %>
+        <p class="text-muted">No expenses recorded for <%= report.year %></p>
+      <% } else { %>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% report.expensesByCategory.forEach(cat => { %>
+              <tr>
+                <td><%= cat.category %></td>
+                <td class="text-danger">$<%= parseFloat(cat.total).toFixed(2) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td style="text-align: right;"><strong>Total Expenses:</strong></td>
+              <td class="text-danger"><strong>$<%= report.totalExpenses.toFixed(2) %></strong></td>
+            </tr>
+          </tfoot>
+        </table>
+      <% } %>
+    </div>
+
+    <!-- Expense Details -->
+    <div class="report-section">
+      <h3>Expense Details</h3>
+      <% if (report.expenses.length === 0) { %>
+        <p class="text-muted">No expenses recorded for <%= report.year %></p>
+      <% } else { %>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Vendor</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% report.expenses.forEach(exp => { %>
+              <tr>
+                <td><%= new Date(exp.expense_date).toLocaleDateString('en-CA') %></td>
+                <td><%= exp.vendor || '-' %></td>
+                <td><%= exp.category %></td>
+                <td><%= exp.description || '-' %></td>
+                <td class="text-danger">$<%= parseFloat(exp.amount).toFixed(2) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+
+    <!-- Tax Summary -->
+    <div class="tax-summary">
+      <h3>Tax Summary for CRA (T2125)</h3>
+      <div class="tax-info">
+        <p><strong>Business Name:</strong> Migs List</p>
+        <p><strong>BIN:</strong> 1001457886</p>
+        <p><strong>Tax Year:</strong> <%= report.year %></p>
+        <hr>
+        <p><strong>Gross Business Income:</strong> $<%= report.totalIncome.toFixed(2) %></p>
+        <p><strong>Total Business Expenses:</strong> $<%= report.totalExpenses.toFixed(2) %></p>
+        <p><strong>Net Business Income:</strong> $<%= report.netProfit.toFixed(2) %></p>
+        <% if (report.netProfit < 0) { %>
+          <p class="text-muted">(This is a business loss that may be deductible)</p>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="print-actions">
+      <button onclick="window.print()" class="btn btn-primary">Print Report</button>
+    </div>
+
+  <% } else { %>
+    <div class="empty-state">
+      <p>Select a year above to view the annual report.</p>
+    </div>
+  <% } %>
+</div>
+
+<style>
+.reports-container {
+  max-width: 1000px;
+}
+.year-selector {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 1.5rem;
+}
+.year-selector h3 {
+  margin-bottom: 1rem;
+}
+.year-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.report-header {
+  margin-bottom: 1.5rem;
+}
+.report-header h2 {
+  margin-bottom: 0.25rem;
+}
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.summary-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  text-align: center;
+}
+.card-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+.card-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+.summary-card.income .card-value { color: #16a34a; }
+.summary-card.expenses .card-value { color: #dc2626; }
+.summary-card.profit .card-value { color: #16a34a; }
+.summary-card.loss .card-value { color: #dc2626; }
+.report-section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 1.5rem;
+}
+.report-section h3 {
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+.tax-summary {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+.tax-summary h3 {
+  color: #0369a1;
+  margin-bottom: 1rem;
+}
+.tax-info p {
+  margin-bottom: 0.5rem;
+}
+.tax-info hr {
+  margin: 1rem 0;
+  border: none;
+  border-top: 1px solid #bae6fd;
+}
+.text-success { color: #16a34a; }
+.text-danger { color: #dc2626; }
+.text-muted { color: #9ca3af; }
+.print-actions {
+  text-align: center;
+}
+@media print {
+  .year-selector, .print-actions {
+    display: none;
+  }
+  .report-section, .summary-card, .tax-summary {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+}
+@media (max-width: 768px) {
+  .summary-cards {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

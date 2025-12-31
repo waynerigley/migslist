@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice <%= invoice.invoice_number %> - Migs List</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #1f2937;
+      background: #f9fafb;
+      padding: 2rem;
+    }
+    .invoice {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 3rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .invoice-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 3rem;
+    }
+    .company-info h1 {
+      font-size: 1.5rem;
+      color: #16a34a;
+      margin-bottom: 0.5rem;
+    }
+    .company-info p {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+    .invoice-title {
+      text-align: right;
+    }
+    .invoice-title h2 {
+      font-size: 2rem;
+      color: #374151;
+      margin-bottom: 0.5rem;
+    }
+    .invoice-number {
+      font-size: 1.125rem;
+      color: #6b7280;
+    }
+    .invoice-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    .meta-section h3 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: #9ca3af;
+      margin-bottom: 0.5rem;
+    }
+    .meta-section p {
+      font-size: 0.875rem;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .status-draft { background: #f3f4f6; color: #374151; }
+    .status-sent { background: #fef3c7; color: #92400e; }
+    .status-paid { background: #dcfce7; color: #166534; }
+    .status-overdue { background: #fee2e2; color: #991b1b; }
+    .invoice-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+    }
+    .invoice-table th {
+      text-align: left;
+      padding: 1rem;
+      background: #f9fafb;
+      border-bottom: 2px solid #e5e7eb;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: #6b7280;
+    }
+    .invoice-table td {
+      padding: 1rem;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .invoice-table .amount {
+      text-align: right;
+    }
+    .invoice-total {
+      text-align: right;
+      margin-bottom: 2rem;
+    }
+    .invoice-total .total-row {
+      display: inline-flex;
+      justify-content: space-between;
+      width: 200px;
+      padding: 0.5rem 0;
+      border-top: 2px solid #e5e7eb;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .payment-info {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .payment-info h4 {
+      color: #166534;
+      margin-bottom: 1rem;
+    }
+    .payment-info p {
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+    .notes {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+    .notes h4 {
+      color: #374151;
+      margin-bottom: 0.5rem;
+    }
+    .print-actions {
+      text-align: center;
+      margin-top: 2rem;
+    }
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: #16a34a;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+    }
+    .btn:hover {
+      background: #15803d;
+    }
+    .btn-outline {
+      background: white;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+    .btn-outline:hover {
+      background: #f9fafb;
+    }
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .invoice {
+        box-shadow: none;
+        padding: 0;
+      }
+      .print-actions {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="invoice">
+    <div class="invoice-header">
+      <div class="company-info">
+        <h1>Migs List</h1>
+        <p>9880 Ridge Road<br>
+        Windsor, Ontario<br>
+        Canada N8R 1G6<br>
+        BIN: 1001457886</p>
+      </div>
+      <div class="invoice-title">
+        <h2>INVOICE</h2>
+        <div class="invoice-number"><%= invoice.invoice_number %></div>
+        <div style="margin-top: 0.5rem;">
+          <span class="status-badge status-<%= invoice.status %>"><%= invoice.status %></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="invoice-meta">
+      <div class="meta-section">
+        <h3>Bill To</h3>
+        <p><strong><%= invoice.union_name || 'N/A' %></strong></p>
+        <% if (invoice.contact_name) { %><p><%= invoice.contact_name %></p><% } %>
+        <% if (invoice.contact_email) { %><p><%= invoice.contact_email %></p><% } %>
+      </div>
+      <div class="meta-section" style="text-align: right;">
+        <h3>Invoice Details</h3>
+        <p><strong>Issue Date:</strong> <%= new Date(invoice.issue_date).toLocaleDateString('en-CA') %></p>
+        <p><strong>Due Date:</strong> <%= new Date(invoice.due_date).toLocaleDateString('en-CA') %></p>
+        <% if (invoice.paid_date) { %>
+          <p><strong>Paid Date:</strong> <%= new Date(invoice.paid_date).toLocaleDateString('en-CA') %></p>
+        <% } %>
+      </div>
+    </div>
+
+    <table class="invoice-table">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th class="amount">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Annual Subscription - MIGS List Member Management System</td>
+          <td class="amount">$<%= parseFloat(invoice.amount).toFixed(2) %> CAD</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="invoice-total">
+      <div class="total-row">
+        <span>Total:</span>
+        <span>$<%= parseFloat(invoice.amount).toFixed(2) %> CAD</span>
+      </div>
+    </div>
+
+    <div class="payment-info">
+      <h4>Payment Options</h4>
+      <p><strong>Option 1: Interac e-Transfer</strong></p>
+      <p>Send payment to: <strong>payments@migslist.com</strong></p>
+      <p style="margin-top: 1rem;"><strong>Option 2: Cheque</strong></p>
+      <p>Make cheque payable to: <strong>Migs List</strong></p>
+      <p>Mail to: 9880 Ridge Road, Windsor, Ontario, Canada N8R 1G6</p>
+      <p style="margin-top: 1rem; color: #166534;"><em>Please include your union name in the payment reference.</em></p>
+    </div>
+
+    <% if (invoice.notes) { %>
+      <div class="notes">
+        <h4>Notes</h4>
+        <p><%= invoice.notes %></p>
+      </div>
+    <% } %>
+
+    <div class="print-actions">
+      <button onclick="window.print()" class="btn">Print Invoice</button>
+      <a href="/admin/finance/invoices/<%= invoice.id %>/pdf" class="btn btn-outline" style="margin-left: 0.5rem;">Download PDF</a>
+      <a href="/admin/finance/invoices" class="btn btn-outline" style="margin-left: 0.5rem;">Back to Invoices</a>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<%- include('../../../partials/header', { title: 'Income', backLink: '/admin/finance' }) %>
+
+<div class="section-header">
+  <div class="filter-bar">
+    <form method="GET" action="/admin/finance/income" class="filter-form">
+      <select name="year" onchange="this.form.submit()">
+        <option value="">All Years</option>
+        <% years.forEach(y => { %>
+          <option value="<%= y %>" <%= selectedYear == y ? 'selected' : '' %>><%= y %></option>
+        <% }) %>
+      </select>
+    </form>
+  </div>
+  <a href="/admin/finance/income/new" class="btn btn-primary">+ Record Income</a>
+</div>
+
+<% if (income.length === 0) { %>
+  <div class="empty-state">
+    <p>No income records found</p>
+    <a href="/admin/finance/income/new" class="btn btn-primary">Record your first income</a>
+  </div>
+<% } else { %>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Customer</th>
+        <th>Description</th>
+        <th>Method</th>
+        <th>Reference</th>
+        <th>Amount</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% income.forEach(inc => { %>
+        <tr>
+          <td><%= new Date(inc.received_date).toLocaleDateString('en-CA') %></td>
+          <td><%= inc.union_name || '-' %></td>
+          <td><%= inc.description || '-' %></td>
+          <td>
+            <span class="badge badge-<%= inc.payment_method === 'etransfer' ? 'primary' : inc.payment_method === 'cheque' ? 'secondary' : 'default' %>">
+              <%= inc.payment_method === 'etransfer' ? 'e-Transfer' : inc.payment_method === 'cheque' ? 'Cheque' : inc.payment_method %>
+            </span>
+          </td>
+          <td><%= inc.reference || '-' %></td>
+          <td class="text-success"><strong>$<%= parseFloat(inc.amount).toFixed(2) %></strong></td>
+          <td class="actions">
+            <a href="/admin/finance/income/<%= inc.id %>/edit" class="btn btn-sm btn-outline">Edit</a>
+            <a href="/admin/finance/receipts/<%= inc.id %>/pdf" class="btn btn-sm btn-secondary" target="_blank">Receipt</a>
+            <form action="/admin/finance/income/<%= inc.id %>/delete" method="POST" style="display: inline;" onsubmit="return confirm('Delete this income record?')">
+              <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="5" style="text-align: right;"><strong>Total:</strong></td>
+        <td class="text-success"><strong>$<%= income.reduce((sum, inc) => sum + parseFloat(inc.amount), 0).toFixed(2) %></strong></td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+<% } %>
+
+<style>
+.filter-bar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.filter-form select {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+.text-success { color: #16a34a; }
+.actions {
+  white-space: nowrap;
+}
+.actions .btn {
+  margin-right: 0.25rem;
+}
+</style>

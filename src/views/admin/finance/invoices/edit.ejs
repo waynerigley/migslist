@@ -1,0 +1,129 @@
+<%- include('../../../partials/header', { title: invoice ? 'Edit Invoice' : 'Create Invoice', backLink: '/admin/finance/invoices' }) %>
+
+<div class="form-container">
+  <form action="<%= invoice ? '/admin/finance/invoices/' + invoice.id : '/admin/finance/invoices' %>" method="POST">
+    <div class="form-group">
+      <label for="union_id">Customer (Union) *</label>
+      <select name="union_id" id="union_id" required>
+        <option value="">-- Select Union --</option>
+        <% unions.forEach(u => { %>
+          <option value="<%= u.id %>"
+            <%= invoice && invoice.union_id === u.id ? 'selected' : '' %>
+            <%= preselectedUnion === u.id ? 'selected' : '' %>>
+            <%= u.name %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="amount">Amount (CAD) *</label>
+        <input type="number" id="amount" name="amount" step="0.01" min="0" required
+               value="<%= invoice ? invoice.amount : '500.00' %>" placeholder="500.00">
+        <small>Standard subscription: $500.00 (first year) / $800.00 (renewal)</small>
+      </div>
+
+      <% if (invoice) { %>
+        <div class="form-group">
+          <label for="status">Status *</label>
+          <select name="status" id="status" required>
+            <option value="draft" <%= invoice.status === 'draft' ? 'selected' : '' %>>Draft</option>
+            <option value="sent" <%= invoice.status === 'sent' ? 'selected' : '' %>>Sent</option>
+            <option value="paid" <%= invoice.status === 'paid' ? 'selected' : '' %>>Paid</option>
+            <option value="overdue" <%= invoice.status === 'overdue' ? 'selected' : '' %>>Overdue</option>
+          </select>
+        </div>
+      <% } %>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="issue_date">Issue Date *</label>
+        <input type="date" id="issue_date" name="issue_date" required
+               value="<%= invoice ? new Date(invoice.issue_date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0] %>">
+      </div>
+
+      <div class="form-group">
+        <label for="due_date">Due Date *</label>
+        <input type="date" id="due_date" name="due_date" required
+               value="<%= invoice ? new Date(invoice.due_date).toISOString().split('T')[0] : new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0] %>">
+        <small>Default: 30 days from issue date</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="notes">Notes</label>
+      <textarea id="notes" name="notes" rows="3" placeholder="Additional notes for the invoice"><%= invoice ? invoice.notes || '' : '' %></textarea>
+    </div>
+
+    <% if (invoice) { %>
+      <div class="info-box">
+        <strong>Invoice Number:</strong> <%= invoice.invoice_number %><br>
+        <strong>Created:</strong> <%= new Date(invoice.created_at).toLocaleString('en-CA') %>
+        <% if (invoice.paid_date) { %>
+          <br><strong>Paid:</strong> <%= new Date(invoice.paid_date).toLocaleDateString('en-CA') %>
+        <% } %>
+      </div>
+    <% } %>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary"><%= invoice ? 'Update' : 'Create' %> Invoice</button>
+      <a href="/admin/finance/invoices" class="btn btn-outline">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<style>
+.form-container {
+  max-width: 600px;
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.form-group {
+  margin-bottom: 1rem;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+.form-group small {
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+.info-box {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

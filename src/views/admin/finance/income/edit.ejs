@@ -1,0 +1,107 @@
+<%- include('../../../partials/header', { title: income ? 'Edit Income' : 'Record Income', backLink: '/admin/finance/income' }) %>
+
+<div class="form-container">
+  <form action="<%= income ? '/admin/finance/income/' + income.id : '/admin/finance/income' %>" method="POST">
+    <div class="form-group">
+      <label for="union_id">Customer (Union)</label>
+      <select name="union_id" id="union_id">
+        <option value="">-- Select Union (optional) --</option>
+        <% unions.forEach(u => { %>
+          <option value="<%= u.id %>" <%= income && income.union_id === u.id ? 'selected' : '' %>>
+            <%= u.name %>
+          </option>
+        <% }) %>
+      </select>
+      <small>Leave blank for miscellaneous income</small>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="amount">Amount (CAD) *</label>
+        <input type="number" id="amount" name="amount" step="0.01" min="0" required
+               value="<%= income ? income.amount : '' %>" placeholder="500.00">
+      </div>
+
+      <div class="form-group">
+        <label for="received_date">Date Received *</label>
+        <input type="date" id="received_date" name="received_date" required
+               value="<%= income ? new Date(income.received_date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0] %>">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="payment_method">Payment Method *</label>
+        <select name="payment_method" id="payment_method" required>
+          <option value="etransfer" <%= income && income.payment_method === 'etransfer' ? 'selected' : (!income ? 'selected' : '') %>>Interac e-Transfer</option>
+          <option value="cheque" <%= income && income.payment_method === 'cheque' ? 'selected' : '' %>>Cheque</option>
+          <option value="cash" <%= income && income.payment_method === 'cash' ? 'selected' : '' %>>Cash</option>
+          <option value="other" <%= income && income.payment_method === 'other' ? 'selected' : '' %>>Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="reference">Reference Number</label>
+        <input type="text" id="reference" name="reference"
+               value="<%= income ? income.reference || '' : '' %>"
+               placeholder="e-Transfer confirmation, cheque #, etc.">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="2" placeholder="Optional notes about this payment"><%= income ? income.description || '' : '' %></textarea>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary"><%= income ? 'Update' : 'Record' %> Income</button>
+      <a href="/admin/finance/income" class="btn btn-outline">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<style>
+.form-container {
+  max-width: 600px;
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.form-group {
+  margin-bottom: 1rem;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+.form-group small {
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

@@ -1,0 +1,235 @@
+<%- include('../../partials/header', { title: 'Finance Dashboard', backLink: '/admin' }) %>
+
+<div class="finance-dashboard">
+  <!-- Summary Cards -->
+  <div class="stats-grid">
+    <div class="stat-card stat-success">
+      <div class="stat-value">$<%= incomeYTD.toLocaleString('en-CA', { minimumFractionDigits: 2 }) %></div>
+      <div class="stat-label">Income YTD (<%= currentYear %>)</div>
+    </div>
+    <div class="stat-card stat-danger">
+      <div class="stat-value">$<%= expensesYTD.toLocaleString('en-CA', { minimumFractionDigits: 2 }) %></div>
+      <div class="stat-label">Expenses YTD (<%= currentYear %>)</div>
+    </div>
+    <div class="stat-card <%= netProfit >= 0 ? 'stat-success' : 'stat-danger' %>">
+      <div class="stat-value">$<%= netProfit.toLocaleString('en-CA', { minimumFractionDigits: 2 }) %></div>
+      <div class="stat-label">Net Profit/Loss</div>
+    </div>
+    <div class="stat-card stat-warning">
+      <div class="stat-value">$<%= parseFloat(invoiceStats.outstanding_total || 0).toLocaleString('en-CA', { minimumFractionDigits: 2 }) %></div>
+      <div class="stat-label">Outstanding Invoices</div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <a href="/admin/finance/income/new" class="btn btn-success">+ Record Income</a>
+    <a href="/admin/finance/expenses/new" class="btn btn-danger">+ Record Expense</a>
+    <a href="/admin/finance/invoices/new" class="btn btn-primary">+ Create Invoice</a>
+    <a href="/admin/finance/reports" class="btn btn-outline">View Reports</a>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- Recent Income -->
+    <div class="dashboard-section">
+      <div class="section-header">
+        <h3>Recent Income</h3>
+        <a href="/admin/finance/income" class="btn btn-sm btn-outline">View All</a>
+      </div>
+      <% if (recentIncome.length === 0) { %>
+        <p class="text-muted">No income recorded yet</p>
+      <% } else { %>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Method</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% recentIncome.forEach(inc => { %>
+              <tr>
+                <td><%= new Date(inc.received_date).toLocaleDateString('en-CA') %></td>
+                <td><%= inc.union_name || 'N/A' %></td>
+                <td><span class="badge badge-<%= inc.payment_method === 'etransfer' ? 'primary' : 'secondary' %>"><%= inc.payment_method %></span></td>
+                <td class="text-success">$<%= parseFloat(inc.amount).toFixed(2) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+
+    <!-- Recent Expenses -->
+    <div class="dashboard-section">
+      <div class="section-header">
+        <h3>Recent Expenses</h3>
+        <a href="/admin/finance/expenses" class="btn btn-sm btn-outline">View All</a>
+      </div>
+      <% if (recentExpenses.length === 0) { %>
+        <p class="text-muted">No expenses recorded yet</p>
+      <% } else { %>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Vendor</th>
+              <th>Category</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% recentExpenses.forEach(exp => { %>
+              <tr>
+                <td><%= new Date(exp.expense_date).toLocaleDateString('en-CA') %></td>
+                <td><%= exp.vendor || 'N/A' %></td>
+                <td><span class="badge"><%= exp.category %></span></td>
+                <td class="text-danger">$<%= parseFloat(exp.amount).toFixed(2) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Outstanding Invoices -->
+  <div class="dashboard-section">
+    <div class="section-header">
+      <h3>Outstanding Invoices</h3>
+      <a href="/admin/finance/invoices" class="btn btn-sm btn-outline">View All</a>
+    </div>
+    <% if (outstandingInvoices.length === 0) { %>
+      <p class="text-muted">No outstanding invoices</p>
+    <% } else { %>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Invoice #</th>
+            <th>Customer</th>
+            <th>Issue Date</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Amount</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% outstandingInvoices.forEach(inv => { %>
+            <tr>
+              <td><strong><%= inv.invoice_number %></strong></td>
+              <td><%= inv.union_name || 'N/A' %></td>
+              <td><%= new Date(inv.issue_date).toLocaleDateString('en-CA') %></td>
+              <td><%= new Date(inv.due_date).toLocaleDateString('en-CA') %></td>
+              <td>
+                <span class="badge badge-<%= inv.status === 'overdue' ? 'danger' : 'warning' %>">
+                  <%= inv.status.toUpperCase() %>
+                </span>
+              </td>
+              <td>$<%= parseFloat(inv.amount).toFixed(2) %></td>
+              <td>
+                <form action="/admin/finance/invoices/<%= inv.id %>/mark-paid" method="POST" style="display: inline;">
+                  <button type="submit" class="btn btn-sm btn-success">Mark Paid</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+
+  <!-- Invoice Stats -->
+  <div class="stats-grid stats-small">
+    <div class="stat-card">
+      <div class="stat-value"><%= invoiceStats.draft_count || 0 %></div>
+      <div class="stat-label">Draft</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value"><%= invoiceStats.sent_count || 0 %></div>
+      <div class="stat-label">Sent</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value"><%= invoiceStats.paid_count || 0 %></div>
+      <div class="stat-label">Paid</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value"><%= invoiceStats.overdue_count || 0 %></div>
+      <div class="stat-label">Overdue</div>
+    </div>
+  </div>
+</div>
+
+<style>
+.finance-dashboard {
+  max-width: 1200px;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.stats-small .stat-card {
+  padding: 1rem;
+}
+.stats-small .stat-value {
+  font-size: 1.5rem;
+}
+.stat-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.stat-label {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+.stat-success .stat-value { color: #16a34a; }
+.stat-danger .stat-value { color: #dc2626; }
+.stat-warning .stat-value { color: #d97706; }
+.quick-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.dashboard-section {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.section-header h3 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+.text-success { color: #16a34a; }
+.text-danger { color: #dc2626; }
+.text-muted { color: #9ca3af; }
+@media (max-width: 768px) {
+  .stats-grid, .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

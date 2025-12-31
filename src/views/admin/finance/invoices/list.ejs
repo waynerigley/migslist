@@ -1,0 +1,116 @@
+<%- include('../../../partials/header', { title: 'Invoices', backLink: '/admin/finance' }) %>
+
+<div class="section-header">
+  <div class="filter-bar">
+    <form method="GET" action="/admin/finance/invoices" class="filter-form">
+      <select name="status" onchange="this.form.submit()">
+        <option value="">All Statuses</option>
+        <option value="draft" <%= selectedStatus === 'draft' ? 'selected' : '' %>>Draft</option>
+        <option value="sent" <%= selectedStatus === 'sent' ? 'selected' : '' %>>Sent</option>
+        <option value="paid" <%= selectedStatus === 'paid' ? 'selected' : '' %>>Paid</option>
+        <option value="overdue" <%= selectedStatus === 'overdue' ? 'selected' : '' %>>Overdue</option>
+      </select>
+      <select name="year" onchange="this.form.submit()">
+        <option value="">All Years</option>
+        <% years.forEach(y => { %>
+          <option value="<%= y %>" <%= selectedYear == y ? 'selected' : '' %>><%= y %></option>
+        <% }) %>
+      </select>
+    </form>
+  </div>
+  <a href="/admin/finance/invoices/new" class="btn btn-primary">+ Create Invoice</a>
+</div>
+
+<% if (invoices.length === 0) { %>
+  <div class="empty-state">
+    <p>No invoices found</p>
+    <a href="/admin/finance/invoices/new" class="btn btn-primary">Create your first invoice</a>
+  </div>
+<% } else { %>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Invoice #</th>
+        <th>Customer</th>
+        <th>Issue Date</th>
+        <th>Due Date</th>
+        <th>Status</th>
+        <th>Amount</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% invoices.forEach(inv => { %>
+        <tr>
+          <td><strong><%= inv.invoice_number %></strong></td>
+          <td><%= inv.union_name || '-' %></td>
+          <td><%= new Date(inv.issue_date).toLocaleDateString('en-CA') %></td>
+          <td><%= new Date(inv.due_date).toLocaleDateString('en-CA') %></td>
+          <td>
+            <span class="badge badge-<%=
+              inv.status === 'paid' ? 'success' :
+              inv.status === 'overdue' ? 'danger' :
+              inv.status === 'sent' ? 'warning' : 'secondary'
+            %>">
+              <%= inv.status.toUpperCase() %>
+            </span>
+          </td>
+          <td><strong>$<%= parseFloat(inv.amount).toFixed(2) %></strong></td>
+          <td class="actions">
+            <a href="/admin/finance/invoices/<%= inv.id %>" class="btn btn-sm btn-outline" target="_blank">View</a>
+            <a href="/admin/finance/invoices/<%= inv.id %>/pdf" class="btn btn-sm btn-secondary">PDF</a>
+            <% if (inv.status === 'draft') { %>
+              <form action="/admin/finance/invoices/<%= inv.id %>/send" method="POST" style="display: inline;">
+                <button type="submit" class="btn btn-sm btn-primary">Mark Sent</button>
+              </form>
+            <% } %>
+            <% if (inv.status === 'sent' || inv.status === 'overdue') { %>
+              <form action="/admin/finance/invoices/<%= inv.id %>/mark-paid" method="POST" style="display: inline;">
+                <button type="submit" class="btn btn-sm btn-success">Mark Paid</button>
+              </form>
+            <% } %>
+            <a href="/admin/finance/invoices/<%= inv.id %>/edit" class="btn btn-sm btn-outline">Edit</a>
+            <form action="/admin/finance/invoices/<%= inv.id %>/delete" method="POST" style="display: inline;" onsubmit="return confirm('Delete this invoice?')">
+              <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="5" style="text-align: right;"><strong>Total:</strong></td>
+        <td><strong>$<%= invoices.reduce((sum, inv) => sum + parseFloat(inv.amount), 0).toFixed(2) %></strong></td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+<% } %>
+
+<style>
+.filter-bar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.filter-form {
+  display: flex;
+  gap: 0.5rem;
+}
+.filter-form select {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+.actions {
+  white-space: nowrap;
+}
+.actions .btn {
+  margin-right: 0.25rem;
+}
+.badge-success { background: #dcfce7; color: #166534; }
+.badge-danger { background: #fee2e2; color: #991b1b; }
+.badge-warning { background: #fef3c7; color: #92400e; }
+.badge-secondary { background: #f3f4f6; color: #374151; }
+</style>

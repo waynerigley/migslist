@@ -1,0 +1,119 @@
+<%- include('../../../partials/header', { title: expense ? 'Edit Expense' : 'Record Expense', backLink: '/admin/finance/expenses' }) %>
+
+<div class="form-container">
+  <form action="<%= expense ? '/admin/finance/expenses/' + expense.id : '/admin/finance/expenses' %>" method="POST" enctype="multipart/form-data">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="category">Category *</label>
+        <select name="category" id="category" required>
+          <% categories.forEach(cat => { %>
+            <option value="<%= cat.value %>" <%= expense && expense.category === cat.value ? 'selected' : '' %>>
+              <%= cat.label %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="vendor">Vendor</label>
+        <input type="text" id="vendor" name="vendor"
+               value="<%= expense ? expense.vendor || '' : '' %>"
+               placeholder="e.g., Vultr, Cloudflare">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="amount">Amount (CAD) *</label>
+        <input type="number" id="amount" name="amount" step="0.01" min="0" required
+               value="<%= expense ? expense.amount : '' %>" placeholder="12.50">
+      </div>
+
+      <div class="form-group">
+        <label for="expense_date">Date *</label>
+        <input type="date" id="expense_date" name="expense_date" required
+               value="<%= expense ? new Date(expense.expense_date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0] %>">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="2" placeholder="What was this expense for?"><%= expense ? expense.description || '' : '' %></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="receipt">Receipt (Image or PDF)</label>
+      <% if (expense && expense.receipt_filename) { %>
+        <div class="current-file">
+          <span>Current: <%= expense.receipt_filename %></span>
+          <a href="/admin/finance/expenses/<%= expense.id %>/receipt" target="_blank" class="btn btn-sm btn-outline">View</a>
+        </div>
+      <% } %>
+      <input type="file" id="receipt" name="receipt" accept="image/*,.pdf">
+      <small>Upload a new file to replace the existing one (optional)</small>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary"><%= expense ? 'Update' : 'Record' %> Expense</button>
+      <a href="/admin/finance/expenses" class="btn btn-outline">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<style>
+.form-container {
+  max-width: 600px;
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.form-group {
+  margin-bottom: 1rem;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+.form-group input[type="file"] {
+  padding: 0.5rem;
+}
+.form-group small {
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+.current-file {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
