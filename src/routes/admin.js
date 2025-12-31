@@ -37,6 +37,23 @@ const upload = multer({
   }
 });
 
+// Configure multer for Excel uploads (memory storage)
+const excelUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB for Excel files
+  fileFilter: (req, file, cb) => {
+    const allowedMimes = [
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.ms-excel'
+    ];
+    if (allowedMimes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only Excel files are allowed'));
+    }
+  }
+});
+
 // Initialize SendGrid
 if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -852,7 +869,7 @@ router.post('/unions/:unionId/buckets/:id/email-member/:memberId', async (req, r
 });
 
 // Import members from Excel
-router.post('/unions/:unionId/buckets/:id/import-members', upload.single('memberFile'), async (req, res) => {
+router.post('/unions/:unionId/buckets/:id/import-members', excelUpload.single('memberFile'), async (req, res) => {
   try {
     const bucket = await Bucket.findById(req.params.id);
     if (!bucket) {
