@@ -1137,19 +1137,15 @@ router.get('/unions/:unionId/export/rank-and-file/excel', async (req, res) => {
     sheet.getCell('A5').font = { italic: true, size: 9 };
     sheet.getCell('A5').alignment = { horizontal: 'center' };
 
-    // Empty row 6
-    sheet.addRow([]);
-
-    sheet.columns = [
-      { header: 'Unit/Sectional', key: 'bucket', width: 20 },
-      { header: 'First Name', key: 'firstName', width: 15 },
-      { header: 'Last Name', key: 'lastName', width: 15 },
-      { header: 'Email', key: 'email', width: 25 },
-      { header: 'Phone', key: 'phone', width: 15 },
-      { header: 'Address', key: 'address', width: 30 },
-      { header: 'City', key: 'city', width: 15 },
-      { header: 'Province', key: 'state', width: 10 }
-    ];
+    // Set column widths (without headers - we'll add them manually)
+    sheet.getColumn(1).width = 20;
+    sheet.getColumn(2).width = 15;
+    sheet.getColumn(3).width = 15;
+    sheet.getColumn(4).width = 25;
+    sheet.getColumn(5).width = 15;
+    sheet.getColumn(6).width = 30;
+    sheet.getColumn(7).width = 15;
+    sheet.getColumn(8).width = 10;
 
     // Row 7: Column headers
     const headerRow = sheet.getRow(7);
@@ -1161,6 +1157,7 @@ router.get('/unions/:unionId/export/rank-and-file/excel', async (req, res) => {
     };
     headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
 
+    // Add member data starting at row 8
     let rowNum = 8;
     members.forEach(member => {
       const address = [member.address_line1, member.address_line2].filter(Boolean).join(', ');
