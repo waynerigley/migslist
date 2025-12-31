@@ -120,10 +120,12 @@ Access at: `/admin/finance`
 Features:
 - **Dashboard** - YTD income/expenses, net profit, outstanding invoices
 - **Income Tracking** - Record payments with method, reference, customer
-- **Expense Tracking** - Categories (Server, Domain, Software, etc.), receipt uploads
+- **Expense Tracking** - Categories, receipt uploads, currency (CAD/USD), expiry dates
 - **Invoicing** - Create/send invoices (INV-YYYY-NNN format), PDF generation
 - **Payment Receipts** - Generate PDF receipts for customers
 - **Tax Reports** - Annual summaries for CRA (T2125)
+
+Expense Categories: Server, Domain, Software, Office, Marketing, Professional, Banking, Other
 
 Database tables: `income`, `expenses`, `invoices`
 
