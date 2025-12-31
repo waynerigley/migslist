@@ -22,9 +22,9 @@ function toggleTheme() {
   }
 })();
 
-// Auto-dismiss alerts after 5 seconds
+// Auto-dismiss success/error alerts after 5 seconds (but NOT tips/info)
 document.addEventListener('DOMContentLoaded', function() {
-  const alerts = document.querySelectorAll('.alert');
+  const alerts = document.querySelectorAll('.alert-success, .alert-error');
   alerts.forEach(function(alert) {
     setTimeout(function() {
       alert.style.transition = 'opacity 0.3s';
