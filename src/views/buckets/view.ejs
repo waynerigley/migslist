@@ -10,13 +10,14 @@
   <% if (bucket.master_pdf_filename) { %>
     <a href="/buckets/<%= bucket.id %>/master-pdf" class="btn btn-outline">Download Master PDF</a>
   <% } %>
-  <div class="dropdown">
-    <button class="btn btn-outline dropdown-toggle">Export</button>
-    <div class="dropdown-menu">
-      <a href="/export/bucket/<%= bucket.id %>">Good Standing Only</a>
-      <a href="/export/bucket/<%= bucket.id %>/all">All Members</a>
-    </div>
-  </div>
+  <button type="button" class="btn-export" onclick="openExportModal()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+    Export Members
+  </button>
   <a href="/buckets/<%= bucket.id %>/retired" class="btn btn-outline btn-muted">View Non-Active (<%= typeof retiredCount !== 'undefined' ? retiredCount : 0 %>)</a>
 </div>
 
@@ -118,4 +119,203 @@
 .btn-muted {
   opacity: 0.7;
 }
+.btn-export {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(5, 150, 105, 0.3);
+}
+.btn-export:hover {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+  box-shadow: 0 4px 8px rgba(5, 150, 105, 0.4);
+  transform: translateY(-1px);
+}
+.btn-export:active {
+  transform: translateY(0);
+}
+.btn-export svg {
+  width: 18px;
+  height: 18px;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+.modal-content {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 450px;
+  width: 90%;
+  animation: modalSlideIn 0.2s ease-out;
+}
+@keyframes modalSlideIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  line-height: 1;
+  padding: 0;
+}
+.modal-close:hover {
+  color: var(--text-primary);
+}
+.modal-body {
+  padding: 1.5rem;
+}
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  border-radius: 0 0 12px 12px;
+}
+.export-description {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.export-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.export-option {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.2s;
+}
+.export-option:hover {
+  border-color: var(--primary);
+  background: var(--bg-secondary);
+}
+.export-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.export-icon svg {
+  width: 24px;
+  height: 24px;
+}
+.excel-icon {
+  background: #107c41;
+  color: white;
+}
+.export-label {
+  display: flex;
+  flex-direction: column;
+}
+.export-label strong {
+  font-size: 1rem;
+}
+.export-label span {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
 </style>
+
+<!-- Export Modal -->
+<div id="exportModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Export Members</h3>
+      <button type="button" class="modal-close" onclick="closeExportModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p class="export-description">Export members from #<%= bucket.number %> - <%= bucket.name %></p>
+      <div class="export-options">
+        <a href="/export/bucket/<%= bucket.id %>" class="export-option">
+          <div class="export-icon excel-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          </div>
+          <div class="export-label">
+            <strong>Good Standing Only</strong>
+            <span>Members with uploaded PDF documents</span>
+          </div>
+        </a>
+        <a href="/export/bucket/<%= bucket.id %>/all" class="export-option">
+          <div class="export-icon excel-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div class="export-label">
+            <strong>All Members</strong>
+            <span>Export everyone regardless of standing</span>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" onclick="closeExportModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openExportModal() {
+  document.getElementById('exportModal').style.display = 'flex';
+}
+function closeExportModal() {
+  document.getElementById('exportModal').style.display = 'none';
+}
+document.getElementById('exportModal')?.addEventListener('click', function(e) {
+  if (e.target === this) closeExportModal();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeExportModal();
+});
+</script>
