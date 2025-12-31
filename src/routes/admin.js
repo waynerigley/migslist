@@ -851,6 +851,107 @@ router.post('/unions/:unionId/buckets/:id/email-member/:memberId', async (req, r
   }
 });
 
+// Import members from Excel
+router.post('/unions/:unionId/buckets/:id/import-members', upload.single('memberFile'), async (req, res) => {
+  try {
+    const bucket = await Bucket.findById(req.params.id);
+    if (!bucket) {
+      req.session.error = 'Bucket not found';
+      return res.redirect(`/admin/unions/${req.params.unionId}`);
+    }
+
+    if (!req.file) {
+      req.session.error = 'Please select a file to upload';
+      return res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}`);
+    }
+
+    const ExcelJS = require('exceljs');
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.load(req.file.buffer);
+
+    const worksheet = workbook.getWorksheet('Members') || workbook.getWorksheet(1);
+    if (!worksheet) {
+      req.session.error = 'Could not find Members worksheet in the file';
+      return res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}`);
+    }
+
+    let importedCount = 0;
+    let skippedCount = 0;
+    const errors = [];
+    const membersToCreate = [];
+
+    // Collect all members to create
+    worksheet.eachRow((row, rowNumber) => {
+      if (rowNumber === 1) return; // Skip header
+
+      const firstName = row.getCell(1).value?.toString().trim();
+      const lastName = row.getCell(2).value?.toString().trim();
+
+      // Skip empty rows
+      if (!firstName || !lastName) {
+        skippedCount++;
+        return;
+      }
+
+      // Skip sample data rows
+      if ((firstName === 'John' && lastName === 'Smith') ||
+          (firstName === 'Jane' && lastName === 'Doe') ||
+          (firstName === 'Bob' && lastName === 'Wilson')) {
+        skippedCount++;
+        return;
+      }
+
+      membersToCreate.push({
+        rowNumber,
+        firstName,
+        lastName,
+        email: row.getCell(3).value?.toString().trim() || null,
+        phone: row.getCell(4).value?.toString().trim() || null,
+        addressLine1: row.getCell(5).value?.toString().trim() || null,
+        addressLine2: row.getCell(6).value?.toString().trim() || null,
+        city: row.getCell(7).value?.toString().trim() || null,
+        province: row.getCell(8).value?.toString().trim() || null,
+        postalCode: row.getCell(9).value?.toString().trim() || null
+      });
+    });
+
+    // Create members sequentially
+    for (const m of membersToCreate) {
+      try {
+        await Member.create(
+          req.params.id,
+          m.firstName,
+          m.lastName,
+          m.email,
+          m.phone,
+          m.addressLine1,
+          m.addressLine2,
+          m.city,
+          m.province,
+          m.postalCode
+        );
+        importedCount++;
+      } catch (err) {
+        errors.push(`Row ${m.rowNumber}: ${err.message}`);
+      }
+    }
+
+    if (importedCount === 0 && membersToCreate.length === 0) {
+      req.session.error = 'No members found in the file. Make sure to delete the sample rows and add your data.';
+    } else if (errors.length > 0) {
+      req.session.error = `Imported ${importedCount} members with ${errors.length} errors`;
+    } else {
+      req.session.success = `Successfully imported ${importedCount} member${importedCount !== 1 ? 's' : ''}`;
+    }
+
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}`);
+  } catch (err) {
+    console.error('Import members error:', err);
+    req.session.error = 'Error importing members: ' + err.message;
+    res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.id}`);
+  }
+});
+
 // === MEMBERS (for super admin) ===
 
 // New member form
