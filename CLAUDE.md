@@ -113,8 +113,23 @@ Thumbnails located in `/public/images/tutorials/`:
 1. **Interac e-Transfer** to payments@migslist.com (fastest)
 2. **Cheque by mail** payable to "Migs List" at mailing address above
 
+## Finance Module
+
+Access at: `/admin/finance`
+
+Features:
+- **Dashboard** - YTD income/expenses, net profit, outstanding invoices
+- **Income Tracking** - Record payments with method, reference, customer
+- **Expense Tracking** - Categories (Server, Domain, Software, etc.), receipt uploads
+- **Invoicing** - Create/send invoices (INV-YYYY-NNN format), PDF generation
+- **Payment Receipts** - Generate PDF receipts for customers
+- **Tax Reports** - Annual summaries for CRA (T2125)
+
+Database tables: `income`, `expenses`, `invoices`
+
 ## Recent Updates (Dec 2025)
 
+- **Finance module** - Full income/expense/invoice tracking for taxes
 - Redesigned landing page with professional look
 - Added sticky navigation header
 - Trust badges: Secure & Encrypted, Made in Canada, Servers in Canada, Built for Unions
