@@ -85,7 +85,12 @@
   <div class="section-header">
     <h2>Units/Sectionals</h2>
     <div class="header-actions">
-      <button type="button" class="btn btn-success btn-sm" onclick="openExportModal()">
+      <button type="button" class="btn-export" onclick="openExportModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
         Export Rank-and-File
       </button>
       <a href="/admin/unions/<%= union.id %>/buckets-deleted" class="btn btn-outline btn-sm">Deleted Units/Sectionals</a>
@@ -214,6 +219,34 @@
   gap: 0.75rem;
   align-items: center;
   flex-wrap: wrap;
+}
+.btn-export {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(5, 150, 105, 0.3);
+}
+.btn-export:hover {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+  box-shadow: 0 4px 8px rgba(5, 150, 105, 0.4);
+  transform: translateY(-1px);
+}
+.btn-export:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(5, 150, 105, 0.3);
+}
+.btn-export svg {
+  width: 18px;
+  height: 18px;
 }
 .modal-overlay {
   position: fixed;
