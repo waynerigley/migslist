@@ -537,23 +537,36 @@
     }
 
     .price-regular {
-      font-size: 0.875rem;
-      opacity: 0.85;
-      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-bottom: 0.75rem;
     }
 
     .strikethrough {
       text-decoration: line-through;
-      opacity: 0.7;
+      opacity: 0.8;
+      font-weight: 600;
     }
 
     .price-savings {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-size: 0.875rem;
-      font-weight: 600;
+      background: rgba(255, 255, 255, 0.25);
+      padding: 0.625rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.9375rem;
+      font-weight: 700;
       margin-bottom: 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.4), 0 0 30px rgba(255, 255, 255, 0.2);
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from {
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.3), 0 0 20px rgba(255, 255, 255, 0.15);
+      }
+      to {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 255, 255, 0.3);
+      }
     }
 
     .alert {
