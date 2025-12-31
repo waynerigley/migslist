@@ -85,6 +85,34 @@ Thumbnails located in `/public/images/tutorials/`:
 - Local repo: /home/wayne/migs
 - Run locally: `npm run dev` (uses node --watch)
 
+## Business Info
+
+| What              | Details                                           |
+|-------------------|---------------------------------------------------|
+| Business Name     | Migs List                                         |
+| BIN               | 1001457886                                        |
+| Type              | Ontario Sole Proprietorship                       |
+| Mailing Address   | 9880 Ridge Road, Windsor, Ontario, Canada N8R 1G6 |
+
+## Pricing
+
+- First year: $500 CAD
+- Following years: $800 CAD
+- Savings: $300 first year
+
+## Contact Emails
+
+| Email                    | Purpose                    |
+|--------------------------|----------------------------|
+| payments@migslist.com    | e-Transfer payments        |
+| support@migslist.com     | Customer support           |
+| demo@migslist.com        | Demo/tutorial account      |
+
+## Payment Options
+
+1. **Interac e-Transfer** to payments@migslist.com (fastest)
+2. **Cheque by mail** payable to "Migs List" at mailing address above
+
 ## Recent Updates (Dec 2025)
 
 - Redesigned landing page with professional look
@@ -92,3 +120,6 @@ Thumbnails located in `/public/images/tutorials/`:
 - Trust badges: Secure & Encrypted, Made in Canada, Servers in Canada, Built for Unions
 - Updated video tutorials page with 11 tutorial cards
 - Added new features: Rank-and-file exports, Excel import, PDF exports
+- Business registration as Ontario sole proprietorship
+- Added cheque payment option with mailing address
+- Professional contact emails (payments@, support@, demo@)
