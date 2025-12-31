@@ -17,7 +17,7 @@ Save each thumbnail with the filename below:
    Description: Adding recording secretaries and setting permissions
 
 3. creating-buckets.png
-   Title: Creating Buckets
+   Title: Creating Units/Sectionals
    Description: Organizing members by department or location
 
 4. managing-lists.png
@@ -35,6 +35,22 @@ Save each thumbnail with the filename below:
 7. election-prep.png
    Title: Election Prep
    Description: Getting your voter rolls ready for an election
+
+8. importing-members.png
+   Title: Importing Members
+   Description: Import members from Excel spreadsheets
+
+9. exporting-data.png
+   Title: Exporting Data
+   Description: Export to Excel, PDF, and rank-and-file lists
+
+10. member-status.png
+    Title: Member Status
+    Description: Managing Active vs Non-Active members
+
+11. email-system.png
+    Title: Email System
+    Description: Sending emails to members
 
 ---------------------------------------------
 

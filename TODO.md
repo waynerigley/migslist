@@ -11,11 +11,15 @@
 - [ ] Record tutorial videos for YouTube channel
   - Getting Started
   - Team Access
-  - Creating Buckets
+  - Creating Units/Sectionals
   - Managing Lists
   - Member Management
   - PDF Uploads
   - Election Prep
+  - Importing Members
+  - Exporting Data
+  - Member Status
+  - Email System
 - [ ] Update tutorials page with real YouTube video URLs
 
 ## Future Enhancements
