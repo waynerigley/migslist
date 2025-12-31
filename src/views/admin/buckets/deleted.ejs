@@ -1,7 +1,7 @@
-<%- include('../../partials/header', { title: 'Deleted Buckets - ' + union.name, backLink: '/admin/unions/' + union.id }) %>
+<%- include('../../partials/header', { title: 'Deleted Units/Sectionals - ' + union.name, backLink: '/admin/unions/' + union.id }) %>
 
 <div class="section-header">
-  <h2>Deleted Buckets</h2>
+  <h2>Deleted Units/Sectionals</h2>
   <a href="/admin/unions/<%= union.id %>" class="btn btn-outline">Back to Union</a>
 </div>
 
@@ -36,7 +36,7 @@
             <form action="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/restore" method="POST" class="inline-form">
               <button type="submit" class="btn btn-success btn-sm">Restore</button>
             </form>
-            <form action="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/hard-delete" method="POST" class="inline-form" onsubmit="return confirm('PERMANENTLY delete this bucket and all its members? This cannot be undone!')">
+            <form action="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/hard-delete" method="POST" class="inline-form" onsubmit="return confirm('PERMANENTLY delete this unit/sectional and all its members? This cannot be undone!')">
               <button type="submit" class="btn btn-danger btn-sm">Delete Forever</button>
             </form>
           </td>

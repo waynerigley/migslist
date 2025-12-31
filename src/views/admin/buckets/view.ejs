@@ -6,7 +6,7 @@
 
 <div class="action-bar">
   <a href="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/members/new" class="btn btn-primary">Add Member</a>
-  <a href="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/edit" class="btn btn-outline">Edit Bucket</a>
+  <a href="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/edit" class="btn btn-outline">Edit Unit/Sectional</a>
   <% if (bucket.master_pdf_filename) { %>
     <a href="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/master-pdf" class="btn btn-outline">Download Master PDF</a>
   <% } %>
@@ -22,14 +22,14 @@
 
 <% if (!bucket.master_pdf_filename) { %>
   <div class="alert alert-info">
-    <strong>Tip:</strong> Upload a master PDF in <a href="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/edit">bucket settings</a> to enable emailing documents to members.
+    <strong>Tip:</strong> Upload a master PDF in <a href="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/edit">unit/sectional settings</a> to enable emailing documents to members.
   </div>
 <% } %>
 
 <% if (members.length === 0) { %>
   <div class="empty-state">
     <h3>No members yet</h3>
-    <p>Add members to this bucket to get started.</p>
+    <p>Add members to this unit/sectional to get started.</p>
     <a href="/admin/unions/<%= union.id %>/buckets/<%= bucket.id %>/members/new" class="btn btn-primary">Add Member</a>
   </div>
 <% } else { %>

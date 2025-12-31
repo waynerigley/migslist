@@ -8,14 +8,14 @@
     <div class="modal-body">
       <div class="warning-icon">!</div>
       <p class="warning-text">You are about to delete <strong id="deleteItemName"></strong></p>
-      <p class="warning-subtext">This bucket contains <strong id="deleteItemCount"></strong> members. This action will hide the bucket from view.</p>
+      <p class="warning-subtext">This unit/sectional contains <strong id="deleteItemCount"></strong> members. This action will hide the unit/sectional from view.</p>
       <p class="confirm-instruction">Type <strong>DELETE</strong> below to confirm:</p>
       <input type="text" id="deleteConfirmInput" class="delete-confirm-input" placeholder="Type DELETE here" autocomplete="off">
       <p id="deleteError" class="delete-error" style="display: none;">Please type DELETE to confirm</p>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-outline" onclick="closeDeleteModal()">Cancel</button>
-      <button type="button" class="btn btn-danger" id="confirmDeleteBtn" onclick="submitDelete()">Delete Bucket</button>
+      <button type="button" class="btn btn-danger" id="confirmDeleteBtn" onclick="submitDelete()">Delete Unit/Sectional</button>
     </div>
     <form id="deleteForm" method="POST" style="display: none;"></form>
   </div>

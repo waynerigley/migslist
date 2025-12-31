@@ -62,7 +62,7 @@
 <div class="stats-grid stats-grid-3">
   <div class="stat-card">
     <div class="stat-value"><%= stats.bucket_count || 0 %></div>
-    <div class="stat-label">Buckets</div>
+    <div class="stat-label">Units/Sectionals</div>
   </div>
   <div class="stat-card">
     <div class="stat-value"><%= stats.total_members || 0 %></div>
@@ -83,17 +83,17 @@
 
 <section class="dashboard-section">
   <div class="section-header">
-    <h2>Buckets</h2>
+    <h2>Units/Sectionals</h2>
     <div class="header-actions">
-      <a href="/admin/unions/<%= union.id %>/buckets-deleted" class="btn btn-outline btn-sm">Deleted Buckets</a>
-      <a href="/admin/unions/<%= union.id %>/buckets/new" class="btn btn-primary btn-sm">Add Bucket</a>
+      <a href="/admin/unions/<%= union.id %>/buckets-deleted" class="btn btn-outline btn-sm">Deleted Units/Sectionals</a>
+      <a href="/admin/unions/<%= union.id %>/buckets/new" class="btn btn-primary btn-sm">Add Unit/Sectional</a>
     </div>
   </div>
   <% if (buckets.length === 0) { %>
     <div class="empty-state">
-      <h3>No buckets yet</h3>
-      <p>Create your first bucket to start adding members.</p>
-      <a href="/admin/unions/<%= union.id %>/buckets/new" class="btn btn-primary">Create Bucket</a>
+      <h3>No units/sectionals yet</h3>
+      <p>Create your first unit/sectional to start adding members.</p>
+      <a href="/admin/unions/<%= union.id %>/buckets/new" class="btn btn-primary">Create Unit/Sectional</a>
     </div>
   <% } else { %>
     <div class="bucket-grid">
