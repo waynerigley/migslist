@@ -3,30 +3,120 @@
 <div class="finance-dashboard">
   <!-- Summary Cards -->
   <div class="stats-grid">
-    <div class="stat-card stat-success">
-      <div class="stat-value">$<%= incomeYTD.toLocaleString('en-CA', { minimumFractionDigits: 2 }) %></div>
-      <div class="stat-label">Income YTD (<%= currentYear %>)</div>
+    <div class="stat-card income-card">
+      <div class="stat-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-label">Income YTD (<%= currentYear %>)</div>
+        <div class="stat-value">$<%= incomeYTD.toLocaleString('en-CA', { minimumFractionDigits: 2 }) %></div>
+      </div>
     </div>
-    <div class="stat-card stat-danger">
-      <div class="stat-value">$<%= expensesYTD.toLocaleString('en-CA', { minimumFractionDigits: 2 }) %></div>
-      <div class="stat-label">Expenses YTD (<%= currentYear %>)</div>
+
+    <div class="stat-card expense-card">
+      <div class="stat-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 4H3M21 4v16H3V4M21 4l-9 9-9-9"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-label">Expenses YTD (<%= currentYear %>)</div>
+        <div class="stat-value">$<%= expensesYTD.toLocaleString('en-CA', { minimumFractionDigits: 2 }) %></div>
+      </div>
     </div>
-    <div class="stat-card <%= netProfit >= 0 ? 'stat-success' : 'stat-danger' %>">
-      <div class="stat-value">$<%= netProfit.toLocaleString('en-CA', { minimumFractionDigits: 2 }) %></div>
-      <div class="stat-label">Net Profit/Loss</div>
+
+    <div class="stat-card <%= netProfit >= 0 ? 'profit-card' : 'loss-card' %>">
+      <div class="stat-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <% if (netProfit >= 0) { %>
+            <path d="M23 6l-9.5 9.5-5-5L1 18M17 6h6v6"/>
+          <% } else { %>
+            <path d="M23 18l-9.5-9.5-5 5L1 6M17 18h6v-6"/>
+          <% } %>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-label">Net <%= netProfit >= 0 ? 'Profit' : 'Loss' %></div>
+        <div class="stat-value">$<%= Math.abs(netProfit).toLocaleString('en-CA', { minimumFractionDigits: 2 }) %></div>
+      </div>
     </div>
-    <div class="stat-card stat-warning">
-      <div class="stat-value">$<%= parseFloat(invoiceStats.outstanding_total || 0).toLocaleString('en-CA', { minimumFractionDigits: 2 }) %></div>
-      <div class="stat-label">Outstanding Invoices</div>
+
+    <div class="stat-card outstanding-card">
+      <div class="stat-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-label">Outstanding Invoices</div>
+        <div class="stat-value">$<%= parseFloat(invoiceStats.outstanding_total || 0).toLocaleString('en-CA', { minimumFractionDigits: 2 }) %></div>
+      </div>
     </div>
   </div>
 
   <!-- Quick Actions -->
-  <div class="quick-actions">
-    <a href="/admin/finance/income/new" class="btn btn-success">+ Record Income</a>
-    <a href="/admin/finance/expenses/new" class="btn btn-danger">+ Record Expense</a>
-    <a href="/admin/finance/invoices/new" class="btn btn-primary">+ Create Invoice</a>
-    <a href="/admin/finance/reports" class="btn btn-outline">View Reports</a>
+  <div class="quick-actions-section">
+    <h3>Quick Actions</h3>
+    <div class="quick-actions">
+      <a href="/admin/finance/income/new" class="action-card action-income">
+        <div class="action-icon">+</div>
+        <div class="action-text">
+          <strong>Record Income</strong>
+          <span>Log a payment received</span>
+        </div>
+      </a>
+      <a href="/admin/finance/expenses/new" class="action-card action-expense">
+        <div class="action-icon">+</div>
+        <div class="action-text">
+          <strong>Record Expense</strong>
+          <span>Track a business expense</span>
+        </div>
+      </a>
+      <a href="/admin/finance/invoices/new" class="action-card action-invoice">
+        <div class="action-icon">+</div>
+        <div class="action-text">
+          <strong>Create Invoice</strong>
+          <span>Bill a customer</span>
+        </div>
+      </a>
+      <a href="/admin/finance/reports" class="action-card action-report">
+        <div class="action-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+            <path d="M18 20V10M12 20V4M6 20v-6"/>
+          </svg>
+        </div>
+        <div class="action-text">
+          <strong>Tax Reports</strong>
+          <span>Annual summaries</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Invoice Status Overview -->
+  <div class="invoice-status-section">
+    <h3>Invoice Status</h3>
+    <div class="invoice-stats">
+      <div class="invoice-stat draft">
+        <div class="invoice-stat-value"><%= invoiceStats.draft_count || 0 %></div>
+        <div class="invoice-stat-label">Draft</div>
+      </div>
+      <div class="invoice-stat sent">
+        <div class="invoice-stat-value"><%= invoiceStats.sent_count || 0 %></div>
+        <div class="invoice-stat-label">Sent</div>
+      </div>
+      <div class="invoice-stat paid">
+        <div class="invoice-stat-value"><%= invoiceStats.paid_count || 0 %></div>
+        <div class="invoice-stat-label">Paid</div>
+      </div>
+      <div class="invoice-stat overdue">
+        <div class="invoice-stat-value"><%= invoiceStats.overdue_count || 0 %></div>
+        <div class="invoice-stat-label">Overdue</div>
+      </div>
+    </div>
   </div>
 
   <div class="dashboard-grid">
@@ -34,31 +124,28 @@
     <div class="dashboard-section">
       <div class="section-header">
         <h3>Recent Income</h3>
-        <a href="/admin/finance/income" class="btn btn-sm btn-outline">View All</a>
+        <a href="/admin/finance/income" class="view-all-link">View All &rarr;</a>
       </div>
       <% if (recentIncome.length === 0) { %>
-        <p class="text-muted">No income recorded yet</p>
+        <div class="empty-state">
+          <p>No income recorded yet</p>
+          <a href="/admin/finance/income/new" class="btn btn-sm btn-success">Record your first income</a>
+        </div>
       <% } else { %>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Customer</th>
-              <th>Method</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% recentIncome.forEach(inc => { %>
-              <tr>
-                <td><%= new Date(inc.received_date).toLocaleDateString('en-CA') %></td>
-                <td><%= inc.union_name || 'N/A' %></td>
-                <td><span class="badge badge-<%= inc.payment_method === 'etransfer' ? 'primary' : 'secondary' %>"><%= inc.payment_method %></span></td>
-                <td class="text-success">$<%= parseFloat(inc.amount).toFixed(2) %></td>
-              </tr>
-            <% }) %>
-          </tbody>
-        </table>
+        <div class="transaction-list">
+          <% recentIncome.forEach(inc => { %>
+            <div class="transaction-item income-item">
+              <div class="transaction-info">
+                <div class="transaction-customer"><%= inc.union_name || 'Miscellaneous' %></div>
+                <div class="transaction-meta">
+                  <span class="transaction-date"><%= new Date(inc.received_date).toLocaleDateString('en-CA') %></span>
+                  <span class="transaction-method <%= inc.payment_method %>"><%= inc.payment_method === 'etransfer' ? 'e-Transfer' : inc.payment_method %></span>
+                </div>
+              </div>
+              <div class="transaction-amount income">+$<%= parseFloat(inc.amount).toFixed(2) %></div>
+            </div>
+          <% }) %>
+        </div>
       <% } %>
     </div>
 
@@ -66,170 +153,497 @@
     <div class="dashboard-section">
       <div class="section-header">
         <h3>Recent Expenses</h3>
-        <a href="/admin/finance/expenses" class="btn btn-sm btn-outline">View All</a>
+        <a href="/admin/finance/expenses" class="view-all-link">View All &rarr;</a>
       </div>
       <% if (recentExpenses.length === 0) { %>
-        <p class="text-muted">No expenses recorded yet</p>
+        <div class="empty-state">
+          <p>No expenses recorded yet</p>
+          <a href="/admin/finance/expenses/new" class="btn btn-sm btn-danger">Record your first expense</a>
+        </div>
       <% } else { %>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Vendor</th>
-              <th>Category</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% recentExpenses.forEach(exp => { %>
-              <tr>
-                <td><%= new Date(exp.expense_date).toLocaleDateString('en-CA') %></td>
-                <td><%= exp.vendor || 'N/A' %></td>
-                <td><span class="badge"><%= exp.category %></span></td>
-                <td class="text-danger">$<%= parseFloat(exp.amount).toFixed(2) %></td>
-              </tr>
-            <% }) %>
-          </tbody>
-        </table>
+        <div class="transaction-list">
+          <% recentExpenses.forEach(exp => { %>
+            <div class="transaction-item expense-item">
+              <div class="transaction-info">
+                <div class="transaction-customer"><%= exp.vendor || 'Unknown Vendor' %></div>
+                <div class="transaction-meta">
+                  <span class="transaction-date"><%= new Date(exp.expense_date).toLocaleDateString('en-CA') %></span>
+                  <span class="transaction-category"><%= exp.category %></span>
+                </div>
+              </div>
+              <div class="transaction-amount expense">-$<%= parseFloat(exp.amount).toFixed(2) %> <%= exp.currency || 'CAD' %></div>
+            </div>
+          <% }) %>
+        </div>
       <% } %>
     </div>
   </div>
 
   <!-- Outstanding Invoices -->
-  <div class="dashboard-section">
+  <% if (outstandingInvoices.length > 0) { %>
+  <div class="dashboard-section outstanding-section">
     <div class="section-header">
       <h3>Outstanding Invoices</h3>
-      <a href="/admin/finance/invoices" class="btn btn-sm btn-outline">View All</a>
+      <a href="/admin/finance/invoices" class="view-all-link">View All &rarr;</a>
     </div>
-    <% if (outstandingInvoices.length === 0) { %>
-      <p class="text-muted">No outstanding invoices</p>
-    <% } else { %>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Invoice #</th>
-            <th>Customer</th>
-            <th>Issue Date</th>
-            <th>Due Date</th>
-            <th>Status</th>
-            <th>Amount</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% outstandingInvoices.forEach(inv => { %>
-            <tr>
-              <td><strong><%= inv.invoice_number %></strong></td>
-              <td><%= inv.union_name || 'N/A' %></td>
-              <td><%= new Date(inv.issue_date).toLocaleDateString('en-CA') %></td>
-              <td><%= new Date(inv.due_date).toLocaleDateString('en-CA') %></td>
-              <td>
-                <span class="badge badge-<%= inv.status === 'overdue' ? 'danger' : 'warning' %>">
-                  <%= inv.status.toUpperCase() %>
-                </span>
-              </td>
-              <td>$<%= parseFloat(inv.amount).toFixed(2) %></td>
-              <td>
-                <form action="/admin/finance/invoices/<%= inv.id %>/mark-paid" method="POST" style="display: inline;">
-                  <button type="submit" class="btn btn-sm btn-success">Mark Paid</button>
-                </form>
-              </td>
-            </tr>
-          <% }) %>
-        </tbody>
-      </table>
-    <% } %>
+    <div class="invoice-list">
+      <% outstandingInvoices.forEach(inv => { %>
+        <div class="invoice-item <%= inv.status %>">
+          <div class="invoice-info">
+            <div class="invoice-number"><%= inv.invoice_number %></div>
+            <div class="invoice-customer"><%= inv.union_name || 'N/A' %></div>
+          </div>
+          <div class="invoice-dates">
+            <div class="invoice-due">Due: <%= new Date(inv.due_date).toLocaleDateString('en-CA') %></div>
+            <span class="invoice-status-badge <%= inv.status %>"><%= inv.status.toUpperCase() %></span>
+          </div>
+          <div class="invoice-actions">
+            <span class="invoice-amount">$<%= parseFloat(inv.amount).toFixed(2) %></span>
+            <form action="/admin/finance/invoices/<%= inv.id %>/mark-paid" method="POST">
+              <button type="submit" class="btn btn-sm btn-success">Mark Paid</button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    </div>
   </div>
+  <% } %>
 
-  <!-- Invoice Stats -->
-  <div class="stats-grid stats-small">
-    <div class="stat-card">
-      <div class="stat-value"><%= invoiceStats.draft_count || 0 %></div>
-      <div class="stat-label">Draft</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value"><%= invoiceStats.sent_count || 0 %></div>
-      <div class="stat-label">Sent</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value"><%= invoiceStats.paid_count || 0 %></div>
-      <div class="stat-label">Paid</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value"><%= invoiceStats.overdue_count || 0 %></div>
-      <div class="stat-label">Overdue</div>
-    </div>
+  <!-- Navigation Links -->
+  <div class="nav-links-section">
+    <a href="/admin/finance/income" class="nav-link-card">
+      <strong>All Income</strong>
+      <span>View and manage all income records</span>
+    </a>
+    <a href="/admin/finance/expenses" class="nav-link-card">
+      <strong>All Expenses</strong>
+      <span>View and manage all expenses</span>
+    </a>
+    <a href="/admin/finance/invoices" class="nav-link-card">
+      <strong>All Invoices</strong>
+      <span>Manage invoices and billing</span>
+    </a>
+    <a href="/admin/finance/reports" class="nav-link-card">
+      <strong>Tax Reports</strong>
+      <span>Annual summaries for CRA</span>
+    </a>
   </div>
 </div>
 
 <style>
 .finance-dashboard {
-  max-width: 1200px;
+  max-width: 100%;
+  padding: 0 1rem;
 }
+
+/* Stats Cards */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
-.stats-small .stat-card {
-  padding: 1rem;
-}
-.stats-small .stat-value {
-  font-size: 1.5rem;
-}
+
 .stat-card {
   background: white;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-left: 4px solid;
 }
-.stat-value {
-  font-size: 2rem;
-  font-weight: 700;
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-label {
+  color: #6b7280 !important;
+  font-size: 0.875rem;
   margin-bottom: 0.25rem;
 }
-.stat-label {
-  color: #6b7280;
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.income-card { border-color: #16a34a; }
+.income-card .stat-icon { background: #dcfce7; color: #16a34a; }
+.income-card .stat-value { color: #16a34a; }
+
+.expense-card { border-color: #dc2626; }
+.expense-card .stat-icon { background: #fee2e2; color: #dc2626; }
+.expense-card .stat-value { color: #dc2626; }
+
+.profit-card { border-color: #16a34a; }
+.profit-card .stat-icon { background: #dcfce7; color: #16a34a; }
+.profit-card .stat-value { color: #16a34a; }
+
+.loss-card { border-color: #dc2626; }
+.loss-card .stat-icon { background: #fee2e2; color: #dc2626; }
+.loss-card .stat-value { color: #dc2626; }
+
+.outstanding-card { border-color: #d97706; }
+.outstanding-card .stat-icon { background: #fef3c7; color: #d97706; }
+.outstanding-card .stat-value { color: #d97706; }
+
+/* Quick Actions */
+.quick-actions-section {
+  margin-bottom: 2rem;
+}
+
+.quick-actions-section h3 {
+  color: #374151 !important;
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.action-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: white;
+  border-radius: 10px;
+  border: 2px solid #e5e7eb;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.action-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+}
+
+.action-text strong {
+  display: block;
+  color: #1f2937 !important;
+  font-size: 0.95rem;
+}
+
+.action-text span {
+  color: #6b7280 !important;
+  font-size: 0.8rem;
+}
+
+.action-income .action-icon { background: #16a34a; }
+.action-income:hover { border-color: #16a34a; }
+
+.action-expense .action-icon { background: #dc2626; }
+.action-expense:hover { border-color: #dc2626; }
+
+.action-invoice .action-icon { background: #2563eb; }
+.action-invoice:hover { border-color: #2563eb; }
+
+.action-report .action-icon { background: #7c3aed; color: white; }
+.action-report:hover { border-color: #7c3aed; }
+
+/* Invoice Status */
+.invoice-status-section {
+  margin-bottom: 2rem;
+}
+
+.invoice-status-section h3 {
+  color: #374151 !important;
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+}
+
+.invoice-stats {
+  display: flex;
+  gap: 1rem;
+  background: white;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.invoice-stat {
+  flex: 1;
+  text-align: center;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.invoice-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.invoice-stat-label {
+  color: #6b7280 !important;
   font-size: 0.875rem;
 }
-.stat-success .stat-value { color: #16a34a; }
-.stat-danger .stat-value { color: #dc2626; }
-.stat-warning .stat-value { color: #d97706; }
-.quick-actions {
-  display: flex;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-}
+
+.invoice-stat.draft { background: #f3f4f6; }
+.invoice-stat.draft .invoice-stat-value { color: #6b7280; }
+
+.invoice-stat.sent { background: #fef3c7; }
+.invoice-stat.sent .invoice-stat-value { color: #d97706; }
+
+.invoice-stat.paid { background: #dcfce7; }
+.invoice-stat.paid .invoice-stat-value { color: #16a34a; }
+
+.invoice-stat.overdue { background: #fee2e2; }
+.invoice-stat.overdue .invoice-stat-value { color: #dc2626; }
+
+/* Dashboard Grid */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
   margin-bottom: 1.5rem;
 }
+
 .dashboard-section {
   background: white;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
+
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
 }
+
 .section-header h3 {
   margin: 0;
-  font-size: 1.125rem;
+  font-size: 1rem;
+  color: #374151 !important;
 }
-.text-success { color: #16a34a; }
-.text-danger { color: #dc2626; }
-.text-muted { color: #9ca3af; }
+
+.view-all-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.view-all-link:hover {
+  text-decoration: underline;
+}
+
+/* Transaction List */
+.transaction-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: #f9fafb;
+}
+
+.transaction-customer {
+  font-weight: 600;
+  color: #1f2937 !important;
+  font-size: 0.95rem;
+}
+
+.transaction-meta {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.transaction-date {
+  color: #6b7280 !important;
+  font-size: 0.8rem;
+}
+
+.transaction-method, .transaction-category {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: #e5e7eb;
+  color: #374151 !important;
+}
+
+.transaction-method.etransfer {
+  background: #dbeafe;
+  color: #1d4ed8 !important;
+}
+
+.transaction-amount {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.transaction-amount.income { color: #16a34a; }
+.transaction-amount.expense { color: #dc2626; }
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #9ca3af !important;
+}
+
+.empty-state p {
+  margin-bottom: 1rem;
+  color: #9ca3af !important;
+}
+
+/* Outstanding Section */
+.outstanding-section {
+  margin-bottom: 1.5rem;
+}
+
+.invoice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.invoice-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 8px;
+  background: #f9fafb;
+  border-left: 4px solid;
+}
+
+.invoice-item.sent { border-color: #d97706; }
+.invoice-item.overdue { border-color: #dc2626; background: #fef2f2; }
+
+.invoice-number {
+  font-weight: 700;
+  color: #1f2937 !important;
+}
+
+.invoice-customer {
+  color: #6b7280 !important;
+  font-size: 0.875rem;
+}
+
+.invoice-due {
+  color: #6b7280 !important;
+  font-size: 0.875rem;
+}
+
+.invoice-status-badge {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.invoice-status-badge.sent { background: #fef3c7; color: #92400e; }
+.invoice-status-badge.overdue { background: #fee2e2; color: #991b1b; }
+
+.invoice-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.invoice-amount {
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: #1f2937 !important;
+}
+
+/* Nav Links */
+.nav-links-section {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.nav-link-card {
+  display: block;
+  padding: 1.25rem;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.nav-link-card:hover {
+  border-color: #2563eb;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.nav-link-card strong {
+  display: block;
+  color: #1f2937 !important;
+  margin-bottom: 0.25rem;
+}
+
+.nav-link-card span {
+  color: #6b7280 !important;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 1024px) {
+  .stats-grid, .quick-actions, .nav-links-section {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .invoice-stats {
+    flex-wrap: wrap;
+  }
+  .invoice-stat {
+    flex: 1 1 45%;
+  }
+}
+
 @media (max-width: 768px) {
-  .stats-grid, .dashboard-grid {
+  .stats-grid, .quick-actions, .dashboard-grid, .nav-links-section {
     grid-template-columns: 1fr;
+  }
+  .invoice-stats {
+    flex-direction: column;
+  }
+  .invoice-stat {
+    flex: none;
   }
 }
 </style>
