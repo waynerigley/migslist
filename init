@@ -1,10 +1,15 @@
 #!/bin/bash
 # MigsList Bootstrap Script
 # Run this on a fresh Ubuntu 24.04 VPS (Vultr, DigitalOcean, etc.)
-# Version: 1.6.0
+# Version: 1.7.0
 
 set -e
-VERSION="1.6.0"
+VERSION="1.7.0"
+
+# Changelog:
+# v1.7.0 - PDF export for unit/sectional members, Excel import fix, timezone fix
+# v1.6.0 - Email system, Non-Active terminology, UI improvements
+# v1.5.0 - Rank-and-file exports, member import from Excel
 
 echo "=== MigsList Server Setup v${VERSION} ==="
 echo ""
