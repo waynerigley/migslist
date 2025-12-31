@@ -34,46 +34,67 @@ router.get('/bucket/:id', async (req, res) => {
 
     const sheet = workbook.addWorksheet('Members in Good Standing');
 
-    // Define columns
-    sheet.columns = [
-      { header: 'First Name', key: 'firstName', width: 15 },
-      { header: 'Last Name', key: 'lastName', width: 15 },
-      { header: 'Email', key: 'email', width: 25 },
-      { header: 'Phone', key: 'phone', width: 15 },
-      { header: 'Address', key: 'address', width: 30 },
-      { header: 'City', key: 'city', width: 15 },
-      { header: 'State', key: 'state', width: 10 },
-      { header: 'ZIP', key: 'zip', width: 10 },
-      { header: 'PDF Uploaded', key: 'pdfDate', width: 15 }
-    ];
+    // Add title rows
+    sheet.mergeCells('A1:I1');
+    sheet.getCell('A1').value = bucket.union_name;
+    sheet.getCell('A1').font = { bold: true, size: 16 };
+    sheet.getCell('A1').alignment = { horizontal: 'center' };
 
-    // Style header row
-    sheet.getRow(1).font = { bold: true };
-    sheet.getRow(1).fill = {
+    sheet.mergeCells('A2:I2');
+    sheet.getCell('A2').value = `#${bucket.number} - ${bucket.name} - Members in Good Standing`;
+    sheet.getCell('A2').font = { bold: true, size: 12 };
+    sheet.getCell('A2').alignment = { horizontal: 'center' };
+
+    sheet.mergeCells('A3:I3');
+    sheet.getCell('A3').value = `Export Date: ${new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'America/Toronto' })} | Total: ${members.length} members`;
+    sheet.getCell('A3').font = { italic: true, size: 10 };
+    sheet.getCell('A3').alignment = { horizontal: 'center' };
+
+    // Empty row
+    sheet.addRow([]);
+
+    // Add header row at row 5
+    const headerRow = sheet.getRow(5);
+    headerRow.values = ['First Name', 'Last Name', 'Email', 'Phone', 'Address', 'City', 'Province', 'Postal Code', 'PDF Uploaded'];
+    headerRow.font = { bold: true };
+    headerRow.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'FFE0E0E0' }
+      fgColor: { argb: 'FF059669' }
     };
+    headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
 
-    // Add data
+    // Set column widths
+    sheet.getColumn(1).width = 15;
+    sheet.getColumn(2).width = 15;
+    sheet.getColumn(3).width = 25;
+    sheet.getColumn(4).width = 15;
+    sheet.getColumn(5).width = 30;
+    sheet.getColumn(6).width = 15;
+    sheet.getColumn(7).width = 12;
+    sheet.getColumn(8).width = 12;
+    sheet.getColumn(9).width = 15;
+
+    // Add data starting at row 6
+    let rowNum = 6;
     members.forEach(member => {
       const address = [member.address_line1, member.address_line2]
         .filter(Boolean)
         .join(', ');
 
-      sheet.addRow({
-        firstName: member.first_name,
-        lastName: member.last_name,
-        email: member.email || '',
-        phone: member.phone || '',
-        address: address,
-        city: member.city || '',
-        state: member.state || '',
-        zip: member.zip || '',
-        pdfDate: member.pdf_uploaded_at
-          ? new Date(member.pdf_uploaded_at).toLocaleDateString()
-          : ''
-      });
+      const row = sheet.getRow(rowNum);
+      row.values = [
+        member.first_name,
+        member.last_name,
+        member.email || '',
+        member.phone || '',
+        address,
+        member.city || '',
+        member.state || '',
+        member.zip || '',
+        member.pdf_uploaded_at ? new Date(member.pdf_uploaded_at).toLocaleDateString() : ''
+      ];
+      rowNum++;
     });
 
     // Set response headers
@@ -114,50 +135,72 @@ router.get('/bucket/:id/all', async (req, res) => {
     workbook.creator = 'MigsList';
     workbook.created = new Date();
 
+    const goodStandingCount = members.filter(m => m.pdf_filename).length;
     const sheet = workbook.addWorksheet('All Members');
 
-    // Define columns
-    sheet.columns = [
-      { header: 'First Name', key: 'firstName', width: 15 },
-      { header: 'Last Name', key: 'lastName', width: 15 },
-      { header: 'Email', key: 'email', width: 25 },
-      { header: 'Phone', key: 'phone', width: 15 },
-      { header: 'Address', key: 'address', width: 30 },
-      { header: 'City', key: 'city', width: 15 },
-      { header: 'State', key: 'state', width: 10 },
-      { header: 'ZIP', key: 'zip', width: 10 },
-      { header: 'Good Standing', key: 'goodStanding', width: 15 },
-      { header: 'PDF Uploaded', key: 'pdfDate', width: 15 }
-    ];
+    // Add title rows
+    sheet.mergeCells('A1:J1');
+    sheet.getCell('A1').value = bucket.union_name;
+    sheet.getCell('A1').font = { bold: true, size: 16 };
+    sheet.getCell('A1').alignment = { horizontal: 'center' };
 
-    // Style header row
-    sheet.getRow(1).font = { bold: true };
-    sheet.getRow(1).fill = {
+    sheet.mergeCells('A2:J2');
+    sheet.getCell('A2').value = `#${bucket.number} - ${bucket.name} - All Members`;
+    sheet.getCell('A2').font = { bold: true, size: 12 };
+    sheet.getCell('A2').alignment = { horizontal: 'center' };
+
+    sheet.mergeCells('A3:J3');
+    sheet.getCell('A3').value = `Export Date: ${new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'America/Toronto' })} | Total: ${members.length} members (${goodStandingCount} in good standing)`;
+    sheet.getCell('A3').font = { italic: true, size: 10 };
+    sheet.getCell('A3').alignment = { horizontal: 'center' };
+
+    // Empty row
+    sheet.addRow([]);
+
+    // Add header row at row 5
+    const headerRow = sheet.getRow(5);
+    headerRow.values = ['First Name', 'Last Name', 'Email', 'Phone', 'Address', 'City', 'Province', 'Postal Code', 'Good Standing', 'PDF Uploaded'];
+    headerRow.font = { bold: true };
+    headerRow.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'FFE0E0E0' }
+      fgColor: { argb: 'FF2563EB' }
     };
+    headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
 
-    // Add data
+    // Set column widths
+    sheet.getColumn(1).width = 15;
+    sheet.getColumn(2).width = 15;
+    sheet.getColumn(3).width = 25;
+    sheet.getColumn(4).width = 15;
+    sheet.getColumn(5).width = 30;
+    sheet.getColumn(6).width = 15;
+    sheet.getColumn(7).width = 12;
+    sheet.getColumn(8).width = 12;
+    sheet.getColumn(9).width = 15;
+    sheet.getColumn(10).width = 15;
+
+    // Add data starting at row 6
+    let rowNum = 6;
     members.forEach(member => {
       const address = [member.address_line1, member.address_line2]
         .filter(Boolean)
         .join(', ');
 
-      sheet.addRow({
-        firstName: member.first_name,
-        lastName: member.last_name,
-        email: member.email || '',
-        phone: member.phone || '',
-        address: address,
-        city: member.city || '',
-        state: member.state || '',
-        zip: member.zip || '',
-        goodStanding: member.pdf_filename ? 'Yes' : 'No',
-        pdfDate: member.pdf_uploaded_at
-          ? new Date(member.pdf_uploaded_at).toLocaleDateString()
-          : ''
-      });
+      const row = sheet.getRow(rowNum);
+      row.values = [
+        member.first_name,
+        member.last_name,
+        member.email || '',
+        member.phone || '',
+        address,
+        member.city || '',
+        member.state || '',
+        member.zip || '',
+        member.pdf_filename ? 'Yes' : 'No',
+        member.pdf_uploaded_at ? new Date(member.pdf_uploaded_at).toLocaleDateString() : ''
+      ];
+      rowNum++;
     });
 
     // Set response headers
@@ -216,9 +259,10 @@ router.get('/bucket/:id/pdf', async (req, res) => {
 
     doc.pipe(res);
 
-    // Title
-    doc.fontSize(18).font('Helvetica-Bold').text(`#${bucket.number} - ${bucket.name}`, { align: 'center' });
-    doc.fontSize(14).font('Helvetica').text('Members in Good Standing', { align: 'center' });
+    // Title - Union name and Unit/Sectional
+    doc.fontSize(18).font('Helvetica-Bold').text(bucket.union_name, { align: 'center' });
+    doc.fontSize(14).font('Helvetica-Bold').text(`#${bucket.number} - ${bucket.name}`, { align: 'center' });
+    doc.fontSize(12).font('Helvetica').text('Members in Good Standing', { align: 'center' });
     doc.moveDown(0.5);
 
     // Export info
@@ -345,9 +389,10 @@ router.get('/bucket/:id/all/pdf', async (req, res) => {
 
     doc.pipe(res);
 
-    // Title
-    doc.fontSize(18).font('Helvetica-Bold').text(`#${bucket.number} - ${bucket.name}`, { align: 'center' });
-    doc.fontSize(14).font('Helvetica').text('All Members', { align: 'center' });
+    // Title - Union name and Unit/Sectional
+    doc.fontSize(18).font('Helvetica-Bold').text(bucket.union_name, { align: 'center' });
+    doc.fontSize(14).font('Helvetica-Bold').text(`#${bucket.number} - ${bucket.name}`, { align: 'center' });
+    doc.fontSize(12).font('Helvetica').text('All Members', { align: 'center' });
     doc.moveDown(0.5);
 
     // Export info
