@@ -39,13 +39,15 @@
       <div class="pricing-card-wrapper">
         <div class="pricing-card">
           <div class="card-header">
-            <span class="plan-name">Union Local Plan</span>
+            <span class="price-badge">New Accounts</span>
+            <span class="plan-name">First Year Special</span>
             <div class="price-wrapper">
               <span class="currency">$</span>
-              <span class="price">400</span>
+              <span class="price">450</span>
               <span class="period">/year</span>
             </div>
-            <p class="price-note">That's less than $35/month</p>
+            <p class="price-regular"><span class="strikethrough">$800</span> regular price</p>
+            <div class="price-savings">Save $350 your first year!</div>
           </div>
 
           <div class="card-body">
@@ -89,6 +91,10 @@
               <li>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 <span>Email support</span>
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Free onboarding support</span>
               </li>
             </ul>
 
@@ -221,7 +227,7 @@
   <!-- Footer -->
   <footer class="pricing-footer">
     <div class="footer-container">
-      <p>&copy; 2024 MIGS List. Built for union locals across Canada.</p>
+      <p>&copy; 2025 MIGS List. Built for union locals across Canada.</p>
       <p class="footer-contact">Questions? <a href="mailto:support@migslist.com">support@migslist.com</a></p>
     </div>
   </footer>
@@ -486,6 +492,52 @@
     .price-note {
       font-size: 0.9375rem;
       opacity: 0.85;
+    }
+
+    .price-badge {
+      display: inline-block;
+      background: #fbbf24;
+      color: #78350f;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .price-regular {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-bottom: 0.75rem;
+    }
+
+    .strikethrough {
+      text-decoration: line-through;
+      opacity: 0.8;
+      font-weight: 600;
+    }
+
+    .price-savings {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.25);
+      padding: 0.625rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.9375rem;
+      font-weight: 700;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.4), 0 0 30px rgba(255, 255, 255, 0.2);
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from {
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.3), 0 0 20px rgba(255, 255, 255, 0.15);
+      }
+      to {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 255, 255, 0.3);
+      }
     }
 
     .card-body {
