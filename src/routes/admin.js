@@ -897,19 +897,12 @@ router.post('/unions/:unionId/buckets/:id/import-members', excelUpload.single('m
     const errors = [];
     const membersToCreate = [];
 
-    console.log('Import: Worksheet found, row count:', worksheet.rowCount);
-
     // Collect all members to create
     worksheet.eachRow((row, rowNumber) => {
       if (rowNumber === 1) return; // Skip header
 
-      // Get raw cell values for debugging
-      const cell1 = row.getCell(1).value;
-      const cell2 = row.getCell(2).value;
-      console.log(`Row ${rowNumber}: cell1=${JSON.stringify(cell1)}, cell2=${JSON.stringify(cell2)}`);
-
-      const firstName = cell1?.toString().trim();
-      const lastName = cell2?.toString().trim();
+      const firstName = row.getCell(1).value?.toString().trim();
+      const lastName = row.getCell(2).value?.toString().trim();
 
       // Skip empty rows
       if (!firstName || !lastName) {
@@ -939,12 +932,9 @@ router.post('/unions/:unionId/buckets/:id/import-members', excelUpload.single('m
       });
     });
 
-    console.log('Import: Members to create:', membersToCreate.length, 'Skipped:', skippedCount);
-
     // Create members sequentially
     for (const m of membersToCreate) {
       try {
-        console.log('Creating member:', m.firstName, m.lastName);
         await Member.create({
           bucketId: req.params.id,
           firstName: m.firstName,
@@ -959,7 +949,6 @@ router.post('/unions/:unionId/buckets/:id/import-members', excelUpload.single('m
         });
         importedCount++;
       } catch (err) {
-        console.error('Error creating member:', err);
         errors.push(`Row ${m.rowNumber}: ${err.message}`);
       }
     }
