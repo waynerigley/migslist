@@ -14,7 +14,7 @@
   - Creating Units/Sectionals
   - Managing Lists
   - Member Management
-  - PDF Uploads
+  - Member Documents
   - Election Prep
   - Importing Members
   - Exporting Data

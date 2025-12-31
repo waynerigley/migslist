@@ -29,8 +29,8 @@ Save each thumbnail with the filename below:
    Description: Adding, editing, and tracking members
 
 6. pdf-uploads.png
-   Title: PDF Uploads
-   Description: Uploading members in good standing documents
+   Title: Member Documents
+   Description: Attaching and viewing good standing PDFs
 
 7. election-prep.png
    Title: Election Prep
