@@ -71,8 +71,8 @@
                 <button type="submit" class="btn btn-primary btn-sm" title="Email document to member">Email</button>
               </form>
             <% } %>
-            <form action="/members/<%= member.id %>/retire" method="POST" class="inline-form" onsubmit="return confirm('Mark <%= member.first_name %> <%= member.last_name %>? They will be marked as non-active.')">
-              <button type="submit" class="btn btn-warning btn-sm" title="Move to non-active">Non-Active</button>
+            <form action="/members/<%= member.id %>/retire" method="POST" class="inline-form" onsubmit="return confirm('Mark <%= member.first_name %> <%= member.last_name %> as non-active?')">
+              <button type="submit" class="btn btn-warning btn-sm">Set Non-Active</button>
             </form>
           </td>
         </tr>
