@@ -29,3 +29,20 @@
   cd /var/www/migs
   git pull
   pm2 restart migs
+
+  What's in place:
+  - PM2 startup service (pm2-wayne) is enabled via systemd
+  - Process list is saved in /home/wayne/.pm2/dump.pm2
+  - On server reboot, systemd will automatically start PM2, which will resurrect the migs app
+
+  Why it likely stopped:
+  - The server probably rebooted and had two conflicting PM2 startup configs (one for root, one for wayne)
+  - I removed the root one, so now only wayne's PM2 will start
+
+  To verify it's set up correctly:
+  ssh wayne@155.138.149.116 "systemctl is-enabled pm2-wayne"
+
+  If you ever need to manually restart:
+  ssh wayne@155.138.149.116 "pm2 restart migs"
+
+  You're all set - next time the server reboots, the app will start automatically.
