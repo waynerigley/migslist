@@ -28,7 +28,7 @@ Save each thumbnail with the filename below:
    Title: Member Management
    Description: Adding, editing, and tracking members
 
-6. pdf-uploads.png
+6. member-documents.png
    Title: Member Documents
    Description: Attaching and viewing good standing PDFs
 
