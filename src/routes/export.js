@@ -198,7 +198,8 @@ router.get('/bucket/:id/pdf', async (req, res) => {
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      timeZone: 'America/Toronto'
     });
 
     // Create PDF
@@ -326,7 +327,8 @@ router.get('/bucket/:id/all/pdf', async (req, res) => {
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      timeZone: 'America/Toronto'
     });
 
     // Create PDF
@@ -552,7 +554,8 @@ router.get('/rank-and-file/pdf', async (req, res) => {
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      timeZone: 'America/Toronto'
     });
 
     // Create PDF
