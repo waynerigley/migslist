@@ -294,6 +294,26 @@
 .upload-option {
   cursor: pointer;
 }
+.import-instructions {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+.import-instructions p {
+  margin: 0 0 0.5rem 0;
+  color: #0369a1;
+}
+.import-instructions ol {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: #0369a1;
+}
+.import-instructions li {
+  padding: 0.25rem 0;
+  font-size: 0.9rem;
+}
 .export-label {
   display: flex;
   flex-direction: column;
@@ -361,7 +381,15 @@
       <button type="button" class="modal-close" onclick="closeImportModal()">&times;</button>
     </div>
     <div class="modal-body">
-      <p class="export-description">Bulk import members to #<%= bucket.number %> - <%= bucket.name %></p>
+      <div class="import-instructions">
+        <p><strong>How to import members:</strong></p>
+        <ol>
+          <li>Download the Excel template below</li>
+          <li>Transfer your existing member data (from spreadsheets, paper records, etc.) into the template</li>
+          <li>Save the file when complete</li>
+          <li>Upload the completed template to import all members at once</li>
+        </ol>
+      </div>
       <div class="export-options">
         <a href="/member-import-template.xlsx" class="export-option" download>
           <div class="export-icon template-icon">
