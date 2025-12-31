@@ -283,6 +283,18 @@
   background: #107c41;
   color: white;
 }
+.pdf-icon {
+  background: #dc2626;
+  color: white;
+}
+.export-section-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  margin: 1rem 0 0.5rem 0;
+  font-weight: 600;
+}
 .template-icon {
   background: #8b5cf6;
   color: white;
@@ -336,6 +348,8 @@
     </div>
     <div class="modal-body">
       <p class="export-description">Export members from #<%= bucket.number %> - <%= bucket.name %></p>
+
+      <p class="export-section-label">Excel Format (for voting companies)</p>
       <div class="export-options">
         <a href="/export/bucket/<%= bucket.id %>" class="export-option">
           <div class="export-icon excel-icon">
@@ -363,6 +377,38 @@
           <div class="export-label">
             <strong>All Members</strong>
             <span>Export everyone regardless of standing</span>
+          </div>
+        </a>
+      </div>
+
+      <p class="export-section-label">PDF Format (for meetings & records)</p>
+      <div class="export-options">
+        <a href="/export/bucket/<%= bucket.id %>/pdf" class="export-option">
+          <div class="export-icon pdf-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          </div>
+          <div class="export-label">
+            <strong>Good Standing Only</strong>
+            <span>Printable PDF list of eligible members</span>
+          </div>
+        </a>
+        <a href="/export/bucket/<%= bucket.id %>/all/pdf" class="export-option">
+          <div class="export-icon pdf-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div class="export-label">
+            <strong>All Members</strong>
+            <span>Printable PDF of complete roster</span>
           </div>
         </a>
       </div>
