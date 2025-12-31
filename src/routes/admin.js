@@ -4,6 +4,8 @@ const crypto = require('crypto');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const ExcelJS = require('exceljs');
+const PDFDocument = require('pdfkit');
 const { requireSuperAdmin } = require('../middleware/auth');
 const Union = require('../models/Union');
 const User = require('../models/User');
@@ -1071,6 +1073,211 @@ router.post('/unions/:unionId/buckets/:bucketId/members/:id/delete', async (req,
     console.error('Delete member error:', err);
     req.session.error = 'Error deleting member';
     res.redirect(`/admin/unions/${req.params.unionId}/buckets/${req.params.bucketId}`);
+  }
+});
+
+// Export all union members (Rank-and-File) to Excel - Admin
+router.get('/unions/:unionId/export/rank-and-file/excel', async (req, res) => {
+  try {
+    const union = await Union.findById(req.params.unionId);
+    if (!union) {
+      req.session.error = 'Union not found';
+      return res.redirect('/admin');
+    }
+
+    const members = await Member.findAllByUnionId(req.params.unionId);
+    const exportDate = new Date();
+    const formattedDate = exportDate.toLocaleDateString('en-CA', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = 'MigsList';
+    workbook.created = exportDate;
+
+    const sheet = workbook.addWorksheet('Rank-and-File Members');
+
+    sheet.mergeCells('A1:H1');
+    sheet.getCell('A1').value = `${union.name} - Rank-and-File Members`;
+    sheet.getCell('A1').font = { bold: true, size: 16 };
+    sheet.getCell('A1').alignment = { horizontal: 'center' };
+
+    sheet.mergeCells('A2:H2');
+    sheet.getCell('A2').value = `Export Date: ${formattedDate}`;
+    sheet.getCell('A2').font = { italic: true, size: 11 };
+    sheet.getCell('A2').alignment = { horizontal: 'center' };
+
+    sheet.mergeCells('A3:H3');
+    sheet.getCell('A3').value = `Total Members: ${members.length}`;
+    sheet.getCell('A3').font = { bold: true, size: 11 };
+    sheet.getCell('A3').alignment = { horizontal: 'center' };
+
+    sheet.addRow([]);
+
+    sheet.columns = [
+      { header: 'Unit/Sectional', key: 'bucket', width: 20 },
+      { header: 'First Name', key: 'firstName', width: 15 },
+      { header: 'Last Name', key: 'lastName', width: 15 },
+      { header: 'Email', key: 'email', width: 25 },
+      { header: 'Phone', key: 'phone', width: 15 },
+      { header: 'Address', key: 'address', width: 30 },
+      { header: 'City', key: 'city', width: 15 },
+      { header: 'Province', key: 'state', width: 10 }
+    ];
+
+    const headerRow = sheet.getRow(5);
+    headerRow.values = ['Unit/Sectional', 'First Name', 'Last Name', 'Email', 'Phone', 'Address', 'City', 'Province'];
+    headerRow.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FF2563EB' }
+    };
+    headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+
+    let rowNum = 6;
+    members.forEach(member => {
+      const address = [member.address_line1, member.address_line2].filter(Boolean).join(', ');
+      const row = sheet.getRow(rowNum);
+      row.values = [
+        `#${member.bucket_number} - ${member.bucket_name}`,
+        member.first_name,
+        member.last_name,
+        member.email || '',
+        member.phone || '',
+        address,
+        member.city || '',
+        member.state || ''
+      ];
+      rowNum++;
+    });
+
+    const filename = `${union.name.replace(/[^a-z0-9]/gi, '_')}_Rank_and_File_${exportDate.toISOString().split('T')[0]}.xlsx`;
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    console.error('Admin export error:', err);
+    req.session.error = 'Error exporting data';
+    res.redirect(`/admin/unions/${req.params.unionId}`);
+  }
+});
+
+// Export all union members (Rank-and-File) to PDF - Admin
+router.get('/unions/:unionId/export/rank-and-file/pdf', async (req, res) => {
+  try {
+    const union = await Union.findById(req.params.unionId);
+    if (!union) {
+      req.session.error = 'Union not found';
+      return res.redirect('/admin');
+    }
+
+    const members = await Member.findAllByUnionId(req.params.unionId);
+    const exportDate = new Date();
+    const formattedDate = exportDate.toLocaleDateString('en-CA', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    const doc = new PDFDocument({
+      size: 'LETTER',
+      margin: 50,
+      bufferPages: true
+    });
+
+    const filename = `${union.name.replace(/[^a-z0-9]/gi, '_')}_Rank_and_File_${exportDate.toISOString().split('T')[0]}.pdf`;
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+
+    doc.pipe(res);
+
+    doc.fontSize(18).font('Helvetica-Bold').text(union.name, { align: 'center' });
+    doc.fontSize(14).font('Helvetica').text('Rank-and-File Members List', { align: 'center' });
+    doc.moveDown(0.5);
+
+    doc.fontSize(10).font('Helvetica-Bold');
+    doc.text(`Export Date: ${formattedDate}`, { align: 'center' });
+    doc.text(`Total Members: ${members.length}`, { align: 'center' });
+    doc.moveDown(0.5);
+
+    doc.fontSize(8).font('Helvetica-Oblique');
+    doc.text('This document is for official union use only. For Legislative Strike Vote or Ratification Vote purposes.', { align: 'center' });
+    doc.moveDown(1);
+
+    const tableTop = doc.y;
+    const col1 = 50;
+    const col2 = 150;
+    const col3 = 300;
+    const col4 = 450;
+    const rowHeight = 18;
+
+    doc.rect(col1 - 5, tableTop - 5, 520, rowHeight + 5).fill('#2563eb');
+
+    doc.fillColor('white').fontSize(9).font('Helvetica-Bold');
+    doc.text('Unit', col1, tableTop, { width: 95 });
+    doc.text('Name', col2, tableTop, { width: 145 });
+    doc.text('Email', col3, tableTop, { width: 145 });
+    doc.text('Phone', col4, tableTop, { width: 80 });
+
+    doc.fillColor('black').font('Helvetica').fontSize(8);
+
+    let y = tableTop + rowHeight + 5;
+    let rowCount = 0;
+
+    members.forEach((member) => {
+      if (y > 700) {
+        doc.addPage();
+        y = 50;
+        doc.rect(col1 - 5, y - 5, 520, rowHeight + 5).fill('#2563eb');
+        doc.fillColor('white').fontSize(9).font('Helvetica-Bold');
+        doc.text('Unit', col1, y, { width: 95 });
+        doc.text('Name', col2, y, { width: 145 });
+        doc.text('Email', col3, y, { width: 145 });
+        doc.text('Phone', col4, y, { width: 80 });
+        doc.fillColor('black').font('Helvetica').fontSize(8);
+        y += rowHeight + 5;
+      }
+
+      if (rowCount % 2 === 0) {
+        doc.rect(col1 - 5, y - 2, 520, rowHeight).fill('#f3f4f6');
+        doc.fillColor('black');
+      }
+
+      const bucketLabel = `#${member.bucket_number}`;
+      const fullName = `${member.first_name} ${member.last_name}`;
+
+      doc.text(bucketLabel, col1, y, { width: 95, ellipsis: true });
+      doc.text(fullName, col2, y, { width: 145, ellipsis: true });
+      doc.text(member.email || '-', col3, y, { width: 145, ellipsis: true });
+      doc.text(member.phone || '-', col4, y, { width: 80, ellipsis: true });
+
+      y += rowHeight;
+      rowCount++;
+    });
+
+    const pages = doc.bufferedPageRange();
+    for (let i = 0; i < pages.count; i++) {
+      doc.switchToPage(i);
+      doc.fontSize(8).font('Helvetica');
+      doc.text(
+        `Page ${i + 1} of ${pages.count} | Generated by MIGS List | ${formattedDate}`,
+        50,
+        750,
+        { align: 'center', width: 512 }
+      );
+    }
+
+    doc.end();
+  } catch (err) {
+    console.error('Admin export error:', err);
+    req.session.error = 'Error exporting data';
+    res.redirect(`/admin/unions/${req.params.unionId}`);
   }
 });
 
