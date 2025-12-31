@@ -945,20 +945,21 @@ router.post('/unions/:unionId/buckets/:id/import-members', excelUpload.single('m
     for (const m of membersToCreate) {
       try {
         console.log('Creating member:', m.firstName, m.lastName);
-        await Member.create(
-          req.params.id,
-          m.firstName,
-          m.lastName,
-          m.email,
-          m.phone,
-          m.addressLine1,
-          m.addressLine2,
-          m.city,
-          m.province,
-          m.postalCode
-        );
+        await Member.create({
+          bucketId: req.params.id,
+          firstName: m.firstName,
+          lastName: m.lastName,
+          email: m.email,
+          phone: m.phone,
+          addressLine1: m.addressLine1,
+          addressLine2: m.addressLine2,
+          city: m.city,
+          state: m.province,
+          zip: m.postalCode
+        });
         importedCount++;
       } catch (err) {
+        console.error('Error creating member:', err);
         errors.push(`Row ${m.rowNumber}: ${err.message}`);
       }
     }

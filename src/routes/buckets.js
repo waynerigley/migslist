@@ -390,18 +390,18 @@ router.post('/:id/import-members', checkBucketAccess, excelUpload.single('member
     // Create members sequentially
     for (const m of membersToCreate) {
       try {
-        await Member.create(
-          req.params.id,
-          m.firstName,
-          m.lastName,
-          m.email,
-          m.phone,
-          m.addressLine1,
-          m.addressLine2,
-          m.city,
-          m.province,
-          m.postalCode
-        );
+        await Member.create({
+          bucketId: req.params.id,
+          firstName: m.firstName,
+          lastName: m.lastName,
+          email: m.email,
+          phone: m.phone,
+          addressLine1: m.addressLine1,
+          addressLine2: m.addressLine2,
+          city: m.city,
+          state: m.province,
+          zip: m.postalCode
+        });
         importedCount++;
       } catch (err) {
         errors.push(`Row ${m.rowNumber}: ${err.message}`);
