@@ -179,6 +179,24 @@ const Expense = {
       { value: 'banking', label: 'Banking/Fees' },
       { value: 'other', label: 'Other' }
     ];
+  },
+
+  // Common vendors
+  getVendors() {
+    return [
+      'Vultr',
+      'Hostinger',
+      'Cloudflare',
+      'Ontario Business Service',
+      'Google',
+      'Microsoft',
+      'Amazon AWS',
+      'DigitalOcean',
+      'Namecheap',
+      'GoDaddy',
+      'Brevo',
+      'SendGrid'
+    ];
   }
 };
 

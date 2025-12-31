@@ -233,7 +233,8 @@ router.get('/expenses', async (req, res) => {
 // New expense form
 router.get('/expenses/new', (req, res) => {
   const categories = Expense.getCategories();
-  res.render('admin/finance/expenses/edit', { expense: null, categories });
+  const vendors = Expense.getVendors();
+  res.render('admin/finance/expenses/edit', { expense: null, categories, vendors });
 });
 
 // Create expense
@@ -271,7 +272,8 @@ router.get('/expenses/:id/edit', async (req, res) => {
     }
 
     const categories = Expense.getCategories();
-    res.render('admin/finance/expenses/edit', { expense, categories });
+    const vendors = Expense.getVendors();
+    res.render('admin/finance/expenses/edit', { expense, categories, vendors });
   } catch (err) {
     console.error('Edit expense form error:', err);
     req.session.error = 'Error loading form';
