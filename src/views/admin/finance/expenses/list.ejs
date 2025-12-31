@@ -33,14 +33,18 @@
         <th>Vendor</th>
         <th>Category</th>
         <th>Description</th>
+        <th>Expires</th>
         <th>Receipt</th>
         <th>Amount</th>
         <th>Actions</th>
       </tr>
     </thead>
     <tbody>
-      <% expenses.forEach(exp => { %>
-        <tr>
+      <% expenses.forEach(exp => {
+        const isExpired = exp.expires_at && new Date(exp.expires_at) < new Date();
+        const isExpiringSoon = exp.expires_at && !isExpired && new Date(exp.expires_at) <= new Date(Date.now() + 30*24*60*60*1000);
+      %>
+        <tr class="<%= isExpired ? 'row-expired' : isExpiringSoon ? 'row-expiring' : '' %>">
           <td><%= new Date(exp.expense_date).toLocaleDateString('en-CA') %></td>
           <td><%= exp.vendor || '-' %></td>
           <td>
@@ -48,13 +52,24 @@
           </td>
           <td><%= exp.description || '-' %></td>
           <td>
+            <% if (exp.expires_at) { %>
+              <span class="<%= isExpired ? 'text-danger' : isExpiringSoon ? 'text-warning' : '' %>">
+                <%= new Date(exp.expires_at).toLocaleDateString('en-CA') %>
+                <% if (isExpired) { %><span class="badge badge-danger">Expired</span><% } %>
+                <% if (isExpiringSoon) { %><span class="badge badge-warning">Soon</span><% } %>
+              </span>
+            <% } else { %>
+              -
+            <% } %>
+          </td>
+          <td>
             <% if (exp.receipt_filename) { %>
               <a href="/admin/finance/expenses/<%= exp.id %>/receipt" target="_blank" class="btn btn-sm btn-outline">View</a>
             <% } else { %>
               -
             <% } %>
           </td>
-          <td class="text-danger"><strong>$<%= parseFloat(exp.amount).toFixed(2) %></strong></td>
+          <td class="text-danger"><strong>$<%= parseFloat(exp.amount).toFixed(2) %> <%= exp.currency || 'CAD' %></strong></td>
           <td class="actions">
             <a href="/admin/finance/expenses/<%= exp.id %>/edit" class="btn btn-sm btn-outline">Edit</a>
             <form action="/admin/finance/expenses/<%= exp.id %>/delete" method="POST" style="display: inline;" onsubmit="return confirm('Delete this expense record?')">
@@ -66,7 +81,7 @@
     </tbody>
     <tfoot>
       <tr>
-        <td colspan="5" style="text-align: right;"><strong>Total:</strong></td>
+        <td colspan="6" style="text-align: right;"><strong>Total:</strong></td>
         <td class="text-danger"><strong>$<%= expenses.reduce((sum, exp) => sum + parseFloat(exp.amount), 0).toFixed(2) %></strong></td>
         <td></td>
       </tr>
@@ -91,10 +106,31 @@
   font-size: 0.875rem;
 }
 .text-danger { color: #dc2626; }
+.text-warning { color: #d97706; }
 .actions {
   white-space: nowrap;
 }
 .actions .btn {
   margin-right: 0.25rem;
+}
+.row-expired {
+  background: #fef2f2;
+}
+.row-expiring {
+  background: #fffbeb;
+}
+.badge-danger {
+  background: #fee2e2;
+  color: #991b1b;
+  font-size: 0.65rem;
+  padding: 0.1rem 0.4rem;
+  margin-left: 0.25rem;
+}
+.badge-warning {
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 0.65rem;
+  padding: 0.1rem 0.4rem;
+  margin-left: 0.25rem;
 }
 </style>

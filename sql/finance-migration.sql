@@ -20,7 +20,9 @@ CREATE TABLE IF NOT EXISTS expenses (
     vendor VARCHAR(255),
     description TEXT,
     amount DECIMAL(10,2) NOT NULL,
+    currency VARCHAR(3) NOT NULL DEFAULT 'CAD',
     expense_date DATE NOT NULL,
+    expires_at DATE,
     receipt_filename VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

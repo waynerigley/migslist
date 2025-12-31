@@ -239,14 +239,16 @@ router.get('/expenses/new', (req, res) => {
 // Create expense
 router.post('/expenses', upload.single('receipt'), async (req, res) => {
   try {
-    const { category, vendor, description, amount, expense_date } = req.body;
+    const { category, vendor, description, amount, currency, expense_date, expires_at } = req.body;
 
     await Expense.create({
       category,
       vendor,
       description,
       amount: parseFloat(amount),
+      currency: currency || 'CAD',
       expenseDate: expense_date,
+      expiresAt: expires_at || null,
       receiptFilename: req.file ? req.file.filename : null
     });
 
@@ -280,7 +282,7 @@ router.get('/expenses/:id/edit', async (req, res) => {
 // Update expense
 router.post('/expenses/:id', upload.single('receipt'), async (req, res) => {
   try {
-    const { category, vendor, description, amount, expense_date } = req.body;
+    const { category, vendor, description, amount, currency, expense_date, expires_at } = req.body;
     const expense = await Expense.findById(req.params.id);
 
     await Expense.update(req.params.id, {
@@ -288,7 +290,9 @@ router.post('/expenses/:id', upload.single('receipt'), async (req, res) => {
       vendor,
       description,
       amount: parseFloat(amount),
+      currency: currency || 'CAD',
       expenseDate: expense_date,
+      expiresAt: expires_at || null,
       receiptFilename: req.file ? req.file.filename : expense.receipt_filename
     });
 

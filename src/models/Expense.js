@@ -2,13 +2,13 @@ const db = require('../config/db');
 
 const Expense = {
   async create(data) {
-    const { category, vendor, description, amount, expenseDate, receiptFilename } = data;
+    const { category, vendor, description, amount, currency, expenseDate, expiresAt, receiptFilename } = data;
 
     const result = await db.query(
-      `INSERT INTO expenses (category, vendor, description, amount, expense_date, receipt_filename)
-       VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO expenses (category, vendor, description, amount, currency, expense_date, expires_at, receipt_filename)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
        RETURNING *`,
-      [category || 'other', vendor || null, description || null, amount, expenseDate, receiptFilename || null]
+      [category || 'other', vendor || null, description || null, amount, currency || 'CAD', expenseDate, expiresAt || null, receiptFilename || null]
     );
     return result.rows[0];
   },
@@ -57,14 +57,14 @@ const Expense = {
   },
 
   async update(id, data) {
-    const { category, vendor, description, amount, expenseDate, receiptFilename } = data;
+    const { category, vendor, description, amount, currency, expenseDate, expiresAt, receiptFilename } = data;
 
     const result = await db.query(
       `UPDATE expenses
-       SET category = $1, vendor = $2, description = $3, amount = $4, expense_date = $5, receipt_filename = $6
-       WHERE id = $7
+       SET category = $1, vendor = $2, description = $3, amount = $4, currency = $5, expense_date = $6, expires_at = $7, receipt_filename = $8
+       WHERE id = $9
        RETURNING *`,
-      [category, vendor || null, description || null, amount, expenseDate, receiptFilename || null, id]
+      [category, vendor || null, description || null, amount, currency || 'CAD', expenseDate, expiresAt || null, receiptFilename || null, id]
     );
     return result.rows[0];
   },
@@ -141,6 +141,28 @@ const Expense = {
        ORDER BY expense_date DESC, created_at DESC
        LIMIT $1`,
       [limit]
+    );
+    return result.rows;
+  },
+
+  async findExpiringSoon(days = 30) {
+    const result = await db.query(
+      `SELECT * FROM expenses
+       WHERE expires_at IS NOT NULL
+         AND expires_at <= CURRENT_DATE + $1
+         AND expires_at >= CURRENT_DATE
+       ORDER BY expires_at ASC`,
+      [days]
+    );
+    return result.rows;
+  },
+
+  async findExpired() {
+    const result = await db.query(
+      `SELECT * FROM expenses
+       WHERE expires_at IS NOT NULL
+         AND expires_at < CURRENT_DATE
+       ORDER BY expires_at DESC`
     );
     return result.rows;
   },

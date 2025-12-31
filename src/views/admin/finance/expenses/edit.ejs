@@ -24,16 +24,29 @@
 
     <div class="form-row">
       <div class="form-group">
-        <label for="amount">Amount (CAD) *</label>
-        <input type="number" id="amount" name="amount" step="0.01" min="0" required
-               value="<%= expense ? expense.amount : '' %>" placeholder="12.50">
+        <label for="amount">Amount *</label>
+        <div class="input-with-select">
+          <input type="number" id="amount" name="amount" step="0.01" min="0" required
+                 value="<%= expense ? expense.amount : '' %>" placeholder="12.50">
+          <select name="currency" id="currency">
+            <option value="CAD" <%= !expense || expense.currency === 'CAD' ? 'selected' : '' %>>CAD</option>
+            <option value="USD" <%= expense && expense.currency === 'USD' ? 'selected' : '' %>>USD</option>
+          </select>
+        </div>
       </div>
 
       <div class="form-group">
-        <label for="expense_date">Date *</label>
+        <label for="expense_date">Date Paid *</label>
         <input type="date" id="expense_date" name="expense_date" required
                value="<%= expense ? new Date(expense.expense_date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0] %>">
       </div>
+    </div>
+
+    <div class="form-group">
+      <label for="expires_at">Expiry Date (optional)</label>
+      <input type="date" id="expires_at" name="expires_at"
+             value="<%= expense && expense.expires_at ? new Date(expense.expires_at).toISOString().split('T')[0] : '' %>">
+      <small>When does this subscription/service expire? Leave blank if not applicable.</small>
     </div>
 
     <div class="form-group">
@@ -92,6 +105,17 @@
 }
 .form-group input[type="file"] {
   padding: 0.5rem;
+}
+.input-with-select {
+  display: flex;
+  gap: 0.5rem;
+}
+.input-with-select input {
+  flex: 1;
+}
+.input-with-select select {
+  width: 80px;
+  flex-shrink: 0;
 }
 .form-group small {
   color: #6b7280;
