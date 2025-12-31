@@ -1,12 +1,13 @@
 #!/bin/bash
 # MigsList Bootstrap Script
 # Run this on a fresh Ubuntu 24.04 VPS (Vultr, DigitalOcean, etc.)
-# Version: 1.9.1
+# Version: 1.9.2
 
 set -e
-VERSION="1.9.1"
+VERSION="1.9.2"
 
 # Changelog:
+# v1.9.2 - Finance dashboard redesign with professional styling
 # v1.9.1 - Finance: added currency (CAD/USD), expiry dates for subscriptions
 # v1.9.0 - Finance module: income/expense tracking, invoicing, tax reports
 # v1.8.0 - Business registration, cheque payments, professional emails (payments@, support@)

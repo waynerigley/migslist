@@ -118,7 +118,7 @@ Thumbnails located in `/public/images/tutorials/`:
 Access at: `/admin/finance`
 
 Features:
-- **Dashboard** - YTD income/expenses, net profit, outstanding invoices
+- **Dashboard** - Professional design with stat cards, quick actions, invoice overview
 - **Income Tracking** - Record payments with method, reference, customer
 - **Expense Tracking** - Categories, receipt uploads, currency (CAD/USD), expiry dates
 - **Invoicing** - Create/send invoices (INV-YYYY-NNN format), PDF generation
