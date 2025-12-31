@@ -120,6 +120,27 @@
       margin: 1rem 0;
       word-break: break-all;
     }
+    .payment-option {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .payment-option h3 {
+      margin: 0 0 1rem 0;
+      color: #1e293b;
+      font-size: 1.1rem;
+    }
+    .mailing-address {
+      background: #1e40af;
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-top: 1rem;
+    }
     .steps-list {
       margin: 1.5rem 0;
     }
@@ -261,20 +282,34 @@
         </div>
       </div>
 
-      <h2>Send Interac e-Transfer To:</h2>
-      <div class="etransfer-email">waynerigley@gmail.com</div>
+      <h2>Payment Options</h2>
 
-      <ol class="steps-list">
-        <li data-step="1">Log in to your online banking</li>
-        <li data-step="2">Select Interac e-Transfer</li>
-        <li data-step="3">Send <strong>$500.00 CAD</strong> to <strong>waynerigley@gmail.com</strong></li>
-        <li data-step="4">In the message field, include your <strong>Union Local name</strong></li>
-        <li data-step="5">Complete the transfer</li>
-      </ol>
+      <div class="payment-option">
+        <h3>Option 1: Interac e-Transfer (Fastest)</h3>
+        <div class="etransfer-email">waynerigley@gmail.com</div>
+        <ol class="steps-list">
+          <li data-step="1">Log in to your online banking</li>
+          <li data-step="2">Select Interac e-Transfer</li>
+          <li data-step="3">Send <strong>$500.00 CAD</strong> to <strong>waynerigley@gmail.com</strong></li>
+          <li data-step="4">In the message field, include your <strong>Union Local name</strong></li>
+        </ol>
+      </div>
+
+      <div class="payment-option">
+        <h3>Option 2: Cheque by Mail</h3>
+        <p>Make cheque payable to: <strong>Migs List</strong></p>
+        <p>Include your <strong>Union Local name</strong> on the cheque or in a note.</p>
+        <div class="mailing-address">
+          Migs List<br>
+          9880 Ridge Road<br>
+          Windsor, Ontario<br>
+          Canada N8R 1G6
+        </div>
+      </div>
 
       <div class="note-box">
         <h4>What happens next?</h4>
-        <p>Once we receive your e-Transfer, we'll activate your account and send login credentials to the admin email you provided. This typically takes 1-2 business days.</p>
+        <p>Once we receive your payment, we'll activate your account and send login credentials to the admin email you provided. e-Transfers are typically processed within 1-2 business days. Cheques may take 5-7 business days after receipt.</p>
       </div>
 
       <div class="note-box">
