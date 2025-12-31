@@ -429,7 +429,7 @@ router.post('/signups/:id/approve', async (req, res) => {
           <h3>Your Subscription</h3>
           <p><strong>Union:</strong> ${signup.union_name}</p>
           <p><strong>Valid Until:</strong> ${new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toLocaleDateString()}</p>
-          <p>If you have any questions, please contact us at waynerigley@gmail.com</p>
+          <p>If you have any questions, please contact us at support@migslist.com</p>
         `
       });
     }

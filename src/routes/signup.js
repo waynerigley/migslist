@@ -84,7 +84,7 @@ function getPresidentWelcomeEmailHtml(firstName, unionName, loginUrl, trialEndDa
                       <strong>Trial Ends:</strong> ${trialEndDate}
                     </p>
                     <p style="color: #4b5563; margin: 0; font-size: 15px;">
-                      After your trial, continue for just <strong>$400/year CAD</strong> - that's less than $35/month to keep your members organized!
+                      After your trial, continue for just <strong>$500/year CAD</strong> (first year) to keep your members organized!
                     </p>
                   </td>
                 </tr>
