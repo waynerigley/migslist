@@ -124,6 +124,20 @@ const Member = {
       [unionId, `%${query}%`]
     );
     return result.rows;
+  },
+
+  async findAllByUnionId(unionId) {
+    const result = await db.query(
+      `SELECT m.*, b.name as bucket_name, b.number as bucket_number
+       FROM members m
+       JOIN buckets b ON m.bucket_id = b.id
+       WHERE b.union_id = $1
+         AND m.retired_at IS NULL
+         AND b.deleted_at IS NULL
+       ORDER BY b.number, m.last_name, m.first_name`,
+      [unionId]
+    );
+    return result.rows;
   }
 };
 
