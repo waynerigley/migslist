@@ -111,12 +111,17 @@ router.get('/unions/new', (req, res) => {
 // Create union
 router.post('/unions', async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, contact_name, contact_email, contact_phone } = req.body;
     if (!name || !name.trim()) {
       req.session.error = 'Union name is required';
       return res.redirect('/admin/unions/new');
     }
-    await Union.create({ name: name.trim() });
+    await Union.create({
+      name: name.trim(),
+      contactName: contact_name?.trim() || null,
+      contactEmail: contact_email?.trim() || null,
+      contactPhone: contact_phone?.trim() || null
+    });
     req.session.success = 'Union created successfully';
     res.redirect('/admin/unions');
   } catch (err) {
@@ -164,12 +169,17 @@ router.get('/unions/:id/edit', async (req, res) => {
 // Update union
 router.post('/unions/:id', async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, contact_name, contact_email, contact_phone } = req.body;
     if (!name || !name.trim()) {
       req.session.error = 'Union name is required';
       return res.redirect(`/admin/unions/${req.params.id}/edit`);
     }
-    await Union.update(req.params.id, { name: name.trim() });
+    await Union.update(req.params.id, {
+      name: name.trim(),
+      contactName: contact_name?.trim() || null,
+      contactEmail: contact_email?.trim() || null,
+      contactPhone: contact_phone?.trim() || null
+    });
     req.session.success = 'Union updated successfully';
     res.redirect('/admin/unions');
   } catch (err) {

@@ -6,8 +6,27 @@
 <div class="form-container">
   <form action="<%= union ? '/admin/unions/' + union.id : '/admin/unions' %>" method="POST">
     <div class="form-group">
-      <label for="name">Union Name</label>
+      <label for="name">Union Name *</label>
       <input type="text" id="name" name="name" value="<%= union ? union.name : '' %>" required autofocus placeholder="e.g., Local 4508">
+    </div>
+
+    <h3 style="margin: 1.5rem 0 1rem; color: #374151; font-size: 1rem;">President / Contact Information</h3>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="contact_name">President Name</label>
+        <input type="text" id="contact_name" name="contact_name" value="<%= union ? union.contact_name || '' : '' %>" placeholder="John Smith">
+      </div>
+
+      <div class="form-group">
+        <label for="contact_phone">Phone</label>
+        <input type="tel" id="contact_phone" name="contact_phone" value="<%= union ? union.contact_phone || '' : '' %>" placeholder="(519) 555-1234">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="contact_email">Email</label>
+      <input type="email" id="contact_email" name="contact_email" value="<%= union ? union.contact_email || '' : '' %>" placeholder="president@union.org">
     </div>
 
     <div class="form-actions">
@@ -16,3 +35,44 @@
     </div>
   </form>
 </div>
+
+<style>
+.form-container {
+  max-width: 600px;
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.form-group {
+  margin-bottom: 1rem;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+}
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
