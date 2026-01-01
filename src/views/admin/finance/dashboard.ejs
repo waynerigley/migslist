@@ -125,58 +125,31 @@
         </div>
         <div class="reminder-content">
           <strong>Post to Facebook</strong>
-          <span>Schedule: Mon 9am, Wed 12pm, Fri 3pm EST | 2-3 posts/week minimum</span>
+          <span>Schedule: Mon 9am, Wed 12pm, Fri 3pm EST</span>
         </div>
         <div class="reminder-actions">
-          <button onclick="showPostIdeas()" class="btn btn-sm btn-outline">Post Ideas</button>
-          <a href="https://www.facebook.com/MigsList" target="_blank" class="btn btn-sm btn-facebook">Open Facebook</a>
+          <button onclick="postToFacebook()" class="btn btn-sm btn-facebook">Post to Facebook</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Facebook Post Ideas Modal -->
-  <div id="postIdeasModal" class="modal" style="display:none;">
+  <!-- Facebook Post Modal -->
+  <div id="postModal" class="modal" style="display:none;">
     <div class="modal-content post-ideas-modal">
       <div class="modal-header">
-        <h3>Facebook Post Ideas</h3>
-        <button onclick="closePostIdeas()" class="close-btn">&times;</button>
+        <h3>Post to Facebook</h3>
+        <button onclick="closePostModal()" class="close-btn">&times;</button>
       </div>
       <div class="modal-body">
-        <p><strong>Schedule:</strong> Mon 9am, Wed 12pm, Fri 3pm EST</p>
-        <hr>
+        <div class="post-date-banner" id="postDateBanner"></div>
         <div class="post-idea">
-          <h4>Feature Highlight</h4>
-          <textarea id="post1" rows="6" readonly>Election season prep doesn't have to be stressful.
-
-With MigsList, generating your voter list takes one click. Only members in good standing are included—automatically.
-
-Try it free for 30 days: migslist.com
-
-#UnionElections #OntarioUnions #UnionStrong</textarea>
-          <button onclick="copyPost('post1')" class="btn btn-sm btn-outline">Copy</button>
-        </div>
-        <div class="post-idea">
-          <h4>Pain Point Solution</h4>
-          <textarea id="post2" rows="6" readonly>Recording Secretaries: How many hours a month do you spend on member paperwork?
-
-MigsList gives you those hours back. Import from Excel. Store PDFs per member. Export reports instantly.
-
-Try it free: migslist.com
-
-#UnionAdmin #LabourMovement</textarea>
-          <button onclick="copyPost('post2')" class="btn btn-sm btn-outline">Copy</button>
-        </div>
-        <div class="post-idea">
-          <h4>Union Solidarity</h4>
-          <textarea id="post3" rows="4" readonly>To every union member heading into the weekend—you've earned it.
-
-The labour movement is stronger because of your commitment.
-
-In Solidarity.
-
-#UnionStrong #InSolidarity #OntarioUnions</textarea>
-          <button onclick="copyPost('post3')" class="btn btn-sm btn-outline">Copy</button>
+          <h4 id="postCategory"></h4>
+          <textarea id="currentPost" rows="8" readonly></textarea>
+          <div class="post-actions">
+            <button onclick="copyCurrentPost()" class="btn btn-sm btn-outline" id="copyBtn">Copy Post</button>
+            <button onclick="markAsPosted()" class="btn btn-sm btn-success">Mark as Posted</button>
+          </div>
         </div>
         <p style="margin-top:1rem;color:#6b7280;font-size:0.85rem;">For more ideas, ask Claude: "Generate 5 Facebook posts for next week"</p>
       </div>
@@ -184,23 +157,149 @@ In Solidarity.
   </div>
 
   <script>
-  function showPostIdeas() {
-    document.getElementById('postIdeasModal').style.display = 'flex';
+  const facebookPosts = [
+    {
+      category: "Monday - Week Starter",
+      day: 1, // Monday
+      time: "9:00 AM",
+      content: `New week, new opportunity to get organized.
+
+If your membership records are scattered across spreadsheets and filing cabinets, there's a better way.
+
+MigsList helps union locals:
+• Track members in good standing
+• Generate voter lists with one click
+• Store documents securely in the cloud
+
+Start your 30-day free trial: migslist.com
+
+#UnionStrong #OntarioUnions #LabourMovement`
+    },
+    {
+      category: "Wednesday - Feature Highlight",
+      day: 3, // Wednesday
+      time: "12:00 PM",
+      content: `How long does it take to generate your voter list?
+
+With MigsList: One click. Done.
+
+Only members in good standing are included. No more cross-referencing spreadsheets. No more second-guessing your list.
+
+Election integrity made simple.
+
+migslist.com/features
+
+#UnionElections #LabourMovement #UnionLocal`
+    },
+    {
+      category: "Friday - Union Solidarity",
+      day: 5, // Friday
+      time: "3:00 PM",
+      content: `To every union member heading into the weekend—you've earned it.
+
+The labour movement is stronger because of your commitment.
+
+In Solidarity.
+
+#UnionStrong #InSolidarity #OntarioUnions #TGIF`
+    },
+    {
+      category: "Monday - Pain Point",
+      day: 1,
+      time: "9:00 AM",
+      content: `Recording Secretaries: How many hours a month do you spend on member paperwork?
+
+Between tracking dues, updating addresses, and filing documents—it adds up fast.
+
+MigsList gives you those hours back. Import from Excel. Store PDFs per member. Export reports instantly.
+
+Try it free for 30 days: migslist.com
+
+#UnionAdmin #RecordingSecretary #LabourMovement`
+    },
+    {
+      category: "Wednesday - Canadian Data",
+      day: 3,
+      time: "12:00 PM",
+      content: `Your members' data belongs in Canada.
+
+MigsList stores all data on secure Canadian servers. Full compliance with Canadian privacy laws. Automatic backups. Industry-standard encryption.
+
+Because union member information deserves protection.
+
+migslist.com
+
+#MadeInCanada #CanadianBusiness #DataPrivacy #UnionStrong`
+    },
+    {
+      category: "Friday - Community",
+      day: 5,
+      time: "3:00 PM",
+      content: `Another week of standing together.
+
+To every shop steward, recording secretary, and union volunteer putting in the hours—thank you.
+
+The labour movement runs on the dedication of members like you.
+
+In Solidarity.
+
+#UnionStrong #InSolidarity #LabourMovement`
+    }
+  ];
+
+  function getPostIndex() {
+    return parseInt(localStorage.getItem('fbPostIndex') || '0');
   }
-  function closePostIdeas() {
-    document.getElementById('postIdeasModal').style.display = 'none';
+
+  function setPostIndex(idx) {
+    localStorage.setItem('fbPostIndex', idx.toString());
   }
-  function copyPost(id) {
-    const textarea = document.getElementById(id);
+
+  function getNextPostDate(dayOfWeek) {
+    const today = new Date();
+    const currentDay = today.getDay();
+    let daysUntil = dayOfWeek - currentDay;
+    if (daysUntil <= 0) daysUntil += 7;
+    const nextDate = new Date(today);
+    nextDate.setDate(today.getDate() + daysUntil);
+    return nextDate.toLocaleDateString('en-CA', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  }
+
+  function postToFacebook() {
+    // Open Facebook
+    window.open('https://www.facebook.com/MigsList', '_blank');
+
+    // Show post modal
+    const idx = getPostIndex();
+    const post = facebookPosts[idx % facebookPosts.length];
+
+    document.getElementById('postDateBanner').innerHTML = '<strong>Post on:</strong> ' + getNextPostDate(post.day) + ' at ' + post.time + ' EST';
+    document.getElementById('postCategory').textContent = post.category;
+    document.getElementById('currentPost').value = post.content;
+    document.getElementById('copyBtn').textContent = 'Copy Post';
+    document.getElementById('postModal').style.display = 'flex';
+  }
+
+  function closePostModal() {
+    document.getElementById('postModal').style.display = 'none';
+  }
+
+  function copyCurrentPost() {
+    const textarea = document.getElementById('currentPost');
     textarea.select();
     document.execCommand('copy');
-    const btn = textarea.nextElementSibling;
-    btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = 'Copy', 2000);
+    document.getElementById('copyBtn').textContent = 'Copied!';
   }
+
+  function markAsPosted() {
+    const idx = getPostIndex();
+    setPostIndex(idx + 1);
+    closePostModal();
+  }
+
   // Close modal on outside click
-  document.getElementById('postIdeasModal').addEventListener('click', function(e) {
-    if (e.target === this) closePostIdeas();
+  document.getElementById('postModal')?.addEventListener('click', function(e) {
+    if (e.target === this) closePostModal();
   });
   </script>
 
@@ -953,6 +1052,31 @@ In Solidarity.
 
 .post-idea button {
   margin-top: 0.5rem;
+}
+
+.post-date-banner {
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.post-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.btn-success {
+  background: #16a34a;
+  color: white;
+  border: none;
+}
+
+.btn-success:hover {
+  background: #15803d;
 }
 
 @media (max-width: 768px) {
