@@ -572,14 +572,14 @@ router.get('/invoices/:id/pdf', async (req, res) => {
     doc.moveTo(50, tableTop + 15).lineTo(550, tableTop + 15).stroke();
 
     doc.text('Annual Subscription - MIGS List', 50, tableTop + 25);
-    doc.text(`$${invoice.amount.toFixed(2)} CAD`, 450, tableTop + 25, { align: 'right' });
+    doc.text(`$${parseFloat(invoice.amount).toFixed(2)} CAD`, 450, tableTop + 25, { align: 'right' });
 
     doc.moveTo(50, tableTop + 45).lineTo(550, tableTop + 45).stroke();
 
     // Total
     doc.font('Helvetica-Bold');
     doc.text('Total:', 350, tableTop + 55);
-    doc.text(`$${invoice.amount.toFixed(2)} CAD`, 450, tableTop + 55, { align: 'right' });
+    doc.text(`$${parseFloat(invoice.amount).toFixed(2)} CAD`, 450, tableTop + 55, { align: 'right' });
     doc.font('Helvetica');
 
     // Payment instructions
@@ -667,7 +667,7 @@ router.get('/receipts/:incomeId/pdf', async (req, res) => {
     doc.fontSize(10);
 
     doc.text(`Date Received: ${new Date(income.received_date).toLocaleDateString('en-CA')}`);
-    doc.text(`Amount: $${income.amount.toFixed(2)} CAD`);
+    doc.text(`Amount: $${parseFloat(income.amount).toFixed(2)} CAD`);
     doc.text(`Payment Method: ${income.payment_method === 'etransfer' ? 'Interac e-Transfer' : income.payment_method === 'cheque' ? 'Cheque' : income.payment_method}`);
     if (income.reference) {
       doc.text(`Reference: ${income.reference}`);
