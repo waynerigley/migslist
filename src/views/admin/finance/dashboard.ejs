@@ -125,7 +125,7 @@
         </div>
         <div class="reminder-content">
           <strong>Post to Facebook</strong>
-          <span>Schedule: Mon 9am, Wed 12pm, Fri 3pm EST</span>
+          <span id="fbCountdown">Calculating next post time...</span>
         </div>
         <div class="reminder-actions">
           <button onclick="postToFacebook()" class="btn btn-sm btn-facebook">Post to Facebook</button>
@@ -301,6 +301,76 @@ In Solidarity.
   document.getElementById('postModal')?.addEventListener('click', function(e) {
     if (e.target === this) closePostModal();
   });
+
+  // Facebook posting schedule: Mon 9am, Wed 12pm, Fri 3pm EST
+  const postSchedule = [
+    { day: 1, hour: 9, label: 'Monday 9:00 AM' },   // Monday
+    { day: 3, hour: 12, label: 'Wednesday 12:00 PM' }, // Wednesday
+    { day: 5, hour: 15, label: 'Friday 3:00 PM' }   // Friday
+  ];
+
+  function getNextPostTime() {
+    const now = new Date();
+    const currentDay = now.getDay(); // 0=Sun, 1=Mon, etc.
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+
+    let nextPost = null;
+    let minDiff = Infinity;
+
+    for (const slot of postSchedule) {
+      let daysUntil = slot.day - currentDay;
+
+      // If it's today, check if the time has passed
+      if (daysUntil === 0) {
+        if (currentHour > slot.hour || (currentHour === slot.hour && currentMinute >= 0)) {
+          daysUntil = 7; // Already passed, next week
+        }
+      } else if (daysUntil < 0) {
+        daysUntil += 7;
+      }
+
+      const nextDate = new Date(now);
+      nextDate.setDate(now.getDate() + daysUntil);
+      nextDate.setHours(slot.hour, 0, 0, 0);
+
+      const diff = nextDate - now;
+      if (diff > 0 && diff < minDiff) {
+        minDiff = diff;
+        nextPost = { date: nextDate, label: slot.label };
+      }
+    }
+
+    return nextPost;
+  }
+
+  function updateCountdown() {
+    const next = getNextPostTime();
+    if (!next) return;
+
+    const now = new Date();
+    const diff = next.date - now;
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+    let countdownText;
+    if (hours > 24) {
+      const days = Math.floor(hours / 24);
+      const remainingHours = hours % 24;
+      countdownText = `Next post: ${next.label} (${days}d ${remainingHours}h)`;
+    } else if (hours > 0) {
+      countdownText = `Next post: ${next.label} (${hours}h ${minutes}m)`;
+    } else {
+      countdownText = `Next post: ${next.label} (${minutes}m)`;
+    }
+
+    document.getElementById('fbCountdown').textContent = countdownText;
+  }
+
+  // Update countdown immediately and every minute
+  updateCountdown();
+  setInterval(updateCountdown, 60000);
   </script>
 
   <!-- Invoice Status Overview -->
