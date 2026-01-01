@@ -68,7 +68,36 @@ const Bucket = {
 
   // Hard delete - actually removes from database (for admin use)
   async hardDelete(id) {
+    // Delete members first, then the bucket
+    await db.query('DELETE FROM members WHERE bucket_id = $1', [id]);
     await db.query('DELETE FROM buckets WHERE id = $1', [id]);
+  },
+
+  // Clean up orphaned records (members without valid buckets, buckets without valid unions)
+  async cleanupOrphans() {
+    // Delete members whose bucket doesn't exist or is deleted
+    const membersResult = await db.query(`
+      DELETE FROM members m
+      WHERE NOT EXISTS (
+        SELECT 1 FROM buckets b
+        WHERE b.id = m.bucket_id AND b.deleted_at IS NULL
+      )
+      RETURNING id
+    `);
+
+    // Delete buckets whose union doesn't exist
+    const bucketsResult = await db.query(`
+      DELETE FROM buckets b
+      WHERE NOT EXISTS (
+        SELECT 1 FROM unions u WHERE u.id = b.union_id
+      )
+      RETURNING id
+    `);
+
+    return {
+      deletedMembers: membersResult.rowCount,
+      deletedBuckets: bucketsResult.rowCount
+    };
   },
 
   // Restore a soft-deleted bucket

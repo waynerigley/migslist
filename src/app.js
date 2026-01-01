@@ -121,6 +121,17 @@ app.use((req, res) => {
   });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`MigsList running on http://localhost:${PORT}`);
+
+  // Auto-cleanup orphaned records on startup
+  try {
+    const Bucket = require('./models/Bucket');
+    const result = await Bucket.cleanupOrphans();
+    if (result.deletedMembers > 0 || result.deletedBuckets > 0) {
+      console.log(`Cleanup: removed ${result.deletedMembers} orphaned members, ${result.deletedBuckets} orphaned buckets`);
+    }
+  } catch (err) {
+    console.error('Startup cleanup error:', err.message);
+  }
 });

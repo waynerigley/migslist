@@ -1438,4 +1438,17 @@ router.get('/unions/:unionId/export/rank-and-file/pdf', async (req, res) => {
   }
 });
 
+// Cleanup orphaned records (members without buckets, buckets without unions)
+router.post('/cleanup', async (req, res) => {
+  try {
+    const result = await Bucket.cleanupOrphans();
+    req.session.success = `Cleanup complete: ${result.deletedMembers} orphaned members and ${result.deletedBuckets} orphaned buckets removed`;
+    res.redirect('/admin');
+  } catch (err) {
+    console.error('Cleanup error:', err);
+    req.session.error = 'Error during cleanup';
+    res.redirect('/admin');
+  }
+});
+
 module.exports = router;

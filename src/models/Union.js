@@ -30,7 +30,7 @@ const Union = {
               COUNT(DISTINCT b.id) as bucket_count,
               COUNT(DISTINCT m.id) as member_count
        FROM unions u
-       LEFT JOIN buckets b ON u.id = b.union_id
+       LEFT JOIN buckets b ON u.id = b.union_id AND b.deleted_at IS NULL
        LEFT JOIN members m ON b.id = m.bucket_id
        GROUP BY u.id
        ORDER BY u.name`
@@ -44,7 +44,7 @@ const Union = {
               COUNT(DISTINCT b.id) as bucket_count,
               COUNT(DISTINCT m.id) as member_count
        FROM unions u
-       LEFT JOIN buckets b ON u.id = b.union_id
+       LEFT JOIN buckets b ON u.id = b.union_id AND b.deleted_at IS NULL
        LEFT JOIN members m ON b.id = m.bucket_id
        WHERE u.status = 'active'
        GROUP BY u.id
@@ -140,7 +140,7 @@ const Union = {
               COUNT(DISTINCT m.id) as member_count,
               GREATEST(0, EXTRACT(DAY FROM subscription_end - NOW())) as days_remaining
        FROM unions u
-       LEFT JOIN buckets b ON u.id = b.union_id
+       LEFT JOIN buckets b ON u.id = b.union_id AND b.deleted_at IS NULL
        LEFT JOIN members m ON b.id = m.bucket_id
        WHERE u.payment_status = 'trial'
        GROUP BY u.id
@@ -168,7 +168,7 @@ const Union = {
         COUNT(DISTINCT m.id) as total_members,
         COUNT(DISTINCT CASE WHEN m.pdf_filename IS NOT NULL THEN m.id END) as good_standing_count
        FROM unions u
-       LEFT JOIN buckets b ON u.id = b.union_id
+       LEFT JOIN buckets b ON u.id = b.union_id AND b.deleted_at IS NULL
        LEFT JOIN members m ON b.id = m.bucket_id
        WHERE u.id = $1`,
       [id]
