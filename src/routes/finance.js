@@ -509,7 +509,17 @@ router.post('/invoices/:id/mark-paid', async (req, res) => {
 
     await Invoice.markPaid(req.params.id);
 
-    req.session.success = `Invoice ${invoice.invoice_number} marked as paid`;
+    // Automatically create an income record for this payment
+    await Income.create({
+      unionId: invoice.union_id,
+      amount: parseFloat(invoice.amount),
+      paymentMethod: 'etransfer', // default, can be edited later
+      reference: invoice.invoice_number,
+      description: `Payment for ${invoice.invoice_number}`,
+      receivedDate: new Date().toISOString().split('T')[0]
+    });
+
+    req.session.success = `Invoice ${invoice.invoice_number} marked as paid and income recorded`;
     res.redirect('/admin/finance/invoices');
   } catch (err) {
     console.error('Mark paid error:', err);
