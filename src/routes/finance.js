@@ -525,7 +525,7 @@ router.get('/invoices/:id/pdf', async (req, res) => {
       return res.redirect('/admin/finance/invoices');
     }
 
-    const doc = new PDFDocument({ margin: 50, size: 'LETTER' });
+    const doc = new PDFDocument({ margin: 40, size: 'LETTER' });
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename=${invoice.invoice_number}.pdf`);
@@ -537,66 +537,64 @@ router.get('/invoices/:id/pdf', async (req, res) => {
     const darkGray = '#374151';
     const lightGray = '#9ca3af';
 
-    // Header with colored bar
-    doc.rect(0, 0, 612, 80).fill(primaryColor);
+    // Header with colored bar (smaller)
+    doc.rect(0, 0, 612, 60).fill(primaryColor);
 
     // Company name in header
     doc.fillColor('white')
-       .fontSize(28)
+       .fontSize(22)
        .font('Helvetica-Bold')
-       .text('MIGS LIST', 50, 28);
+       .text('MIGS LIST', 40, 20);
 
     // Invoice label
-    doc.fontSize(24)
-       .text('INVOICE', 400, 28, { align: 'right', width: 162 });
+    doc.fontSize(20)
+       .text('INVOICE', 400, 20, { align: 'right', width: 172 });
 
     // Reset color
     doc.fillColor(darkGray);
 
     // Invoice details box (right side)
-    const detailsBoxTop = 100;
-    doc.rect(380, detailsBoxTop, 182, 80).stroke(lightGray);
+    const detailsBoxTop = 75;
+    doc.rect(380, detailsBoxTop, 192, 65).stroke(lightGray);
 
-    doc.font('Helvetica-Bold').fontSize(10);
-    doc.text('Invoice Number:', 390, detailsBoxTop + 10);
-    doc.text('Issue Date:', 390, detailsBoxTop + 30);
-    doc.text('Due Date:', 390, detailsBoxTop + 50);
+    doc.font('Helvetica-Bold').fontSize(9);
+    doc.text('Invoice Number:', 390, detailsBoxTop + 8);
+    doc.text('Issue Date:', 390, detailsBoxTop + 26);
+    doc.text('Due Date:', 390, detailsBoxTop + 44);
 
     doc.font('Helvetica').fillColor(darkGray);
-    doc.text(invoice.invoice_number, 480, detailsBoxTop + 10, { width: 70, align: 'right' });
-    doc.text(new Date(invoice.issue_date).toLocaleDateString('en-CA'), 480, detailsBoxTop + 30, { width: 70, align: 'right' });
-    doc.text(new Date(invoice.due_date).toLocaleDateString('en-CA'), 480, detailsBoxTop + 50, { width: 70, align: 'right' });
+    doc.text(invoice.invoice_number, 480, detailsBoxTop + 8, { width: 80, align: 'right' });
+    doc.text(new Date(invoice.issue_date).toLocaleDateString('en-CA'), 480, detailsBoxTop + 26, { width: 80, align: 'right' });
+    doc.text(new Date(invoice.due_date).toLocaleDateString('en-CA'), 480, detailsBoxTop + 44, { width: 80, align: 'right' });
 
     // From section (left side)
-    doc.font('Helvetica-Bold').fontSize(11).fillColor(primaryColor);
-    doc.text('FROM', 50, detailsBoxTop);
-    doc.font('Helvetica-Bold').fontSize(12).fillColor(darkGray);
-    doc.text('Migs List', 50, detailsBoxTop + 18);
-    doc.font('Helvetica').fontSize(10);
-    doc.text('9880 Ridge Road', 50, detailsBoxTop + 34);
-    doc.text('Windsor, Ontario N8R 1G6', 50, detailsBoxTop + 48);
-    doc.text('Canada', 50, detailsBoxTop + 62);
-    doc.fillColor(lightGray).text('BIN: 1001457886', 50, detailsBoxTop + 80);
+    doc.font('Helvetica-Bold').fontSize(10).fillColor(primaryColor);
+    doc.text('FROM', 40, detailsBoxTop);
+    doc.font('Helvetica-Bold').fontSize(11).fillColor(darkGray);
+    doc.text('Migs List', 40, detailsBoxTop + 14);
+    doc.font('Helvetica').fontSize(9);
+    doc.text('9880 Ridge Road, Windsor, Ontario N8R 1G6, Canada', 40, detailsBoxTop + 28);
+    doc.fillColor(lightGray).text('BIN: 1001457886', 40, detailsBoxTop + 42);
 
     // Bill To section
-    const billToTop = 210;
-    doc.font('Helvetica-Bold').fontSize(11).fillColor(primaryColor);
-    doc.text('BILL TO', 50, billToTop);
-    doc.font('Helvetica-Bold').fontSize(12).fillColor(darkGray);
-    doc.text(invoice.union_name || 'N/A', 50, billToTop + 18);
+    const billToTop = 160;
+    doc.font('Helvetica-Bold').fontSize(10).fillColor(primaryColor);
+    doc.text('BILL TO', 40, billToTop);
+    doc.font('Helvetica-Bold').fontSize(11).fillColor(darkGray);
+    doc.text(invoice.union_name || 'N/A', 40, billToTop + 14);
 
-    doc.font('Helvetica').fontSize(10);
-    let billToY = billToTop + 36;
+    doc.font('Helvetica').fontSize(9);
+    let billToY = billToTop + 28;
     if (invoice.contact_name) {
-      doc.text(`President: ${invoice.contact_name}`, 50, billToY);
-      billToY += 14;
+      doc.text(invoice.contact_name, 40, billToY);
+      billToY += 12;
     }
     if (invoice.contact_email) {
-      doc.text(invoice.contact_email, 50, billToY);
-      billToY += 14;
+      doc.text(invoice.contact_email, 40, billToY);
+      billToY += 12;
     }
     if (invoice.contact_phone) {
-      doc.text(invoice.contact_phone, 50, billToY);
+      doc.text(invoice.contact_phone, 40, billToY);
     }
 
     // Status badge
@@ -607,68 +605,67 @@ router.get('/invoices/:id/pdf', async (req, res) => {
       overdue: '#ef4444'
     };
     const statusColor = statusColors[invoice.status] || '#6b7280';
-    doc.rect(380, billToTop, 80, 22).fill(statusColor);
-    doc.fillColor('white').font('Helvetica-Bold').fontSize(10);
-    doc.text(invoice.status.toUpperCase(), 385, billToTop + 6, { width: 70, align: 'center' });
+    doc.rect(380, billToTop, 70, 20).fill(statusColor);
+    doc.fillColor('white').font('Helvetica-Bold').fontSize(9);
+    doc.text(invoice.status.toUpperCase(), 380, billToTop + 6, { width: 70, align: 'center' });
 
     // Line items table
-    const tableTop = 320;
+    const tableTop = 230;
 
     // Table header
-    doc.rect(50, tableTop, 512, 25).fill('#f3f4f6');
-    doc.fillColor(darkGray).font('Helvetica-Bold').fontSize(10);
-    doc.text('DESCRIPTION', 60, tableTop + 8);
-    doc.text('AMOUNT', 460, tableTop + 8, { width: 90, align: 'right' });
+    doc.rect(40, tableTop, 532, 22).fill('#f3f4f6');
+    doc.fillColor(darkGray).font('Helvetica-Bold').fontSize(9);
+    doc.text('DESCRIPTION', 50, tableTop + 7);
+    doc.text('AMOUNT', 480, tableTop + 7, { width: 80, align: 'right' });
 
     // Table row
-    doc.font('Helvetica').fontSize(10);
-    doc.rect(50, tableTop + 25, 512, 35).stroke('#e5e7eb');
-    doc.text('Annual Subscription - MIGS List Member Tracking System', 60, tableTop + 38);
-    doc.text(`$${parseFloat(invoice.amount).toFixed(2)} CAD`, 460, tableTop + 38, { width: 90, align: 'right' });
+    doc.font('Helvetica').fontSize(9);
+    doc.rect(40, tableTop + 22, 532, 28).stroke('#e5e7eb');
+    doc.text('Annual Subscription - MIGS List Member Tracking System', 50, tableTop + 32);
+    doc.text(`$${parseFloat(invoice.amount).toFixed(2)} CAD`, 480, tableTop + 32, { width: 80, align: 'right' });
 
-    // Subtotal and Total
-    const totalTop = tableTop + 70;
-    doc.rect(350, totalTop, 212, 50).fill('#f3f4f6');
+    // Total box
+    const totalTop = tableTop + 58;
+    doc.rect(370, totalTop, 202, 40).fill('#f3f4f6');
 
-    doc.font('Helvetica').fontSize(10).fillColor(darkGray);
-    doc.text('Subtotal:', 360, totalTop + 10);
-    doc.text(`$${parseFloat(invoice.amount).toFixed(2)} CAD`, 460, totalTop + 10, { width: 90, align: 'right' });
-
-    doc.font('Helvetica-Bold').fontSize(12).fillColor(primaryColor);
-    doc.text('Total Due:', 360, totalTop + 30);
-    doc.text(`$${parseFloat(invoice.amount).toFixed(2)} CAD`, 460, totalTop + 30, { width: 90, align: 'right' });
-
-    // Payment instructions box
-    const paymentTop = 470;
-    doc.rect(50, paymentTop, 512, 100).stroke(primaryColor);
+    doc.font('Helvetica').fontSize(9).fillColor(darkGray);
+    doc.text('Subtotal:', 380, totalTop + 8);
+    doc.text(`$${parseFloat(invoice.amount).toFixed(2)} CAD`, 480, totalTop + 8, { width: 80, align: 'right' });
 
     doc.font('Helvetica-Bold').fontSize(11).fillColor(primaryColor);
-    doc.text('PAYMENT OPTIONS', 60, paymentTop + 12);
+    doc.text('Total Due:', 380, totalTop + 24);
+    doc.text(`$${parseFloat(invoice.amount).toFixed(2)} CAD`, 480, totalTop + 24, { width: 80, align: 'right' });
 
-    doc.font('Helvetica').fontSize(10).fillColor(darkGray);
-    doc.text('1. Interac e-Transfer', 60, paymentTop + 35);
-    doc.font('Helvetica-Bold').text('    payments@migslist.com', 60, paymentTop + 49);
+    // Payment instructions box
+    const paymentTop = 360;
+    doc.rect(40, paymentTop, 532, 75).stroke(primaryColor);
 
-    doc.font('Helvetica').text('2. Cheque payable to "Migs List"', 60, paymentTop + 68);
-    doc.text('    Mail to: 9880 Ridge Road, Windsor, Ontario N8R 1G6', 60, paymentTop + 82);
+    doc.font('Helvetica-Bold').fontSize(10).fillColor(primaryColor);
+    doc.text('PAYMENT OPTIONS', 50, paymentTop + 10);
 
-    doc.fillColor(lightGray).fontSize(9);
-    doc.text('Please include your invoice number in the payment reference.', 300, paymentTop + 55, { width: 250, align: 'right' });
+    doc.font('Helvetica').fontSize(9).fillColor(darkGray);
+    doc.text('1. Interac e-Transfer to: ', 50, paymentTop + 28, { continued: true });
+    doc.font('Helvetica-Bold').text('payments@migslist.com');
+
+    doc.font('Helvetica').text('2. Cheque payable to "Migs List" - Mail to: 9880 Ridge Road, Windsor, Ontario N8R 1G6', 50, paymentTop + 44);
+
+    doc.fillColor(lightGray).fontSize(8);
+    doc.text('Please include your invoice number in the payment reference.', 50, paymentTop + 60);
 
     // Notes section
     if (invoice.notes) {
-      const notesTop = 585;
-      doc.font('Helvetica-Bold').fontSize(10).fillColor(darkGray);
-      doc.text('Notes:', 50, notesTop);
-      doc.font('Helvetica').fontSize(9).fillColor(lightGray);
-      doc.text(invoice.notes, 50, notesTop + 14, { width: 512 });
+      const notesTop = 450;
+      doc.font('Helvetica-Bold').fontSize(9).fillColor(darkGray);
+      doc.text('Notes:', 40, notesTop);
+      doc.font('Helvetica').fontSize(8).fillColor(lightGray);
+      doc.text(invoice.notes, 40, notesTop + 12, { width: 532 });
     }
 
     // Footer
-    doc.rect(0, 730, 612, 60).fill('#f9fafb');
+    doc.rect(0, 720, 612, 72).fill('#f9fafb');
     doc.fillColor(lightGray).font('Helvetica').fontSize(9);
-    doc.text('Thank you for your business!', 50, 745, { align: 'center', width: 512 });
-    doc.text('Questions? Contact us at support@migslist.com', 50, 760, { align: 'center', width: 512 });
+    doc.text('Thank you for your business!', 40, 738, { align: 'center', width: 532 });
+    doc.text('Questions? Contact us at support@migslist.com', 40, 752, { align: 'center', width: 532 });
 
     doc.end();
   } catch (err) {
@@ -704,7 +701,7 @@ router.get('/receipts/:incomeId/pdf', async (req, res) => {
       return res.redirect('/admin/finance/income');
     }
 
-    const doc = new PDFDocument({ margin: 50, size: 'LETTER' });
+    const doc = new PDFDocument({ margin: 40, size: 'LETTER' });
 
     const receiptNumber = `RCP-${new Date(income.received_date).getFullYear()}-${income.id.substr(0, 8).toUpperCase()}`;
 
@@ -718,125 +715,123 @@ router.get('/receipts/:incomeId/pdf', async (req, res) => {
     const darkGray = '#374151';
     const lightGray = '#9ca3af';
 
-    // Header with colored bar
-    doc.rect(0, 0, 612, 80).fill(primaryColor);
+    // Header with colored bar (smaller)
+    doc.rect(0, 0, 612, 60).fill(primaryColor);
 
     // Company name in header
     doc.fillColor('white')
-       .fontSize(28)
+       .fontSize(22)
        .font('Helvetica-Bold')
-       .text('MIGS LIST', 50, 28);
+       .text('MIGS LIST', 40, 20);
 
     // Receipt label
-    doc.fontSize(24)
-       .text('RECEIPT', 400, 28, { align: 'right', width: 162 });
+    doc.fontSize(20)
+       .text('RECEIPT', 400, 20, { align: 'right', width: 172 });
 
     // Reset color
     doc.fillColor(darkGray);
 
     // Receipt details box (right side)
-    const detailsBoxTop = 100;
-    doc.rect(380, detailsBoxTop, 182, 60).stroke(lightGray);
+    const detailsBoxTop = 75;
+    doc.rect(380, detailsBoxTop, 192, 50).stroke(lightGray);
 
-    doc.font('Helvetica-Bold').fontSize(10);
-    doc.text('Receipt Number:', 390, detailsBoxTop + 10);
-    doc.text('Date Received:', 390, detailsBoxTop + 30);
+    doc.font('Helvetica-Bold').fontSize(9);
+    doc.text('Receipt Number:', 390, detailsBoxTop + 8);
+    doc.text('Date Received:', 390, detailsBoxTop + 26);
 
     doc.font('Helvetica').fillColor(darkGray);
-    doc.text(receiptNumber, 390, detailsBoxTop + 10, { width: 160, align: 'right' });
-    doc.text(new Date(income.received_date).toLocaleDateString('en-CA'), 390, detailsBoxTop + 30, { width: 160, align: 'right' });
+    doc.text(receiptNumber, 390, detailsBoxTop + 8, { width: 170, align: 'right' });
+    doc.text(new Date(income.received_date).toLocaleDateString('en-CA'), 390, detailsBoxTop + 26, { width: 170, align: 'right' });
 
     // From section (left side)
-    doc.font('Helvetica-Bold').fontSize(11).fillColor(primaryColor);
-    doc.text('FROM', 50, detailsBoxTop);
-    doc.font('Helvetica-Bold').fontSize(12).fillColor(darkGray);
-    doc.text('Migs List', 50, detailsBoxTop + 18);
-    doc.font('Helvetica').fontSize(10);
-    doc.text('9880 Ridge Road', 50, detailsBoxTop + 34);
-    doc.text('Windsor, Ontario N8R 1G6', 50, detailsBoxTop + 48);
-    doc.text('Canada', 50, detailsBoxTop + 62);
-    doc.fillColor(lightGray).text('BIN: 1001457886', 50, detailsBoxTop + 80);
+    doc.font('Helvetica-Bold').fontSize(10).fillColor(primaryColor);
+    doc.text('FROM', 40, detailsBoxTop);
+    doc.font('Helvetica-Bold').fontSize(11).fillColor(darkGray);
+    doc.text('Migs List', 40, detailsBoxTop + 14);
+    doc.font('Helvetica').fontSize(9);
+    doc.text('9880 Ridge Road, Windsor, Ontario N8R 1G6, Canada', 40, detailsBoxTop + 28);
+    doc.fillColor(lightGray).text('BIN: 1001457886', 40, detailsBoxTop + 42);
 
     // Received From section
-    const receivedFromTop = 210;
-    doc.font('Helvetica-Bold').fontSize(11).fillColor(primaryColor);
-    doc.text('RECEIVED FROM', 50, receivedFromTop);
-    doc.font('Helvetica-Bold').fontSize(12).fillColor(darkGray);
-    doc.text(income.union_name || 'N/A', 50, receivedFromTop + 18);
+    const receivedFromTop = 145;
+    doc.font('Helvetica-Bold').fontSize(10).fillColor(primaryColor);
+    doc.text('RECEIVED FROM', 40, receivedFromTop);
+    doc.font('Helvetica-Bold').fontSize(11).fillColor(darkGray);
+    doc.text(income.union_name || 'N/A', 40, receivedFromTop + 14);
 
-    doc.font('Helvetica').fontSize(10);
-    let receivedFromY = receivedFromTop + 36;
+    doc.font('Helvetica').fontSize(9);
+    let receivedFromY = receivedFromTop + 28;
     if (income.contact_name) {
-      doc.text(`President: ${income.contact_name}`, 50, receivedFromY);
-      receivedFromY += 14;
+      doc.text(income.contact_name, 40, receivedFromY);
+      receivedFromY += 12;
     }
     if (income.contact_email) {
-      doc.text(income.contact_email, 50, receivedFromY);
-      receivedFromY += 14;
+      doc.text(income.contact_email, 40, receivedFromY);
+      receivedFromY += 12;
     }
     if (income.contact_phone) {
-      doc.text(income.contact_phone, 50, receivedFromY);
+      doc.text(income.contact_phone, 40, receivedFromY);
     }
 
     // PAID badge
-    doc.rect(380, receivedFromTop, 80, 22).fill(primaryColor);
-    doc.fillColor('white').font('Helvetica-Bold').fontSize(10);
-    doc.text('PAID', 385, receivedFromTop + 6, { width: 70, align: 'center' });
+    doc.rect(380, receivedFromTop, 60, 18).fill(primaryColor);
+    doc.fillColor('white').font('Helvetica-Bold').fontSize(9);
+    doc.text('PAID', 380, receivedFromTop + 5, { width: 60, align: 'center' });
 
     // Payment details table
-    const tableTop = 320;
+    const tableTop = 215;
 
     // Table header
-    doc.rect(50, tableTop, 512, 25).fill('#f3f4f6');
-    doc.fillColor(darkGray).font('Helvetica-Bold').fontSize(10);
-    doc.text('DESCRIPTION', 60, tableTop + 8);
-    doc.text('AMOUNT', 460, tableTop + 8, { width: 90, align: 'right' });
+    doc.rect(40, tableTop, 532, 22).fill('#f3f4f6');
+    doc.fillColor(darkGray).font('Helvetica-Bold').fontSize(9);
+    doc.text('DESCRIPTION', 50, tableTop + 7);
+    doc.text('AMOUNT', 480, tableTop + 7, { width: 80, align: 'right' });
 
     // Table row
     const description = income.description || 'Annual Subscription - MIGS List Member Tracking System';
-    doc.font('Helvetica').fontSize(10);
-    doc.rect(50, tableTop + 25, 512, 35).stroke('#e5e7eb');
-    doc.text(description, 60, tableTop + 38, { width: 350 });
-    doc.text(`$${parseFloat(income.amount).toFixed(2)} CAD`, 460, tableTop + 38, { width: 90, align: 'right' });
+    doc.font('Helvetica').fontSize(9);
+    doc.rect(40, tableTop + 22, 532, 28).stroke('#e5e7eb');
+    doc.text(description, 50, tableTop + 32, { width: 380 });
+    doc.text(`$${parseFloat(income.amount).toFixed(2)} CAD`, 480, tableTop + 32, { width: 80, align: 'right' });
 
     // Total received
-    const totalTop = tableTop + 70;
-    doc.rect(350, totalTop, 212, 30).fill('#d1fae5');
+    const totalTop = tableTop + 58;
+    doc.rect(370, totalTop, 202, 28).fill('#d1fae5');
 
-    doc.font('Helvetica-Bold').fontSize(12).fillColor(primaryColor);
-    doc.text('Amount Received:', 360, totalTop + 10);
-    doc.text(`$${parseFloat(income.amount).toFixed(2)} CAD`, 460, totalTop + 10, { width: 90, align: 'right' });
+    doc.font('Helvetica-Bold').fontSize(10).fillColor(primaryColor);
+    doc.text('Amount Received:', 380, totalTop + 9);
+    doc.text(`$${parseFloat(income.amount).toFixed(2)} CAD`, 480, totalTop + 9, { width: 80, align: 'right' });
 
     // Payment method info box
-    const paymentTop = 440;
-    doc.rect(50, paymentTop, 512, 80).stroke(primaryColor);
+    const paymentTop = 320;
+    doc.rect(40, paymentTop, 532, 55).stroke(primaryColor);
 
-    doc.font('Helvetica-Bold').fontSize(11).fillColor(primaryColor);
-    doc.text('PAYMENT DETAILS', 60, paymentTop + 12);
+    doc.font('Helvetica-Bold').fontSize(10).fillColor(primaryColor);
+    doc.text('PAYMENT DETAILS', 50, paymentTop + 10);
 
-    doc.font('Helvetica').fontSize(10).fillColor(darkGray);
+    doc.font('Helvetica').fontSize(9).fillColor(darkGray);
     const methodName = income.payment_method === 'etransfer' ? 'Interac e-Transfer' :
                        income.payment_method === 'cheque' ? 'Cheque' :
                        income.payment_method.charAt(0).toUpperCase() + income.payment_method.slice(1);
-    doc.text(`Payment Method: ${methodName}`, 60, paymentTop + 35);
+    doc.text(`Payment Method: ${methodName}`, 50, paymentTop + 28);
 
     if (income.reference) {
-      doc.text(`Reference Number: ${income.reference}`, 60, paymentTop + 52);
+      doc.text(`Reference Number: ${income.reference}`, 50, paymentTop + 42);
     }
 
     // Confirmation stamp
-    const stampTop = 550;
-    doc.rect(180, stampTop, 250, 60).lineWidth(3).stroke(primaryColor);
-    doc.font('Helvetica-Bold').fontSize(18).fillColor(primaryColor);
-    doc.text('PAYMENT RECEIVED', 180, stampTop + 15, { width: 250, align: 'center' });
-    doc.font('Helvetica').fontSize(10);
-    doc.text('This receipt confirms payment in full', 180, stampTop + 40, { width: 250, align: 'center' });
+    const stampTop = 400;
+    doc.rect(180, stampTop, 250, 50).lineWidth(2).stroke(primaryColor);
+    doc.font('Helvetica-Bold').fontSize(16).fillColor(primaryColor);
+    doc.text('PAYMENT RECEIVED', 180, stampTop + 12, { width: 250, align: 'center' });
+    doc.font('Helvetica').fontSize(9);
+    doc.text('This receipt confirms payment in full', 180, stampTop + 32, { width: 250, align: 'center' });
 
     // Footer
-    doc.rect(0, 730, 612, 60).fill('#f9fafb');
+    doc.rect(0, 720, 612, 72).fill('#f9fafb');
     doc.fillColor(lightGray).font('Helvetica').fontSize(9);
-    doc.text('Thank you for your business!', 50, 745, { align: 'center', width: 512 });
-    doc.text('Questions? Contact us at support@migslist.com', 50, 760, { align: 'center', width: 512 });
+    doc.text('Thank you for your business!', 40, 738, { align: 'center', width: 532 });
+    doc.text('Questions? Contact us at support@migslist.com', 40, 752, { align: 'center', width: 532 });
 
     doc.end();
   } catch (err) {
