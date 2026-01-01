@@ -142,6 +142,55 @@ Database tables: `income`, `expenses`, `invoices`
 
 Server Timezone: America/Toronto (set via TZ env var in .env)
 
+## Production Deployment Checklist
+
+When deploying new features that add database columns, ALWAYS run the migration on production:
+
+```bash
+# SSH into server and run migration
+ssh root@155.138.149.116 "cd /var/www/migs && node -e \"
+require('dotenv').config();
+const { Pool } = require('pg');
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+// ADD YOUR ALTER TABLE STATEMENTS HERE
+pool.query('SELECT 1').then(() => console.log('Migration complete')).finally(() => pool.end());
+\""
+```
+
+### Required Database Columns
+
+| Table   | Column                | Type         | Added   |
+|---------|----------------------|--------------|---------|
+| buckets | master_pdf_filename  | VARCHAR(255) | Jan 2026 |
+
+---
+
+## Incident Log
+
+### Jan 1, 2026 - PDF Upload Failing on Unit Creation
+
+**Symptoms:**
+- Creating a unit with PDF attached showed "Something went wrong" error
+- Unit was created but PDF was not attached
+- PDF files were being uploaded to `/uploads/pdfs/` successfully
+
+**Root Causes:**
+1. **Missing database column**: The `master_pdf_filename` column was never added to the production `buckets` table. The feature was developed locally but the migration was never run on production.
+2. **PM2 conflict**: Two PM2 daemons were running (root and wayne), both trying to run the app on port 3000, causing crash loops.
+
+**Resolution:**
+1. Killed wayne's PM2 daemon: `kill -9 5309 18600`
+2. Added missing column: `ALTER TABLE buckets ADD COLUMN master_pdf_filename VARCHAR(255)`
+3. Restarted PM2 with correct working directory: `pm2 start src/app.js --name migs --cwd /var/www/migs`
+
+**Prevention:**
+1. **Always run migrations on production** after deploying new features
+2. **Only one PM2 instance** should run on the server (use root's PM2)
+3. **Check PM2 status** after deployment: `pm2 list` should show only one instance
+4. **Verify database schema** matches local before assuming feature works
+
+---
+
 ## Recent Updates (Dec 2025)
 
 - **Finance module** - Full income/expense/invoice tracking for taxes
