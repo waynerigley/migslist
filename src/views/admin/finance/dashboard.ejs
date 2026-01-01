@@ -354,18 +354,18 @@ In Solidarity.
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
-    let countdownText;
+    let timeText;
     if (hours > 24) {
       const days = Math.floor(hours / 24);
       const remainingHours = hours % 24;
-      countdownText = `Next post: ${next.label} (${days}d ${remainingHours}h)`;
+      timeText = `${days}d ${remainingHours}h`;
     } else if (hours > 0) {
-      countdownText = `Next post: ${next.label} (${hours}h ${minutes}m)`;
+      timeText = `${hours}h ${minutes}m`;
     } else {
-      countdownText = `Next post: ${next.label} (${minutes}m)`;
+      timeText = `${minutes}m`;
     }
 
-    document.getElementById('fbCountdown').textContent = countdownText;
+    document.getElementById('fbCountdown').innerHTML = `Next: ${next.label} <span class="countdown-badge">${timeText}</span>`;
   }
 
   // Update countdown immediately and every minute
@@ -1147,6 +1147,17 @@ In Solidarity.
 
 .btn-success:hover {
   background: #15803d;
+}
+
+.countdown-badge {
+  display: inline-block;
+  background: #1877f2;
+  color: white;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
 }
 
 @media (max-width: 768px) {
