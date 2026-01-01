@@ -1,5 +1,20 @@
 # MigsList - TODO
 
+## Business & Marketing
+- [ ] Create company business plan
+  - Executive summary
+  - Target market (Ontario union locals)
+  - Revenue model ($500 first year, $800 renewal)
+  - Marketing strategy (email outreach, demos)
+  - Growth projections
+  - Competitive analysis
+- [x] Create Facebook business page ✓
+  - Set up MigsList business page ✓
+  - Add logo, cover photo, business info ✓
+  - Link to website (migslist.com) ✓
+  - Post initial content about features
+  - Consider Facebook ads for union groups
+
 ## High Priority
 - [ ] Set up daily database backups to Proxmox server
   - Create cron job on Vultr server

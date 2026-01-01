@@ -403,7 +403,8 @@ Wayne Rigley
 Founder, MigsList
 Registered Ontario Business
 support@migslist.com
-https://migslist.com</textarea>
+https://migslist.com
+Facebook: facebook.com/MigsList</textarea>
             <div class="hint">
                 <strong>Placeholders:</strong> [FIRST_NAME] = Contact's first name | [UNION_NAME] = Their union name<br>
                 <strong>Tip:</strong> Click "Open Gmail" to compose with this template. The template auto-saves as you edit.
@@ -1205,20 +1206,20 @@ https://migslist.com</textarea>
 
         // Reset template function
         function resetTemplate() {
-            localStorage.removeItem('union-email-template-v6');
+            localStorage.removeItem('union-email-template-v7');
             document.getElementById('email-template').value = defaultTemplate;
             alert('Template reset to default!');
         }
 
         // Load saved template or use default (v4 = new key to force refresh)
-        const savedTemplate = localStorage.getItem('union-email-template-v6');
+        const savedTemplate = localStorage.getItem('union-email-template-v7');
         if (savedTemplate) {
             document.getElementById('email-template').value = savedTemplate;
         }
 
         // Save template on change
         document.getElementById('email-template').addEventListener('input', function() {
-            localStorage.setItem('union-email-template-v6', this.value);
+            localStorage.setItem('union-email-template-v7', this.value);
         });
 
         // Update stats display
