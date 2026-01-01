@@ -191,6 +191,120 @@
             font-size: 0.85em;
         }
 
+        .email-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .email-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(66, 133, 244, 0.4);
+        }
+
+        .email-btn.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .email-btn.disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .stats-bar {
+            background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
+            color: white;
+            padding: 15px 20px;
+            margin: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .stats-bar .stat {
+            text-align: center;
+        }
+
+        .stats-bar .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .stats-bar .stat-label {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            flex: 1;
+            min-width: 200px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+
+        .row-sent {
+            background-color: #e8f5e9 !important;
+        }
+
+        .row-sent td {
+            opacity: 0.7;
+        }
+
+        .template-section {
+            background: #f3e5f5;
+            border-left: 5px solid #9c27b0;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 5px;
+        }
+
+        .template-section h3 {
+            color: #7b1fa2;
+            margin-bottom: 10px;
+        }
+
+        .template-section textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 0.95em;
+            line-height: 1.6;
+            resize: vertical;
+        }
+
+        .template-section .hint {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 10px;
+        }
+
         .footer {
             background: #37474f;
             color: white;
@@ -236,6 +350,68 @@
             <p><strong>Unions Covered:</strong> CUPE, Unifor, OPSEU, SEIU Healthcare, USW, LIUNA, IBEW, ATU, UFCW, ONA, ETFO, OSSTF, Teamsters</p>
         </div>
 
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-number" id="sent-count">0</div>
+                <div class="stat-label">Emails Sent</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="total-count">50</div>
+                <div class="stat-label">Total Contacts</div>
+            </div>
+        </div>
+
+        <div class="template-section">
+            <h3>Email Template (editable - saved automatically)</h3>
+            <textarea id="email-template">Hi [FIRST_NAME],
+
+My name is Wayne Rigley. I'm from Windsor, Ontario and spent 20 years in the union family. I'm now working as a data analyst, and I've always been passionate about building tools to help my union family.
+
+MigsList has been a dream of mine for years, and it's now a reality. This service has been tested and refined over the past year with several Locals to ensure it meets all the needs of union administration.
+
+View MigsList here: https://migslist.com/
+See all features: https://migslist.com/features
+
+The amount of stress, hours, and money wasted using outdated filing systems—especially during rank-and-file list generation—creates unnecessary challenges for both administrators and Presidents. MigsList solves this by giving the President full control of the system while allowing them to grant Recording Secretaries the access they need.
+
+HERE'S WHAT MIGSLIST CAN DO FOR [UNION_NAME]:
+
+  • Track Members In Good Standing with ease
+  • Active vs Non-Active member status tracking
+  • Generate voter lists for elections with one click
+  • Export rank-and-file lists (members without executive roles)
+  • Export reports to Excel & PDF
+  • Store PDF documents securely for each member
+  • Import members directly from Excel spreadsheets
+  • Send email communications to your membership
+  • Multi-user access for your executive team
+  • Video tutorials to get you started fast: https://migslist.com/tutorials
+  • Secure Canadian servers — your data stays in Canada
+
+SPECIAL OFFER: First year at $500 CAD (regularly $800/year), plus a 30-day FREE trial with full access to all features.
+
+I'd be happy to answer any questions or schedule a quick demo to show you how MigsList can streamline your membership management.
+
+BOOK A DEMO: Simply reply to this email and I'll send you a Google Meet link for a time that works for you. I'm here to help and happy to walk you through the system.
+
+In Solidarity,
+
+Wayne Rigley
+Founder, MigsList
+Registered Ontario Business
+support@migslist.com
+https://migslist.com</textarea>
+            <div class="hint">
+                <strong>Placeholders:</strong> [FIRST_NAME] = Contact's first name | [UNION_NAME] = Their union name<br>
+                <strong>Tip:</strong> Click "Open Gmail" to compose with this template. The template auto-saves as you edit.
+                <br><br>
+                <button onclick="resetTemplate()" style="background: #9c27b0; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">Reset to Default Template</button>
+            </div>
+        </div>
+
         <div class="content">
 
             <!-- CUPE Section -->
@@ -255,50 +431,55 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th style="width: 80px;">Members</th>
+                            <th style="width: 100px;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr data-first="Nas" data-union="CUPE Local 79 - Toronto City Workers" data-email="dutyofficer@cupelocal79.org">
                             <td><input type="checkbox" id="c001" /></td>
                             <td>Nas</td>
                             <td>Yadollahi</td>
                             <td>President</td>
                             <td>CUPE Local 79 - Toronto City Workers</td>
-                            <td class="no-email">dutyofficer@cupelocal79.org</td>
+                            <td class="email-cell">dutyofficer@cupelocal79.org</td>
                             <td class="phone">416-977-1629</td>
                             <td class="membership-size">27,000</td>
+                            <td><button class="email-btn" onclick="openGmail(this)">Open Gmail</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="Jason" data-union="CUPE Local 5167 - Hamilton" data-email="president@cupe5167.org">
                             <td><input type="checkbox" id="c002" /></td>
                             <td>Jason</td>
                             <td>Lucas</td>
                             <td>President</td>
                             <td>CUPE Local 5167 - Hamilton</td>
-                            <td><a href="mailto:president@cupe5167.org" class="email-link">president@cupe5167.org</a></td>
+                            <td class="email-cell"><a href="mailto:president@cupe5167.org" class="email-link">president@cupe5167.org</a></td>
                             <td class="phone">905-522-0917 x226</td>
                             <td class="membership-size">7,500</td>
+                            <td><button class="email-btn" onclick="openGmail(this)">Open Gmail</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="James" data-union="CUPE Local 503 - Ottawa City" data-email="office@cupe503.com">
                             <td><input type="checkbox" id="c003" /></td>
                             <td>James</td>
                             <td>Watson</td>
                             <td>President</td>
                             <td>CUPE Local 503 - Ottawa City</td>
-                            <td class="no-email">office@cupe503.com</td>
+                            <td class="email-cell">office@cupe503.com</td>
                             <td class="phone">613-230-2456</td>
                             <td class="membership-size">10,000</td>
+                            <td><button class="email-btn" onclick="openGmail(this)">Open Gmail</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="Terri" data-union="CUPE Local 4400 - Toronto Education" data-email="terri.preston@cupe4400.org">
                             <td><input type="checkbox" id="c004" /></td>
                             <td>Terri</td>
                             <td>Preston</td>
                             <td>Vice-Pres</td>
                             <td>CUPE Local 4400 - Toronto Education</td>
-                            <td><a href="mailto:terri.preston@cupe4400.org" class="email-link">terri.preston@cupe4400.org</a></td>
+                            <td class="email-cell"><a href="mailto:terri.preston@cupe4400.org" class="email-link">terri.preston@cupe4400.org</a></td>
                             <td class="phone">416-393-0440 x241</td>
                             <td class="membership-size">13,000</td>
+                            <td><button class="email-btn" onclick="openGmail(this)">Open Gmail</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="Eddie" data-union="CUPE Local 416 - Toronto Civic (Outside)" data-email="">
                             <td><input type="checkbox" id="c005" /></td>
                             <td>Eddie</td>
                             <td>Mariconda</td>
@@ -307,8 +488,9 @@
                             <td class="no-email">Contact via local416.ca</td>
                             <td class="phone">-</td>
                             <td class="membership-size">8,000</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="" data-union="CUPE Local 3903 - York University TAs" data-email="">
                             <td><input type="checkbox" id="c006" /></td>
                             <td>-</td>
                             <td>Chairperson</td>
@@ -317,8 +499,9 @@
                             <td class="no-email">Contact via cupe3903.org</td>
                             <td class="phone">416-736-5154</td>
                             <td class="membership-size">3,000</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="" data-union="CUPE Local 2357 - Ottawa Catholic School" data-email="">
                             <td><input type="checkbox" id="c007" /></td>
                             <td>-</td>
                             <td>President</td>
@@ -327,8 +510,9 @@
                             <td class="no-email">Via cupe2357.com</td>
                             <td class="phone">-</td>
                             <td class="membership-size">3,200</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="Lisa" data-union="CUPE Local 1628 - Peel District School" data-email="">
                             <td><input type="checkbox" id="c008" /></td>
                             <td>Lisa</td>
                             <td>Magee</td>
@@ -337,8 +521,9 @@
                             <td class="no-email">Via Peel Schools</td>
                             <td class="phone">-</td>
                             <td class="membership-size">2,000</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="Lainey" data-union="CUPE Local 2998 - Toronto Community Ctr" data-email="">
                             <td><input type="checkbox" id="c009" /></td>
                             <td>Lainey</td>
                             <td>Little</td>
@@ -347,8 +532,9 @@
                             <td class="no-email">Via cupe2998.com</td>
                             <td class="phone">-</td>
                             <td class="membership-size">250</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="Fred" data-union="CUPE Ontario (Provincial)" data-email="">
                             <td><input type="checkbox" id="c010" /></td>
                             <td>Fred</td>
                             <td>Hahn</td>
@@ -357,6 +543,7 @@
                             <td class="no-email">Via cupe.on.ca</td>
                             <td class="phone">1-800-268-7376</td>
                             <td class="membership-size">Provincial</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -379,10 +566,11 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th style="width: 80px;">Members</th>
+                            <th style="width: 100px;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr data-first="Vito" data-union="Unifor Local 1285 - Brampton Auto/Transit" data-email="">
                             <td><input type="checkbox" id="u001" /></td>
                             <td>Vito</td>
                             <td>Beato</td>
@@ -391,8 +579,9 @@
                             <td class="no-email">Via uniforlocal1285.ca</td>
                             <td class="phone">-</td>
                             <td class="membership-size">8,000</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="James" data-union="Unifor Local 444 - Stellantis Windsor" data-email="">
                             <td><input type="checkbox" id="u002" /></td>
                             <td>James</td>
                             <td>Stewart</td>
@@ -401,8 +590,9 @@
                             <td class="no-email">Via uni444.ca</td>
                             <td class="phone">519-258-6400</td>
                             <td class="membership-size">10,000</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="John" data-union="Unifor Local 200 - Ford Windsor" data-email="">
                             <td><input type="checkbox" id="u003" /></td>
                             <td>John</td>
                             <td>D'Agnolo</td>
@@ -411,18 +601,20 @@
                             <td class="no-email">Via unifor.org</td>
                             <td class="phone">519-256-3453</td>
                             <td class="membership-size">6,000</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="Kevin" data-union="Unifor Local 302 - London" data-email="admin@uniforlocal302.ca">
                             <td><input type="checkbox" id="u004" /></td>
                             <td>Kevin</td>
                             <td>Phillips</td>
                             <td>President</td>
                             <td>Unifor Local 302 - London</td>
-                            <td><a href="mailto:admin@uniforlocal302.ca" class="email-link">admin@uniforlocal302.ca</a></td>
+                            <td class="email-cell"><a href="mailto:admin@uniforlocal302.ca" class="email-link">admin@uniforlocal302.ca</a></td>
                             <td class="phone">519-951-0302</td>
                             <td class="membership-size">1,500</td>
+                            <td><button class="email-btn" onclick="openGmail(this)">Open Gmail</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="Samia" data-union="Unifor Ontario Regional Council" data-email="">
                             <td><input type="checkbox" id="u005" /></td>
                             <td>Samia</td>
                             <td>Hashi</td>
@@ -431,6 +623,7 @@
                             <td class="no-email">Via unifor.org</td>
                             <td class="phone">-</td>
                             <td class="membership-size">Regional</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -453,10 +646,11 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th style="width: 80px;">Members</th>
+                            <th style="width: 100px;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr data-first="Jack" data-union="LIUNA Local 183 - Southern Ontario" data-email="">
                             <td><input type="checkbox" id="l001" /></td>
                             <td>Jack</td>
                             <td>Oliveira</td>
@@ -465,8 +659,9 @@
                             <td class="no-email">@liuna183.ca</td>
                             <td class="phone">416-242-7551</td>
                             <td class="membership-size">60,000</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="Nelson" data-union="LIUNA Local 183 - Southern Ontario" data-email="">
                             <td><input type="checkbox" id="l002" /></td>
                             <td>Nelson</td>
                             <td>Melo</td>
@@ -475,6 +670,7 @@
                             <td class="no-email">@liuna183.ca</td>
                             <td class="phone">416-242-7551</td>
                             <td class="membership-size">60,000</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -497,10 +693,11 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th style="width: 80px;">Members</th>
+                            <th style="width: 100px;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr data-first="" data-union="UFCW Local 175 & 633" data-email="">
                             <td><input type="checkbox" id="uf001" /></td>
                             <td>-</td>
                             <td>Kelly</td>
@@ -509,16 +706,18 @@
                             <td class="no-email">Via ufcw175.com</td>
                             <td class="phone">1-800-565-8329</td>
                             <td class="membership-size">70,000</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="Wayne" data-union="UFCW Local 1006A" data-email="president@ufcw1006a.ca">
                             <td><input type="checkbox" id="uf002" /></td>
                             <td>Wayne</td>
                             <td>Hanley</td>
                             <td>President</td>
                             <td>UFCW Local 1006A</td>
-                            <td><a href="mailto:president@ufcw1006a.ca" class="email-link">president@ufcw1006a.ca</a></td>
+                            <td class="email-cell"><a href="mailto:president@ufcw1006a.ca" class="email-link">president@ufcw1006a.ca</a></td>
                             <td class="phone">905-850-4590</td>
                             <td class="membership-size">42,000</td>
+                            <td><button class="email-btn" onclick="openGmail(this)">Open Gmail</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -541,10 +740,11 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th style="width: 80px;">Members</th>
+                            <th style="width: 100px;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr data-first="Tyler" data-union="SEIU Healthcare Ontario" data-email="">
                             <td><input type="checkbox" id="s001" /></td>
                             <td>Tyler</td>
                             <td>Downey</td>
@@ -553,6 +753,7 @@
                             <td class="no-email">Via seiuhealthcare.ca</td>
                             <td class="phone">1-877-672-7348</td>
                             <td class="membership-size">70,000</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -575,28 +776,31 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th style="width: 80px;">Members</th>
+                            <th style="width: 100px;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr data-first="JP" data-union="OPSEU/SEFPO Provincial" data-email="opseucommunications@opseu.org">
                             <td><input type="checkbox" id="o001" /></td>
                             <td>JP</td>
                             <td>Hornick</td>
                             <td>President</td>
                             <td>OPSEU/SEFPO Provincial</td>
-                            <td class="no-email">opseucommunications@opseu.org</td>
+                            <td class="email-cell">opseucommunications@opseu.org</td>
                             <td class="phone">1-800-268-7376</td>
                             <td class="membership-size">180,000</td>
+                            <td><button class="email-btn" onclick="openGmail(this)">Open Gmail</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="Milos" data-union="OPSEU Local 562 - Humber College" data-email="milos@opseu562.org">
                             <td><input type="checkbox" id="o002" /></td>
                             <td>Milos</td>
                             <td>Vasic</td>
                             <td>President</td>
                             <td>OPSEU Local 562 - Humber College</td>
-                            <td><a href="mailto:milos@opseu562.org" class="email-link">milos@opseu562.org</a></td>
+                            <td class="email-cell"><a href="mailto:milos@opseu562.org" class="email-link">milos@opseu562.org</a></td>
                             <td class="phone">-</td>
                             <td class="membership-size">1,000</td>
+                            <td><button class="email-btn" onclick="openGmail(this)">Open Gmail</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -619,20 +823,22 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th style="width: 80px;">Members</th>
+                            <th style="width: 100px;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr data-first="Marvin" data-union="ATU Local 113 - TTC Toronto" data-email="reception@wemovetoronto.ca">
                             <td><input type="checkbox" id="a001" /></td>
                             <td>Marvin</td>
                             <td>Alfred</td>
                             <td>President</td>
                             <td>ATU Local 113 - TTC Toronto</td>
-                            <td><a href="mailto:reception@wemovetoronto.ca" class="email-link">reception@wemovetoronto.ca</a></td>
+                            <td class="email-cell"><a href="mailto:reception@wemovetoronto.ca" class="email-link">reception@wemovetoronto.ca</a></td>
                             <td class="phone">416-995-6020</td>
                             <td class="membership-size">12,000</td>
+                            <td><button class="email-btn" onclick="openGmail(this)">Open Gmail</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="" data-union="ATU Local 1587 - GO Transit/Metrolinx" data-email="">
                             <td><input type="checkbox" id="a002" /></td>
                             <td>-</td>
                             <td>President</td>
@@ -641,8 +847,9 @@
                             <td class="no-email">Via atu1587.ca</td>
                             <td class="phone">-</td>
                             <td class="membership-size">2,300</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="Andrew" data-union="ATU Local 1573 - Brampton Transit" data-email="">
                             <td><input type="checkbox" id="a003" /></td>
                             <td>Andrew</td>
                             <td>Salabie</td>
@@ -651,8 +858,9 @@
                             <td class="no-email">Via ATU Ontario</td>
                             <td class="phone">-</td>
                             <td class="membership-size">800</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="" data-union="ATU Local 1572 - MiWay Mississauga" data-email="">
                             <td><input type="checkbox" id="a004" /></td>
                             <td>-</td>
                             <td>President</td>
@@ -661,8 +869,9 @@
                             <td class="no-email">Via atu1572.org</td>
                             <td class="phone">-</td>
                             <td class="membership-size">1,200</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="Cory" data-union="ATU Local 1775 - Barrie Transit" data-email="">
                             <td><input type="checkbox" id="a005" /></td>
                             <td>Cory</td>
                             <td>Trew</td>
@@ -671,6 +880,7 @@
                             <td class="no-email">Via ATU Ontario</td>
                             <td class="phone">-</td>
                             <td class="membership-size">200</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -693,10 +903,11 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th style="width: 80px;">Members</th>
+                            <th style="width: 100px;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr data-first="" data-union="IBEW Local 353 - Toronto Electricians" data-email="">
                             <td><input type="checkbox" id="i001" /></td>
                             <td>-</td>
                             <td>President</td>
@@ -705,6 +916,7 @@
                             <td class="no-email">Via ibew353.org</td>
                             <td class="phone">416-510-3530</td>
                             <td class="membership-size">11,000</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -727,10 +939,11 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th style="width: 80px;">Members</th>
+                            <th style="width: 100px;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr data-first="" data-union="USW Local 1005 - Hamilton Stelco" data-email="">
                             <td><input type="checkbox" id="us001" /></td>
                             <td>-</td>
                             <td>President</td>
@@ -739,8 +952,9 @@
                             <td class="no-email">Via uswa1005.ca</td>
                             <td class="phone">905-547-1417</td>
                             <td class="membership-size">3,000</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="" data-union="USW Local 6500 - Sudbury Vale" data-email="">
                             <td><input type="checkbox" id="us002" /></td>
                             <td>-</td>
                             <td>President</td>
@@ -749,16 +963,18 @@
                             <td class="no-email">Via uswlocals.org</td>
                             <td class="phone">-</td>
                             <td class="membership-size">2,600</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="John" data-union="USW Local 4120 - U of Guelph" data-email="admin@usw4120.ca">
                             <td><input type="checkbox" id="us003" /></td>
                             <td>John</td>
                             <td>Tartt</td>
                             <td>President</td>
                             <td>USW Local 4120 - U of Guelph</td>
-                            <td><a href="mailto:admin@usw4120.ca" class="email-link">admin@usw4120.ca</a></td>
+                            <td class="email-cell"><a href="mailto:admin@usw4120.ca" class="email-link">admin@usw4120.ca</a></td>
                             <td class="phone">519-766-4120</td>
                             <td class="membership-size">885</td>
+                            <td><button class="email-btn" onclick="openGmail(this)">Open Gmail</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -781,30 +997,33 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th style="width: 80px;">Members</th>
+                            <th style="width: 100px;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr data-first="" data-union="ONA Provincial" data-email="MemberChanges@ona.org">
                             <td><input type="checkbox" id="on001" /></td>
                             <td>-</td>
                             <td>Provincial</td>
                             <td>Contact</td>
                             <td>ONA Provincial</td>
-                            <td class="no-email">MemberChanges@ona.org</td>
+                            <td class="email-cell">MemberChanges@ona.org</td>
                             <td class="phone">1-800-387-5580</td>
                             <td class="membership-size">68,000</td>
+                            <td><button class="email-btn" onclick="openGmail(this)">Open Gmail</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="Angela" data-union="ONA Local 75 - St. Joseph's Hamilton" data-email="local075@ona.org">
                             <td><input type="checkbox" id="on002" /></td>
                             <td>Angela</td>
                             <td>Spiler</td>
                             <td>President</td>
                             <td>ONA Local 75 - St. Joseph's Hamilton</td>
-                            <td><a href="mailto:local075@ona.org" class="email-link">local075@ona.org</a></td>
+                            <td class="email-cell"><a href="mailto:local075@ona.org" class="email-link">local075@ona.org</a></td>
                             <td class="phone">905-389-3277</td>
                             <td class="membership-size">800</td>
+                            <td><button class="email-btn" onclick="openGmail(this)">Open Gmail</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="" data-union="ONA Local 111 - Scarborough" data-email="">
                             <td><input type="checkbox" id="on003" /></td>
                             <td>-</td>
                             <td>Contact</td>
@@ -813,6 +1032,7 @@
                             <td class="no-email">Via ona111.ca</td>
                             <td class="phone">416-609-3111</td>
                             <td class="membership-size">600</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -835,28 +1055,31 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th style="width: 80px;">Members</th>
+                            <th style="width: 100px;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr data-first="David" data-union="ETFO Provincial" data-email="cpereira@etfo.org">
                             <td><input type="checkbox" id="e001" /></td>
                             <td>David</td>
                             <td>Mastin</td>
                             <td>President</td>
                             <td>ETFO Provincial</td>
-                            <td class="no-email">cpereira@etfo.org (Media)</td>
+                            <td class="email-cell">cpereira@etfo.org (Media)</td>
                             <td class="phone">416-962-3836</td>
                             <td class="membership-size">83,000</td>
+                            <td><button class="email-btn" onclick="openGmail(this)">Open Gmail</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="Marisa" data-union="ETFO Toronto Occasional Teachers" data-email="mgallippi@etfo-torots.org">
                             <td><input type="checkbox" id="e002" /></td>
                             <td>Marisa</td>
                             <td>Gallippi</td>
                             <td>President</td>
                             <td>ETFO Toronto Occasional Teachers</td>
-                            <td><a href="mailto:mgallippi@etfo-torots.org" class="email-link">mgallippi@etfo-torots.org</a></td>
+                            <td class="email-cell"><a href="mailto:mgallippi@etfo-torots.org" class="email-link">mgallippi@etfo-torots.org</a></td>
                             <td class="phone">416-227-1866</td>
                             <td class="membership-size">3,000</td>
+                            <td><button class="email-btn" onclick="openGmail(this)">Open Gmail</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -879,18 +1102,20 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th style="width: 80px;">Members</th>
+                            <th style="width: 100px;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr data-first="Martha" data-union="OSSTF/FEESO Provincial" data-email="caitlin.reid@osstf.ca">
                             <td><input type="checkbox" id="os001" /></td>
                             <td>Martha</td>
                             <td>Hradowy</td>
                             <td>President</td>
                             <td>OSSTF/FEESO Provincial</td>
-                            <td class="no-email">caitlin.reid@osstf.ca (Media)</td>
+                            <td class="email-cell">caitlin.reid@osstf.ca (Media)</td>
                             <td class="phone">1-800-267-7867</td>
                             <td class="membership-size">60,000</td>
+                            <td><button class="email-btn" onclick="openGmail(this)">Open Gmail</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -913,20 +1138,22 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th style="width: 80px;">Members</th>
+                            <th style="width: 100px;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr data-first="François" data-union="Teamsters Canada" data-email="info@teamsters.ca">
                             <td><input type="checkbox" id="t001" /></td>
                             <td>François</td>
                             <td>Laporte</td>
                             <td>President</td>
                             <td>Teamsters Canada</td>
-                            <td><a href="mailto:info@teamsters.ca" class="email-link">info@teamsters.ca</a></td>
+                            <td class="email-cell"><a href="mailto:info@teamsters.ca" class="email-link">info@teamsters.ca</a></td>
                             <td class="phone">1-866-888-6466</td>
                             <td class="membership-size">125,000</td>
+                            <td><button class="email-btn" onclick="openGmail(this)">Open Gmail</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="" data-union="Teamsters Local 230 - Mississauga" data-email="">
                             <td><input type="checkbox" id="t002" /></td>
                             <td>-</td>
                             <td>President</td>
@@ -935,8 +1162,9 @@
                             <td class="no-email">Via teamsters.ca</td>
                             <td class="phone">905-415-5139</td>
                             <td class="membership-size">2,000</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="" data-union="Teamsters Local 419 - Mississauga" data-email="">
                             <td><input type="checkbox" id="t003" /></td>
                             <td>-</td>
                             <td>President</td>
@@ -945,8 +1173,9 @@
                             <td class="no-email">Via teamsters.ca</td>
                             <td class="phone">905-670-4190</td>
                             <td class="membership-size">3,000</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
-                        <tr>
+                        <tr data-first="" data-union="Teamsters Local 647 - Mississauga" data-email="">
                             <td><input type="checkbox" id="t004" /></td>
                             <td>-</td>
                             <td>President</td>
@@ -955,6 +1184,7 @@
                             <td class="no-email">Via teamsters.ca</td>
                             <td class="phone">905-760-0209</td>
                             <td class="membership-size">1,500</td>
+                            <td><button class="email-btn disabled" disabled>No Email</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -970,15 +1200,94 @@
     </div>
 
     <script>
-        // Save checkbox states to localStorage
+        // Default email template
+        const defaultTemplate = document.getElementById('email-template').value;
+
+        // Reset template function
+        function resetTemplate() {
+            localStorage.removeItem('union-email-template-v6');
+            document.getElementById('email-template').value = defaultTemplate;
+            alert('Template reset to default!');
+        }
+
+        // Load saved template or use default (v4 = new key to force refresh)
+        const savedTemplate = localStorage.getItem('union-email-template-v6');
+        if (savedTemplate) {
+            document.getElementById('email-template').value = savedTemplate;
+        }
+
+        // Save template on change
+        document.getElementById('email-template').addEventListener('input', function() {
+            localStorage.setItem('union-email-template-v6', this.value);
+        });
+
+        // Update stats display
+        function updateStats() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const total = checkboxes.length;
+            let sent = 0;
+
+            checkboxes.forEach(cb => {
+                if (cb.checked) sent++;
+                // Update row styling
+                const row = cb.closest('tr');
+                if (row) {
+                    row.classList.toggle('row-sent', cb.checked);
+                }
+            });
+
+            document.getElementById('sent-count').textContent = sent;
+            document.getElementById('total-count').textContent = total;
+            document.getElementById('progress-fill').style.width = ((sent / total) * 100) + '%';
+        }
+
+        // Open Gmail with template
+        function openGmail(button) {
+            const row = button.closest('tr');
+            const email = row.dataset.email;
+            const firstName = row.dataset.first || 'there';
+            const unionName = row.dataset.union || 'your union';
+
+            if (!email) {
+                alert('No email available for this contact');
+                return;
+            }
+
+            // Get template and replace placeholders
+            let template = document.getElementById('email-template').value;
+            template = template.replace(/\[FIRST_NAME\]/g, firstName);
+            template = template.replace(/\[UNION_NAME\]/g, unionName);
+
+            // Create Gmail compose URL - opens as popup so you can see the From account selector
+            const subject = encodeURIComponent('MigsList - Member Management Software for Unions');
+            const body = encodeURIComponent(template);
+            const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(email)}&su=${subject}&body=${body}`;
+
+            // Open as popup window (not full screen tab) so From field is visible
+            window.open(gmailUrl, 'gmail_compose', 'width=700,height=800,scrollbars=yes,resizable=yes');
+
+            // Auto-check the sent checkbox
+            const checkbox = row.querySelector('input[type="checkbox"]');
+            if (checkbox && !checkbox.checked) {
+                checkbox.checked = true;
+                localStorage.setItem(checkbox.id, 'true');
+                updateStats();
+            }
+        }
+
+        // Initialize checkboxes and stats
         document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
             const saved = localStorage.getItem(checkbox.id);
             if (saved === 'true') checkbox.checked = true;
 
             checkbox.addEventListener('change', function() {
                 localStorage.setItem(this.id, this.checked);
+                updateStats();
             });
         });
+
+        // Initial stats update
+        updateStats();
     </script>
 </body>
 </html>
