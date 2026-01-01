@@ -15,7 +15,7 @@ const Income = {
 
   async findById(id) {
     const result = await db.query(
-      `SELECT i.*, u.name as union_name
+      `SELECT i.*, u.name as union_name, u.contact_name, u.contact_email, u.contact_phone
        FROM income i
        LEFT JOIN unions u ON i.union_id = u.id
        WHERE i.id = $1`,
