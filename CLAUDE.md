@@ -179,15 +179,16 @@ pool.query('SELECT 1').then(() => console.log('Migration complete')).finally(() 
 2. **PM2 conflict**: Two PM2 daemons were running (root and wayne), both trying to run the app on port 3000, causing crash loops.
 
 **Resolution:**
-1. Killed wayne's PM2 daemon: `kill -9 5309 18600`
+1. Killed the conflicting PM2 daemon
 2. Added missing column: `ALTER TABLE buckets ADD COLUMN master_pdf_filename VARCHAR(255)`
 3. Restarted PM2 with correct working directory: `pm2 start src/app.js --name migs --cwd /var/www/migs`
 
 **Prevention:**
 1. **Always run migrations on production** after deploying new features
-2. **Only one PM2 instance** should run on the server (use root's PM2)
-3. **Check PM2 status** after deployment: `pm2 list` should show only one instance
-4. **Verify database schema** matches local before assuming feature works
+2. **Only wayne's PM2 instance** should run on the server (systemd service is pm2-wayne)
+3. **Check for duplicate processes** after deployment: `ps aux | grep 'node.*app.js'` should show only ONE process
+4. **Kill root's PM2 if running**: `ssh root@155.138.149.116 "pm2 kill"`
+5. **Verify database schema** matches local before assuming feature works
 
 ---
 
