@@ -110,17 +110,22 @@ router.post('/', upload.single('master_pdf'), async (req, res) => {
 
     // If master PDF was uploaded, attach it
     if (req.file) {
-      await Bucket.updateMasterPdf(bucket.id, req.file.filename);
+      try {
+        await Bucket.updateMasterPdf(bucket.id, req.file.filename);
+      } catch (pdfErr) {
+        console.error('Error attaching PDF to bucket:', pdfErr);
+        // PDF failed but bucket was created - still redirect with success
+      }
     }
 
-    req.session.success = 'Bucket created successfully';
+    req.session.success = 'Unit/Sectional created successfully';
     res.redirect('/dashboard');
   } catch (err) {
     console.error('Create bucket error:', err);
     if (err.code === '23505') {
-      req.session.error = 'A bucket with this number already exists';
+      req.session.error = 'A unit with this number already exists';
     } else {
-      req.session.error = 'Error creating bucket';
+      req.session.error = 'Error creating unit';
     }
     res.redirect('/buckets/new');
   }
