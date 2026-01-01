@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS invoices (
     status VARCHAR(20) NOT NULL DEFAULT 'draft',
     paid_date DATE,
     notes TEXT,
+    include_address BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

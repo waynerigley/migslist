@@ -397,14 +397,15 @@ router.get('/invoices/new', async (req, res) => {
 // Create invoice
 router.post('/invoices', async (req, res) => {
   try {
-    const { union_id, amount, issue_date, due_date, notes } = req.body;
+    const { union_id, amount, issue_date, due_date, notes, include_address } = req.body;
 
     const invoice = await Invoice.create({
       unionId: union_id,
       amount: parseFloat(amount),
       issueDate: issue_date,
       dueDate: due_date,
-      notes
+      notes,
+      includeAddress: include_address === 'true'
     });
 
     req.session.success = `Invoice ${invoice.invoice_number} created successfully`;
@@ -454,7 +455,7 @@ router.get('/invoices/:id/edit', async (req, res) => {
 // Update invoice
 router.post('/invoices/:id', async (req, res) => {
   try {
-    const { union_id, amount, issue_date, due_date, status, notes } = req.body;
+    const { union_id, amount, issue_date, due_date, status, notes, include_address } = req.body;
 
     await Invoice.update(req.params.id, {
       unionId: union_id,
@@ -462,7 +463,8 @@ router.post('/invoices/:id', async (req, res) => {
       issueDate: issue_date,
       dueDate: due_date,
       status,
-      notes
+      notes,
+      includeAddress: include_address === 'true'
     });
 
     req.session.success = 'Invoice updated successfully';
@@ -638,7 +640,8 @@ router.get('/invoices/:id/pdf', async (req, res) => {
 
     // Payment instructions box
     const paymentTop = 360;
-    doc.rect(40, paymentTop, 532, 75).stroke(primaryColor);
+    const paymentBoxHeight = invoice.include_address ? 75 : 60;
+    doc.rect(40, paymentTop, 532, paymentBoxHeight).stroke(primaryColor);
 
     doc.font('Helvetica-Bold').fontSize(10).fillColor(primaryColor);
     doc.text('PAYMENT OPTIONS', 50, paymentTop + 10);
@@ -647,10 +650,13 @@ router.get('/invoices/:id/pdf', async (req, res) => {
     doc.text('1. Interac e-Transfer to: ', 50, paymentTop + 28, { continued: true });
     doc.font('Helvetica-Bold').text('payments@migslist.com');
 
-    doc.font('Helvetica').text('2. Cheque payable to "Migs List" - Mail to: 9880 Ridge Road, Windsor, Ontario N8R 1G6', 50, paymentTop + 44);
-
-    doc.fillColor(lightGray).fontSize(8);
-    doc.text('Please include your invoice number in the payment reference.', 50, paymentTop + 60);
+    if (invoice.include_address) {
+      doc.font('Helvetica').text('2. Cheque payable to "Migs List" - Mail to: 9880 Ridge Road, Windsor, Ontario N8R 1G6', 50, paymentTop + 44);
+      doc.fillColor(lightGray).fontSize(8);
+      doc.text('Please include your invoice number in the payment reference.', 50, paymentTop + 60);
+    } else {
+      doc.font('Helvetica').text('2. Pay by cheque? Contact payments@migslist.com for mailing instructions.', 50, paymentTop + 44);
+    }
 
     // Notes section
     if (invoice.notes) {

@@ -241,9 +241,13 @@
       <p><strong>Option 1: Interac e-Transfer</strong></p>
       <p>Send payment to: <strong>payments@migslist.com</strong></p>
       <p style="margin-top: 1rem;"><strong>Option 2: Cheque</strong></p>
-      <p>Make cheque payable to: <strong>Migs List</strong></p>
-      <p>Mail to: 9880 Ridge Road, Windsor, Ontario, Canada N8R 1G6</p>
-      <p style="margin-top: 1rem; color: #166534;"><em>Please include your union name in the payment reference.</em></p>
+      <% if (invoice.include_address) { %>
+        <p>Make cheque payable to: <strong>Migs List</strong></p>
+        <p>Mail to: 9880 Ridge Road, Windsor, Ontario, Canada N8R 1G6</p>
+      <% } else { %>
+        <p>Contact <strong>payments@migslist.com</strong> for cheque payment instructions.</p>
+      <% } %>
+      <p style="margin-top: 1rem; color: #166534;"><em>Please include your invoice number in the payment reference.</em></p>
     </div>
 
     <% if (invoice.notes) { %>

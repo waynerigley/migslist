@@ -2,16 +2,16 @@ const db = require('../config/db');
 
 const Invoice = {
   async create(data) {
-    const { unionId, amount, issueDate, dueDate, notes } = data;
+    const { unionId, amount, issueDate, dueDate, notes, includeAddress } = data;
 
     // Generate invoice number: INV-YYYY-NNN
     const invoiceNumber = await this.generateInvoiceNumber();
 
     const result = await db.query(
-      `INSERT INTO invoices (invoice_number, union_id, amount, issue_date, due_date, notes)
-       VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO invoices (invoice_number, union_id, amount, issue_date, due_date, notes, include_address)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
-      [invoiceNumber, unionId, amount, issueDate, dueDate, notes || null]
+      [invoiceNumber, unionId, amount, issueDate, dueDate, notes || null, includeAddress || false]
     );
     return result.rows[0];
   },
@@ -116,14 +116,14 @@ const Invoice = {
   },
 
   async update(id, data) {
-    const { unionId, amount, issueDate, dueDate, status, notes } = data;
+    const { unionId, amount, issueDate, dueDate, status, notes, includeAddress } = data;
 
     const result = await db.query(
       `UPDATE invoices
-       SET union_id = $1, amount = $2, issue_date = $3, due_date = $4, status = $5, notes = $6
-       WHERE id = $7
+       SET union_id = $1, amount = $2, issue_date = $3, due_date = $4, status = $5, notes = $6, include_address = $7
+       WHERE id = $8
        RETURNING *`,
-      [unionId, amount, issueDate, dueDate, status, notes || null, id]
+      [unionId, amount, issueDate, dueDate, status, notes || null, includeAddress || false, id]
     );
     return result.rows[0];
   },
