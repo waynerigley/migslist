@@ -1,12 +1,13 @@
 #!/bin/bash
 # MigsList Bootstrap Script
 # Run this on a fresh Ubuntu 24.04 VPS (Vultr, DigitalOcean, etc.)
-# Version: 1.9.2
+# Version: 1.9.3
 
 set -e
-VERSION="1.9.2"
+VERSION="1.9.3"
 
 # Changelog:
+# v1.9.3 - Invoice privacy (hide address unless checkbox), auto-income on paid invoices, Toronto timezone
 # v1.9.2 - Finance dashboard redesign with professional styling
 # v1.9.1 - Finance: added currency (CAD/USD), expiry dates for subscriptions
 # v1.9.0 - Finance module: income/expense tracking, invoicing, tax reports

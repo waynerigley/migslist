@@ -111,7 +111,9 @@ Thumbnails located in `/public/images/tutorials/`:
 ## Payment Options
 
 1. **Interac e-Transfer** to payments@migslist.com (fastest)
-2. **Cheque by mail** payable to "Migs List" at mailing address above
+2. **Cheque by mail** - Contact payments@migslist.com for mailing instructions
+
+Note: Mailing address is hidden by default for privacy. Only shown on invoices when "Include mailing address" checkbox is checked.
 
 ## Finance Module
 
@@ -125,18 +127,33 @@ Features:
 - **Payment Receipts** - Generate PDF receipts for customers
 - **Tax Reports** - Annual summaries for CRA (T2125)
 
+Invoice Privacy:
+- Mailing address hidden by default on invoices and public pages
+- Check "Include mailing address for cheque payment" when creating invoice to show address
+- Protects home address while still allowing cheque payments when needed
+
+Auto-Income Recording:
+- When invoice marked as "Paid", income record is automatically created
+- Shows up in dashboard YTD totals immediately
+
 Expense Categories: Server, Domain, Software, Office, Marketing, Professional, Banking, Other
 
 Database tables: `income`, `expenses`, `invoices`
 
+Server Timezone: America/Toronto (set via TZ env var in .env)
+
 ## Recent Updates (Dec 2025)
 
 - **Finance module** - Full income/expense/invoice tracking for taxes
+- **Invoice privacy** - Mailing address hidden by default, only shown when checkbox checked
+- **Auto-income** - Marking invoice as paid automatically creates income record
+- **Toronto timezone** - Server uses America/Toronto for correct dates
+- **Union contact info** - Can add president name/email/phone to union, shows on invoices
+- Professional invoice & receipt PDFs with colored headers and status badges
 - Redesigned landing page with professional look
 - Added sticky navigation header
 - Trust badges: Secure & Encrypted, Made in Canada, Servers in Canada, Built for Unions
 - Updated video tutorials page with 11 tutorial cards
 - Added new features: Rank-and-file exports, Excel import, PDF exports
 - Business registration as Ontario sole proprietorship
-- Added cheque payment option with mailing address
 - Professional contact emails (payments@, support@, demo@)
