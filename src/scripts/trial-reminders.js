@@ -245,29 +245,36 @@ async function sendReminders() {
     }
   }
 
-  // Process 5-day reminders
-  const unions5Day = await getUnionsNeeding5DayReminder();
-  console.log(`[${new Date().toISOString()}] Found ${unions5Day.length} unions needing 5-day reminder`);
+  // Process 5-day reminders (skip weekends)
+  const dayOfWeek = new Date().getDay();
+  const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; // Sunday = 0, Saturday = 6
 
-  for (const union of unions5Day) {
-    try {
-      const users = await getUnionUsers(union.id);
-      const userEmails = users.map(u => u.email).filter(e => e);
-      const allRecipients = [TRIAL_ENDING_EMAIL, ...userEmails];
+  if (isWeekend) {
+    console.log(`[${new Date().toISOString()}] Skipping 5-day reminders (weekend) - will send on Monday`);
+  } else {
+    const unions5Day = await getUnionsNeeding5DayReminder();
+    console.log(`[${new Date().toISOString()}] Found ${unions5Day.length} unions needing 5-day reminder`);
 
-      const html = get5DayEmailHtml(union, union.days_remaining);
+    for (const union of unions5Day) {
+      try {
+        const users = await getUnionUsers(union.id);
+        const userEmails = users.map(u => u.email).filter(e => e);
+        const allRecipients = [TRIAL_ENDING_EMAIL, ...userEmails];
 
-      await transporter.sendMail({
-        from: `"MIGS List" <${process.env.SMTP_FROM}>`,
-        to: allRecipients.join(', '),
-        subject: `Your MIGS List trial ends in ${Math.round(union.days_remaining)} days - ${union.name}`,
-        html
-      });
+        const html = get5DayEmailHtml(union, union.days_remaining);
 
-      await mark5DayReminderSent(union.id);
-      console.log(`[${new Date().toISOString()}] Sent 5-day reminder for ${union.name} to: ${allRecipients.join(', ')}`);
-    } catch (error) {
-      console.error(`[${new Date().toISOString()}] Failed to send 5-day reminder for ${union.name}:`, error);
+        await transporter.sendMail({
+          from: `"MIGS List" <${process.env.SMTP_FROM}>`,
+          to: allRecipients.join(', '),
+          subject: `Your MIGS List trial ends in ${Math.round(union.days_remaining)} days - ${union.name}`,
+          html
+        });
+
+        await mark5DayReminderSent(union.id);
+        console.log(`[${new Date().toISOString()}] Sent 5-day reminder for ${union.name} to: ${allRecipients.join(', ')}`);
+      } catch (error) {
+        console.error(`[${new Date().toISOString()}] Failed to send 5-day reminder for ${union.name}:`, error);
+      }
     }
   }
 
