@@ -107,6 +107,7 @@ Thumbnails located in `/public/images/tutorials/`:
 | payments@migslist.com    | e-Transfer payments        |
 | support@migslist.com     | Customer support           |
 | demo@migslist.com        | Demo/tutorial account      |
+| trialending@migslist.com | Trial expiry notifications |
 
 ## Payment Options
 
@@ -142,6 +143,46 @@ Database tables: `income`, `expenses`, `invoices`
 
 Server Timezone: America/Toronto (set via TZ env var in .env)
 
+## Trial System
+
+### Trial Banner (Dashboard)
+
+Color-coded banner shown to trial users on their dashboard:
+- **Green**: 21-30 days remaining
+- **Orange**: 6-20 days remaining
+- **Red**: 5 days or less
+
+Includes "Request Invoice" button that opens email to payments@migslist.com with union details pre-filled.
+
+### Automated Trial Reminder Emails
+
+Cron job runs daily at 9am Toronto time. Sends to: trialending@migslist.com + union president + recording secretaries.
+
+| Days Left | Email Type | Content |
+|-----------|------------|---------|
+| 15 days   | Soft check-in | "How's your trial going?" - asks for feedback, offers help |
+| 5 days    | Urgent reminder | "Trial ending soon!" - pricing, payment instructions, invoice request |
+
+**Note**: 5-day reminders are NOT sent on weekends (Saturday/Sunday). They'll be sent on Monday instead.
+
+Scripts:
+- `src/scripts/trial-reminders.js` - Main reminder script (runs via cron)
+- `src/scripts/send-test-reminders.js` - Send test emails to trialending@migslist.com
+
+```bash
+# Test the reminder script manually
+ssh wayne@155.138.149.116 "cd /var/www/migs && node src/scripts/trial-reminders.js"
+
+# Send test emails
+ssh wayne@155.138.149.116 "cd /var/www/migs && node src/scripts/send-test-reminders.js"
+
+# View cron jobs
+ssh wayne@155.138.149.116 "crontab -l"
+
+# Check reminder logs
+ssh wayne@155.138.149.116 "cat /var/www/migs/logs/trial-reminders.log"
+```
+
 ## Production Deployment Checklist
 
 When deploying new features that add database columns, ALWAYS run the migration on production:
@@ -159,9 +200,11 @@ pool.query('SELECT 1').then(() => console.log('Migration complete')).finally(() 
 
 ### Required Database Columns
 
-| Table   | Column                | Type         | Added   |
-|---------|----------------------|--------------|---------|
-| buckets | master_pdf_filename  | VARCHAR(255) | Jan 2026 |
+| Table   | Column                     | Type         | Added   |
+|---------|---------------------------|--------------|---------|
+| buckets | master_pdf_filename       | VARCHAR(255) | Jan 2026 |
+| unions  | trial_reminder_15_sent_at | TIMESTAMP    | Jan 2026 |
+| unions  | trial_reminder_5_sent_at  | TIMESTAMP    | Jan 2026 |
 
 ---
 
@@ -191,6 +234,13 @@ pool.query('SELECT 1').then(() => console.log('Migration complete')).finally(() 
 5. **Verify database schema** matches local before assuming feature works
 
 ---
+
+## Recent Updates (Jan 2026)
+
+- **Trial banner** - Color-coded (green/orange/red) based on days remaining, with "Request Invoice" button
+- **Automated trial reminders** - 15-day check-in and 5-day urgent emails sent automatically
+- **Weekend skip** - 5-day reminders not sent on Sat/Sun, sent Monday instead
+- **Trial tracking columns** - Database tracks when reminder emails were sent
 
 ## Recent Updates (Dec 2025)
 
