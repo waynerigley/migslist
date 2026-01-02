@@ -125,7 +125,7 @@
         </div>
         <div class="reminder-content">
           <strong>Post to Facebook</strong>
-          <span id="fbCountdown">Calculating next post time...</span>
+          <span id="fbCountdown">Calculating...</span>
         </div>
         <div class="reminder-actions">
           <button onclick="postToFacebook()" class="btn btn-sm btn-facebook">Post to Facebook</button>
@@ -159,63 +159,63 @@
   <script>
   const facebookPosts = [
     {
-      category: "Monday - Week Starter",
-      day: 1, // Monday
-      time: "9:00 AM",
-      content: `New week, new opportunity to get organized.
+      category: "Tuesday - Feature Highlight",
+      day: 2, // Tuesday
+      time: "10:00 AM",
+      content: `One click. That's all it takes to generate your voter list.
 
-If your membership records are scattered across spreadsheets and filing cabinets, there's a better way.
+MigsList automatically includes only members in good standing. No spreadsheet cross-referencing. No second-guessing.
 
-MigsList helps union locals:
-• Track members in good standing
-• Generate voter lists with one click
-• Store documents securely in the cloud
+Election integrity, simplified.
 
-Start your 30-day free trial: migslist.com
+Try free for 30 days: migslist.com
 
-#UnionStrong #OntarioUnions #LabourMovement`
+#MigsList #UnionElections`
     },
     {
-      category: "Wednesday - Feature Highlight",
+      category: "Wednesday - Tips",
       day: 3, // Wednesday
       time: "12:00 PM",
-      content: `How long does it take to generate your voter list?
+      content: `Election prep checklist:
 
-With MigsList: One click. Done.
+✓ Verify all members in good standing
+✓ Confirm current mailing addresses
+✓ Remove non-active members from rolls
+✓ Document your verification process
 
-Only members in good standing are included. No more cross-referencing spreadsheets. No more second-guessing your list.
-
-Election integrity made simple.
+MigsList handles all of this automatically.
 
 migslist.com/features
 
-#UnionElections #LabourMovement #UnionLocal`
+#MigsList #UnionStrong`
     },
     {
-      category: "Friday - Union Solidarity",
-      day: 5, // Friday
-      time: "3:00 PM",
-      content: `To every union member heading into the weekend—you've earned it.
+      category: "Thursday - Solidarity",
+      day: 4, // Thursday
+      time: "2:00 PM",
+      content: `To every shop steward, recording secretary, and union volunteer—thank you.
 
-The labour movement is stronger because of your commitment.
+The labour movement runs on your dedication.
 
 In Solidarity.
 
-#UnionStrong #InSolidarity #OntarioUnions #TGIF`
+#InSolidarity #UnionStrong`
     },
     {
-      category: "Monday - Pain Point",
-      day: 1,
-      time: "9:00 AM",
-      content: `Recording Secretaries: How many hours a month do you spend on member paperwork?
+      category: "Tuesday - Pain Point",
+      day: 2,
+      time: "10:00 AM",
+      content: `How many filing cabinets does your local have?
 
-Between tracking dues, updating addresses, and filing documents—it adds up fast.
+Paper systems create real problems:
+• Documents get lost
+• No backup if disaster strikes
+• Only accessible at the hall
+• Hours searching for one form
 
-MigsList gives you those hours back. Import from Excel. Store PDFs per member. Export reports instantly.
+There's a better way: migslist.com
 
-Try it free for 30 days: migslist.com
-
-#UnionAdmin #RecordingSecretary #LabourMovement`
+#MigsList #UnionAdmin`
     },
     {
       category: "Wednesday - Canadian Data",
@@ -223,27 +223,25 @@ Try it free for 30 days: migslist.com
       time: "12:00 PM",
       content: `Your members' data belongs in Canada.
 
-MigsList stores all data on secure Canadian servers. Full compliance with Canadian privacy laws. Automatic backups. Industry-standard encryption.
+MigsList stores everything on secure Canadian servers. Full privacy compliance. Automatic backups. Industry-standard encryption.
 
 Because union member information deserves protection.
 
 migslist.com
 
-#MadeInCanada #CanadianBusiness #DataPrivacy #UnionStrong`
+#MigsList #MadeInCanada`
     },
     {
-      category: "Friday - Community",
-      day: 5,
-      time: "3:00 PM",
+      category: "Thursday - Community",
+      day: 4,
+      time: "2:00 PM",
       content: `Another week of standing together.
 
-To every shop steward, recording secretary, and union volunteer putting in the hours—thank you.
-
-The labour movement runs on the dedication of members like you.
+To every recording secretary putting in the hours—we see you. The labour movement runs on dedication like yours.
 
 In Solidarity.
 
-#UnionStrong #InSolidarity #LabourMovement`
+#UnionStrong #InSolidarity`
     }
   ];
 
@@ -302,11 +300,11 @@ In Solidarity.
     if (e.target === this) closePostModal();
   });
 
-  // Facebook posting schedule: Mon 9am, Wed 12pm, Fri 3pm EST
+  // Facebook posting schedule: Tue 10am, Wed 12pm, Thu 2pm EST (research-backed optimal B2B times)
   const postSchedule = [
-    { day: 1, hour: 9, label: 'Monday 9:00 AM' },   // Monday
-    { day: 3, hour: 12, label: 'Wednesday 12:00 PM' }, // Wednesday
-    { day: 5, hour: 15, label: 'Friday 3:00 PM' }   // Friday
+    { day: 2, hour: 10, label: 'Tuesday 10:00 AM' },   // Tuesday - Peak B2B engagement
+    { day: 3, hour: 12, label: 'Wednesday 12:00 PM' }, // Wednesday - Lunch break browsing
+    { day: 4, hour: 14, label: 'Thursday 2:00 PM' }    // Thursday - Before weekend wind-down
   ];
 
   function getNextPostTime() {

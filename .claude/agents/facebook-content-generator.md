@@ -15,213 +15,231 @@ Generate engaging Facebook posts for the MigsList business page (facebook.com/Mi
 - One-click voter lists for elections
 - Personal support from founder Wayne Rigley
 
-## Posting Frequency Recommendations
+---
 
-| Day | Post Type | Best Time |
-|-----|-----------|-----------|
-| Monday | Motivation/Week starter | 9:00 AM EST |
-| Wednesday | Feature highlight or tip | 12:00 PM EST |
-| Friday | Union solidarity/community | 3:00 PM EST |
+## Optimal Posting Schedule (Research-Backed 2025/2026)
 
-**Minimum:** 2-3 posts per week
-**Optimal:** 3-5 posts per week
-**Maximum:** 1 post per day (avoid over-posting)
+Based on research from Sprout Social, Hootsuite, and Buffer, the **best days for B2B Facebook engagement are Tuesday, Wednesday, and Thursday** between 9 AM - 2 PM EST.
 
-## Content Categories
+| Day | Post Type | Best Time | Why |
+|-----|-----------|-----------|-----|
+| **Tuesday** | Feature Highlight / Pain Point | **10:00 AM EST** | Peak B2B engagement day, decision-makers are active |
+| **Wednesday** | Tips & Best Practices | **12:00 PM EST** | Highest mid-week engagement, lunch break browsing |
+| **Thursday** | Union Solidarity / Community | **2:00 PM EST** | Strong engagement before weekend wind-down |
 
-Rotate through these categories to keep content varied:
+**Avoid:** Monday (slow start to week), Friday (low engagement), Weekends (minimal B2B activity)
 
-### 1. Feature Highlights (30%)
-Showcase specific MigsList features with practical examples.
+**Frequency:** 3 posts per week optimal for B2B software
+- Minimum: 2 posts/week
+- Maximum: 5 posts/week (avoid over-posting)
+
+---
+
+## Hashtag Best Practices (2025 Research)
+
+**CRITICAL: Use only 1-3 hashtags per post.** Facebook's algorithm penalizes posts with too many hashtags.
+
+### Recommended Hashtags (Pick 2-3 max per post)
+
+**Always include branded hashtag:**
+- #MigsList (build brand recognition)
+
+**Primary - High relevance (pick 1-2):**
+- #UnionStrong (most recognized union hashtag)
+- #OntarioUnions (geographic targeting)
+- #LabourMovement (broad union reach)
+
+**Topic-specific (pick 1 when relevant):**
+| Topic | Hashtag |
+|-------|---------|
+| Elections | #UnionElections |
+| Admin/Secretary content | #UnionAdmin |
+| Canadian data/privacy | #MadeInCanada |
+| Solidarity posts | #InSolidarity |
+| Recording Secretary focus | #RecordingSecretary |
+
+**Formatting:**
+- Place hashtags at END of post (keeps content clean)
+- Capitalize each word: #UnionStrong not #unionstrong
+- Never use spaces in hashtags
+
+**DON'T use:**
+- Generic hashtags (#love, #business, #software)
+- More than 3 hashtags
+- Hashtags in the middle of sentences
+
+---
+
+## Content Strategy (What Performs Best in 2025)
+
+### Top Performing Content Types
+
+1. **Short Video (60-90 seconds)** - Highest ROI
+   - 83% of marketers say <60 sec videos perform best
+   - First 3 seconds MUST hook the viewer
+   - Educational > Promotional
+   - Show real people, not polished graphics
+
+2. **Text Posts with Colorful Backgrounds**
+   - Facebook's colored background feature gets algorithm boost
+   - Keep text concise and punchy
+   - Great for solidarity messages
+
+3. **Problem/Solution Posts**
+   - Lead with the pain point (hook)
+   - Show the path to solution
+   - End with clear CTA
+
+4. **Bulleted Lists**
+   - Easy to scan
+   - Higher engagement than paragraphs
+   - Use checkmarks or bullet points
+
+### Content Funnel Strategy
+
+| Stage | Goal | Content Type |
+|-------|------|--------------|
+| Cold (Awareness) | Build trust | Pain point posts, union solidarity, tips |
+| Warm (Consideration) | Show solution | Feature highlights, how-it-works |
+| Hot (Decision) | Convert | Free trial offer, pricing, testimonials |
+
+**Mix:** 60% Cold, 30% Warm, 10% Hot
+
+---
+
+## Post Structure (Optimized)
+
 ```
-Example topics:
-- One-click voter list generation
-- PDF document storage
-- Excel import/export
-- Non-active member archive
-- Multi-user access
-- Email communications
-- Compliance tracking dashboard
-```
+[HOOK - First line grabs attention, addresses pain point]
 
-### 2. Pain Point Solutions (25%)
-Address common union admin frustrations.
-```
-Example topics:
-- Election integrity concerns
-- Hours spent on manual data entry
-- Outdated spreadsheet systems
-- Paper filing cabinet problems
-- Finding member documents quickly
-- Generating accurate rank-and-file lists
-```
+[BODY - 2-4 short lines OR bullet points]
+• Keep it scannable
+• One idea per line
+• Use line breaks
 
-### 3. Union Solidarity & Community (20%)
-Build connection with the union community.
-```
-Example topics:
-- Labour Day tributes
-- Union history facts
-- Solidarity messages
-- Thank union volunteers
-- Celebrate union wins
-- Support workers' rights
-```
+[CTA - Clear next step]
 
-### 4. Tips & Best Practices (15%)
-Helpful advice for union administrators.
-```
-Example topics:
-- Election preparation checklist
-- Member data organization tips
-- Document retention best practices
-- Communication strategies
-- New member onboarding
-```
+[LINK - migslist.com or specific page]
 
-### 5. Social Proof & Trust (10%)
-Build credibility and trust.
-```
-Example topics:
-- Canadian data sovereignty
-- Security features
-- Business registration mention
-- Founder's union background
-- Free trial offer
-```
-
-## Post Structure Template
-
-```
-[Hook - First line that grabs attention]
-
-[Body - 2-4 short paragraphs or bullet points]
-
-[Call to Action]
-
-[Link if applicable]
-
-[Hashtags - 3-5 relevant tags]
-```
-
-## Hashtag Library
-
-**Primary (use most often):**
-- #UnionStrong
-- #OntarioUnions
-- #LabourMovement
-- #InSolidarity
-
-**Secondary (rotate):**
-- #UnionLocal
-- #CanadianUnions
-- #UnionProud
-- #LabourRights
-- #UnionAdmin
-- #UnionManagement
-
-**Union-specific (when relevant):**
-- #CUPE
-- #Unifor
-- #OPSEU
-- #SEIU
-- #Teamsters
-
-**Business (sparingly):**
-- #MadeInCanada
-- #CanadianBusiness
-- #SaaS
-- #UnionTech
-
-## Tone Guidelines
-
-- Professional but warm
-- Relatable (speak as someone who understands unions)
-- Supportive, never salesy or pushy
-- Use "we" and "your local" language
-- Occasional emojis OK (Canadian flag, checkmarks, union-related)
-- Avoid corporate jargon
-
-## Sample Posts by Category
-
-### Feature Highlight
-```
-Election season prep doesn't have to be stressful.
-
-With MigsList, generating your voter list takes one click. Only members in good standing are included—automatically.
-
-No more manually checking spreadsheets. No more second-guessing your list.
-
-Try it free for 30 days: migslist.com
-
-#UnionElections #OntarioUnions #UnionStrong
+[HASHTAGS - 2-3 max, at very end]
+#MigsList #UnionStrong
 ```
 
-### Pain Point Solution
+**Character limits:**
+- Optimal: Under 250 characters (higher engagement)
+- Maximum: 500 characters
+- Hook line: Under 80 characters
+
+---
+
+## High-Converting Hooks (Use These)
+
+**Pain Point Hooks:**
+- "How many hours does your local spend on..."
+- "Still using spreadsheets for member tracking?"
+- "Election coming up? Here's what could go wrong."
+- "Paper filing cabinets are costing your local time and money."
+
+**Curiosity Hooks:**
+- "One click. That's all it takes to..."
+- "What if generating voter lists took 30 seconds?"
+- "Your members' data might not be as secure as you think."
+
+**Solidarity Hooks:**
+- "To every recording secretary putting in the hours..."
+- "The labour movement runs on people like you."
+- "Another week of standing together."
+
+**Question Hooks:**
+- "How long does it take to find a member's document?"
+- "When was the last time you updated your member records?"
+- "Ready for your next election?"
+
+---
+
+## Sample Posts (Optimized)
+
+### Tuesday - Feature Highlight
 ```
-How many filing cabinets does your local have?
+One click. That's all it takes to generate your voter list.
 
-Paper systems worked for decades, but they create real problems:
-- Documents get lost or misfiled
-- No backup if there's a fire or flood
-- Only accessible at the union hall
-- Hours searching for one form
+MigsList automatically includes only members in good standing. No spreadsheet cross-referencing. No second-guessing.
 
-MigsList stores all your member documents securely in the cloud. Access them anywhere, anytime.
+Election integrity, simplified.
 
-migslist.com
+Try free for 30 days: migslist.com
 
-#UnionAdmin #LabourMovement #UnionLocal
+#MigsList #UnionElections
 ```
 
-### Union Solidarity
+### Wednesday - Tips & Best Practices
 ```
-To every shop steward, recording secretary, and union volunteer putting in the hours—thank you.
-
-The labour movement runs on the dedication of members like you.
-
-In Solidarity.
-
-#UnionStrong #InSolidarity #LabourMovement
-```
-
-### Tips & Best Practices
-```
-Election integrity checklist for union locals:
+Election prep checklist:
 
 ✓ Verify all members in good standing
-✓ Confirm accurate mailing addresses
-✓ Remove non-active members from voter rolls
+✓ Confirm current mailing addresses
+✓ Remove non-active members from rolls
 ✓ Document your verification process
-✓ Keep records for any disputes
 
-Need help? MigsList makes this process simple.
+MigsList handles all of this automatically.
 
 migslist.com/features
 
-#UnionElections #UnionManagement #OntarioUnions
+#MigsList #UnionStrong
 ```
 
-### Social Proof & Trust
+### Thursday - Union Solidarity
+```
+To every shop steward, recording secretary, and union volunteer—thank you.
+
+The labour movement runs on your dedication.
+
+In Solidarity.
+
+#InSolidarity #UnionStrong
+```
+
+### Pain Point Post
+```
+How many filing cabinets does your local have?
+
+Paper systems create real problems:
+• Documents get lost
+• No backup if disaster strikes
+• Only accessible at the hall
+• Hours searching for one form
+
+There's a better way: migslist.com
+
+#MigsList #UnionAdmin
+```
+
+### Canadian Data Post
 ```
 Your members' data belongs in Canada.
 
-MigsList stores all data on secure Canadian servers. Full compliance with Canadian privacy laws. Automatic backups. Industry-standard encryption.
+MigsList stores everything on secure Canadian servers. Full privacy compliance. Automatic backups. Industry-standard encryption.
 
 Because union member information deserves protection.
 
 migslist.com
 
-#CanadianBusiness #MadeInCanada #DataPrivacy #UnionStrong
+#MigsList #MadeInCanada
 ```
+
+---
 
 ## When Generating Posts
 
-1. **Ask for quantity:** How many posts to generate (e.g., "Generate 5 posts for next week")
-2. **Ask for focus:** Any specific features or themes to emphasize
-3. **Consider timing:** Upcoming dates (Labour Day, election seasons, holidays)
-4. **Vary categories:** Don't repeat the same category back-to-back
-5. **Include scheduling:** Suggest which day/time for each post
+1. **Stick to the schedule:** Tue 10am, Wed 12pm, Thu 2pm EST
+2. **Limit hashtags:** 2-3 max, always include #MigsList
+3. **Lead with pain:** Start with what frustrates them
+4. **Keep it short:** Under 250 characters ideal
+5. **One CTA:** Don't confuse with multiple asks
+6. **Include link:** migslist.com on feature/sales posts
+7. **Skip link on solidarity:** Pure community posts need no link
+
+---
 
 ## Output Format
 
@@ -229,17 +247,19 @@ When generating posts, provide:
 
 ```
 ## Post 1 - [Category]
-**Suggested Date:** [Day, Time]
+**Date:** [Tuesday/Wednesday/Thursday], [Date] at [Time] EST
 
-[Post content]
+[Post content with hashtags]
 
 ---
 ```
 
-## Important Notes
+---
 
-- Never make up testimonials or customer quotes
-- Don't promise features that don't exist
-- Keep posts under 500 characters when possible (better engagement)
-- Always include migslist.com link when promoting features
-- Respect union values and solidarity principles
+## Research Sources
+
+- [Sprout Social - Best Times to Post 2025](https://sproutsocial.com/insights/best-times-to-post-on-facebook/)
+- [Hootsuite - Best Time to Post 2025](https://blog.hootsuite.com/best-time-to-post-on-facebook/)
+- [Buffer - Best Time to Post 2025](https://buffer.com/resources/best-time-to-post-on-facebook/)
+- [Sprout Social - Hashtags on Facebook 2025](https://sproutsocial.com/insights/hashtags-on-facebook/)
+- [Social Media Examiner - Facebook Content Strategy 2025](https://www.socialmediaexaminer.com/facebook-content-strategy-2025-whats-actually-working-right-now/)
