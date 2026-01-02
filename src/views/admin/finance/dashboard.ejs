@@ -127,6 +127,19 @@
         <button onclick="postToFacebook()" class="btn btn-sm btn-tile">Post Now</button>
       </div>
 
+      <div class="task-tile youtube-tile">
+        <div class="task-tile-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+          </svg>
+        </div>
+        <div class="task-tile-content">
+          <strong>Post to YouTube</strong>
+          <span id="ytCountdown">Calculating...</span>
+        </div>
+        <button onclick="postToYouTube()" class="btn btn-sm btn-tile">Post Now</button>
+      </div>
+
       <div class="task-tile email-tile">
         <div class="task-tile-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28">
@@ -161,6 +174,28 @@
           </div>
         </div>
         <p style="margin-top:1rem;color:#6b7280;font-size:0.85rem;">For more ideas, ask Claude: "Generate 5 Facebook posts for next week"</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- YouTube Post Modal -->
+  <div id="ytPostModal" class="modal" style="display:none;">
+    <div class="modal-content post-ideas-modal">
+      <div class="modal-header youtube-header">
+        <h3>Post to YouTube Community</h3>
+        <button onclick="closeYtPostModal()" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="post-date-banner youtube-banner" id="ytPostDateBanner"></div>
+        <div class="post-idea">
+          <h4 id="ytPostCategory"></h4>
+          <textarea id="ytCurrentPost" rows="8" readonly></textarea>
+          <div class="post-actions">
+            <button onclick="copyYtPost()" class="btn btn-sm btn-outline" id="ytCopyBtn">Copy Post</button>
+            <button onclick="markYtAsPosted()" class="btn btn-sm btn-success">Mark as Posted</button>
+          </div>
+        </div>
+        <p style="margin-top:1rem;color:#6b7280;font-size:0.85rem;">For more ideas, ask Claude: "Generate 5 YouTube community posts for next week"</p>
       </div>
     </div>
   </div>
@@ -378,6 +413,205 @@ In Solidarity.
   // Update countdown immediately and every minute
   updateCountdown();
   setInterval(updateCountdown, 60000);
+
+  // ==================== YOUTUBE POSTS ====================
+  const youtubePosts = [
+    {
+      category: "Monday - Welcome/Intro",
+      day: 1, // Monday
+      time: "11:00 AM",
+      content: `New here? Welcome to MigsList!
+
+We help Canadian union locals track Members In Good Standing with ease.
+
+Check out our tutorials playlist to get started:
+https://youtube.com/playlist?list=PLvAT5sJZ4Hk-pcTNT6t_ce2a-TKgOYcC2
+
+Questions? Drop them in the comments!`
+    },
+    {
+      category: "Wednesday - Feature Highlight",
+      day: 3, // Wednesday
+      time: "12:00 PM",
+      content: `Did you know? MigsList can generate voter rolls with ONE click.
+
+Only members in good standing get included automatically. No spreadsheet cross-referencing needed.
+
+Perfect for election prep.
+
+Try free for 30 days: migslist.com`
+    },
+    {
+      category: "Friday - Tips & Tricks",
+      day: 5, // Friday
+      time: "10:00 AM",
+      content: `Quick tip for Recording Secretaries:
+
+Use Units/Sectionals to organize members by department or location. Makes finding members way faster!
+
+Watch how: https://youtu.be/ztR7DbAT5vo`
+    },
+    {
+      category: "Monday - Pain Point",
+      day: 1,
+      time: "11:00 AM",
+      content: `Still using spreadsheets for member tracking?
+
+Common problems:
+- Version control nightmares
+- No backup if something happens
+- Hard to share with your team
+- Hours searching for info
+
+There's a better way: migslist.com`
+    },
+    {
+      category: "Wednesday - Canadian Pride",
+      day: 3,
+      time: "12:00 PM",
+      content: `Your members' data belongs in Canada.
+
+MigsList stores everything on secure Canadian servers. Full privacy compliance. Automatic backups.
+
+Built for Canadian unions, by Canadians.
+
+migslist.com`
+    },
+    {
+      category: "Friday - Community",
+      day: 5,
+      time: "10:00 AM",
+      content: `To every shop steward, recording secretary, and union volunteer—thank you.
+
+The labour movement runs on your dedication.
+
+What's the biggest challenge you face tracking members? Let us know in the comments!`
+    }
+  ];
+
+  // YouTube posting schedule: Mon 11am, Wed 12pm, Fri 10am EST
+  const ytPostSchedule = [
+    { day: 1, hour: 11, label: 'Monday 11:00 AM' },
+    { day: 3, hour: 12, label: 'Wednesday 12:00 PM' },
+    { day: 5, hour: 10, label: 'Friday 10:00 AM' }
+  ];
+
+  function getYtPostIndex() {
+    return parseInt(localStorage.getItem('ytPostIndex') || '0');
+  }
+
+  function setYtPostIndex(idx) {
+    localStorage.setItem('ytPostIndex', idx.toString());
+  }
+
+  function getNextYtPostDate(dayOfWeek) {
+    const today = new Date();
+    const currentDay = today.getDay();
+    let daysUntil = dayOfWeek - currentDay;
+    if (daysUntil <= 0) daysUntil += 7;
+    const nextDate = new Date(today);
+    nextDate.setDate(today.getDate() + daysUntil);
+    return nextDate.toLocaleDateString('en-CA', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  }
+
+  function postToYouTube() {
+    // Open YouTube Community posts
+    window.open('https://www.youtube.com/@MigsList/community', '_blank');
+
+    // Show post modal
+    const idx = getYtPostIndex();
+    const post = youtubePosts[idx % youtubePosts.length];
+
+    document.getElementById('ytPostDateBanner').innerHTML = '<strong>Post on:</strong> ' + getNextYtPostDate(post.day) + ' at ' + post.time + ' EST';
+    document.getElementById('ytPostCategory').textContent = post.category;
+    document.getElementById('ytCurrentPost').value = post.content;
+    document.getElementById('ytCopyBtn').textContent = 'Copy Post';
+    document.getElementById('ytPostModal').style.display = 'flex';
+  }
+
+  function closeYtPostModal() {
+    document.getElementById('ytPostModal').style.display = 'none';
+  }
+
+  function copyYtPost() {
+    const textarea = document.getElementById('ytCurrentPost');
+    textarea.select();
+    document.execCommand('copy');
+    document.getElementById('ytCopyBtn').textContent = 'Copied!';
+  }
+
+  function markYtAsPosted() {
+    const idx = getYtPostIndex();
+    setYtPostIndex(idx + 1);
+    closeYtPostModal();
+  }
+
+  // Close YouTube modal on outside click
+  document.getElementById('ytPostModal')?.addEventListener('click', function(e) {
+    if (e.target === this) closeYtPostModal();
+  });
+
+  function getNextYtPostTime() {
+    const now = new Date();
+    const currentDay = now.getDay();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+
+    let nextPost = null;
+    let minDiff = Infinity;
+
+    for (const slot of ytPostSchedule) {
+      let daysUntil = slot.day - currentDay;
+
+      if (daysUntil === 0) {
+        if (currentHour > slot.hour || (currentHour === slot.hour && currentMinute >= 0)) {
+          daysUntil = 7;
+        }
+      } else if (daysUntil < 0) {
+        daysUntil += 7;
+      }
+
+      const nextDate = new Date(now);
+      nextDate.setDate(now.getDate() + daysUntil);
+      nextDate.setHours(slot.hour, 0, 0, 0);
+
+      const diff = nextDate - now;
+      if (diff > 0 && diff < minDiff) {
+        minDiff = diff;
+        nextPost = { date: nextDate, label: slot.label };
+      }
+    }
+
+    return nextPost;
+  }
+
+  function updateYtCountdown() {
+    const next = getNextYtPostTime();
+    if (!next) return;
+
+    const now = new Date();
+    const diff = next.date - now;
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+    let timeText;
+    if (hours > 24) {
+      const days = Math.floor(hours / 24);
+      const remainingHours = hours % 24;
+      timeText = `${days}d ${remainingHours}h`;
+    } else if (hours > 0) {
+      timeText = `${hours}h ${minutes}m`;
+    } else {
+      timeText = `${minutes}m`;
+    }
+
+    document.getElementById('ytCountdown').innerHTML = `Next: ${next.label} <span class="countdown-badge yt-badge">${timeText}</span>`;
+  }
+
+  // Update YouTube countdown immediately and every minute
+  updateYtCountdown();
+  setInterval(updateYtCountdown, 60000);
   </script>
 
   <!-- Invoice Status Overview -->
@@ -944,7 +1178,7 @@ In Solidarity.
 
 .task-tiles {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
 }
 
@@ -981,6 +1215,11 @@ In Solidarity.
 
 .facebook-tile { border-top: 4px solid #1877f2; }
 .facebook-tile .task-tile-icon { background: #e7f0ff; color: #1877f2; }
+
+.youtube-tile { border-top: 4px solid #ff0000; }
+.youtube-tile .task-tile-icon { background: #fee2e2; color: #ff0000; }
+.youtube-tile .btn-tile { background: #ff0000; }
+.youtube-tile .btn-tile:hover { background: #cc0000; }
 
 .email-tile { border-top: 4px solid #16a34a; }
 .email-tile .task-tile-icon { background: #dcfce7; color: #16a34a; }
@@ -1187,6 +1426,32 @@ In Solidarity.
   font-weight: 700;
   margin-left: 0.5rem;
   text-shadow: none;
+}
+
+.countdown-badge.yt-badge {
+  background: #ff0000;
+}
+
+.youtube-header {
+  background: #ff0000;
+  color: white;
+}
+
+.youtube-header h3 {
+  color: white !important;
+}
+
+.youtube-header .close-btn {
+  color: white;
+}
+
+.youtube-header .close-btn:hover {
+  color: #ffcccc;
+}
+
+.youtube-banner {
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 @media (max-width: 768px) {
