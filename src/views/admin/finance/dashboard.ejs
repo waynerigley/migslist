@@ -96,40 +96,49 @@
     </div>
   </div>
 
-  <!-- Monthly Reminders -->
-  <div class="reminders-section">
-    <h3>Monthly Tasks</h3>
-    <div class="reminder-cards">
-      <div class="reminder-card vultr">
-        <div class="reminder-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+  <!-- Monthly Tasks - Tile Grid -->
+  <div class="tasks-section">
+    <h3>Quick Tasks</h3>
+    <div class="task-tiles">
+      <div class="task-tile vultr-tile">
+        <div class="task-tile-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28">
             <rect x="2" y="3" width="20" height="14" rx="2"/>
             <path d="M8 21h8M12 17v4"/>
           </svg>
         </div>
-        <div class="reminder-content">
-          <strong>Log Vultr Server Expense</strong>
-          <span>Monthly server hosting bill - check and log for last month</span>
+        <div class="task-tile-content">
+          <strong>Vultr Expense</strong>
+          <span>Log monthly server bill</span>
         </div>
-        <div class="reminder-actions">
-          <a href="https://my.vultr.com/billing/" target="_blank" class="btn btn-sm btn-outline">View Vultr Billing</a>
-          <a href="/admin/finance/expenses/new?vendor=Vultr&category=server" class="btn btn-sm btn-primary">Log Expense</a>
-        </div>
+        <a href="https://my.vultr.com/billing/" target="_blank" class="btn btn-sm btn-tile">Log Expense</a>
       </div>
 
-      <div class="reminder-card facebook">
-        <div class="reminder-icon facebook-icon">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+      <div class="task-tile facebook-tile">
+        <div class="task-tile-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
           </svg>
         </div>
-        <div class="reminder-content">
+        <div class="task-tile-content">
           <strong>Post to Facebook</strong>
           <span id="fbCountdown">Calculating...</span>
         </div>
-        <div class="reminder-actions">
-          <button onclick="postToFacebook()" class="btn btn-sm btn-facebook">Post to Facebook</button>
+        <button onclick="postToFacebook()" class="btn btn-sm btn-tile">Post Now</button>
+      </div>
+
+      <div class="task-tile email-tile">
+        <div class="task-tile-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
         </div>
+        <div class="task-tile-content">
+          <strong>Email Outreach</strong>
+          <span>Union contact list</span>
+        </div>
+        <a href="/ontario_union_contacts_detailed.html" target="_blank" class="btn btn-sm btn-tile">Open List</a>
       </div>
     </div>
   </div>
@@ -922,84 +931,105 @@ In Solidarity.
   }
 }
 
-/* Monthly Reminders */
-.reminders-section {
+/* Quick Tasks Tiles */
+.tasks-section {
   margin-bottom: 2rem;
 }
 
-.reminders-section h3 {
+.tasks-section h3 {
   color: #ffffff !important;
   margin-bottom: 1rem;
   font-size: 1.125rem;
 }
 
-.reminder-cards {
+.task-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.task-tile {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-}
-
-.reminder-card {
-  display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1.25rem;
+  text-align: center;
+  padding: 1.5rem 1rem;
   background: white;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 2px solid #e5e7eb;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: all 0.2s;
 }
 
-.reminder-card.vultr {
-  border-left: 4px solid #007bfc;
-  background: linear-gradient(90deg, #f0f7ff 0%, white 100%);
+.task-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-.reminder-card.facebook {
-  border-left: 4px solid #1877f2;
-  background: linear-gradient(90deg, #f0f4ff 0%, white 100%);
-}
-
-.reminder-icon.facebook-icon {
-  background: #e7f0ff;
-  color: #1877f2;
-}
-
-.reminder-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
+.task-tile-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #dbeafe;
-  color: #2563eb;
+  margin-bottom: 0.75rem;
 }
 
-.reminder-icon svg {
-  width: 24px;
-  height: 24px;
+.vultr-tile { border-top: 4px solid #007bfc; }
+.vultr-tile .task-tile-icon { background: #dbeafe; color: #2563eb; }
+
+.facebook-tile { border-top: 4px solid #1877f2; }
+.facebook-tile .task-tile-icon { background: #e7f0ff; color: #1877f2; }
+
+.email-tile { border-top: 4px solid #16a34a; }
+.email-tile .task-tile-icon { background: #dcfce7; color: #16a34a; }
+
+.task-tile-content {
+  margin-bottom: 1rem;
 }
 
-.reminder-content {
-  flex: 1;
-}
-
-.reminder-content strong {
+.task-tile-content strong {
   display: block;
   color: #1f2937 !important;
   font-size: 1rem;
   margin-bottom: 0.25rem;
 }
 
-.reminder-content span {
+.task-tile-content span {
   color: #6b7280 !important;
-  font-size: 0.875rem;
+  font-size: 0.85rem;
 }
 
-.reminder-actions {
-  display: flex;
-  gap: 0.75rem;
+.btn-tile {
+  background: #374151;
+  color: white !important;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-tile:hover {
+  background: #1f2937;
+}
+
+.vultr-tile .btn-tile { background: #007bfc; }
+.vultr-tile .btn-tile:hover { background: #0066d4; }
+
+.facebook-tile .btn-tile { background: #1877f2; }
+.facebook-tile .btn-tile:hover { background: #166fe5; }
+
+.email-tile .btn-tile { background: #16a34a; }
+.email-tile .btn-tile:hover { background: #15803d; }
+
+@media (max-width: 900px) {
+  .task-tiles {
+    grid-template-columns: 1fr;
+  }
 }
 
 .btn-sm {
