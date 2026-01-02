@@ -28,7 +28,12 @@
         <tr>
           <td><%= u.email %></td>
           <td><%= u.first_name || '' %> <%= u.last_name || '' %></td>
-          <td><span class="badge badge-<%= u.role === 'super_admin' ? 'primary' : 'secondary' %>"><%= u.role === 'super_admin' ? 'Super Admin' : 'Union Admin' %></span></td>
+          <td><span class="badge badge-<%= u.role === 'super_admin' ? 'primary' : 'secondary' %>"><%=
+            u.role === 'super_admin' ? 'Super Admin' :
+            u.role === 'union_president' ? 'President' :
+            u.role === 'union_secretary' ? 'Recorder' :
+            'Union Admin'
+          %></span></td>
           <td><%= u.union_name || '-' %></td>
           <td><%= new Date(u.created_at).toLocaleDateString() %></td>
           <td class="actions">

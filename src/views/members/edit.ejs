@@ -5,7 +5,7 @@
 }) %>
 
 <div class="form-container">
-  <form action="<%= member ? '/members/' + member.id : '/members' %>" method="POST" enctype="multipart/form-data">
+  <form action="<%= member ? '/members/' + member.id : '/members' %>" method="POST"<% if (!member) { %> enctype="multipart/form-data"<% } %>>
     <% if (!member) { %>
       <input type="hidden" name="bucket_id" value="<%= bucket.id %>">
     <% } %>
