@@ -273,18 +273,20 @@ router.get('/bucket/:id/pdf', async (req, res) => {
 
     // Table header
     const tableTop = doc.y;
-    const col1 = 50;   // Name
-    const col2 = 200;  // Email
-    const col3 = 370;  // Phone
-    const col4 = 470;  // Status
+    const colCheck = 50;  // Checkbox
+    const col1 = 75;      // Name
+    const col2 = 210;     // Email
+    const col3 = 370;     // Phone
+    const col4 = 470;     // Status
     const rowHeight = 20;
 
     // Draw header background
-    doc.rect(col1 - 5, tableTop - 5, 520, rowHeight + 5).fill('#059669');
+    doc.rect(colCheck - 5, tableTop - 5, 520, rowHeight + 5).fill('#059669');
 
     doc.fillColor('white').fontSize(10).font('Helvetica-Bold');
-    doc.text('Name', col1, tableTop, { width: 145 });
-    doc.text('Email', col2, tableTop, { width: 165 });
+    doc.text('', colCheck, tableTop, { width: 20 });
+    doc.text('Name', col1, tableTop, { width: 130 });
+    doc.text('Email', col2, tableTop, { width: 155 });
     doc.text('Phone', col3, tableTop, { width: 95 });
     doc.text('Status', col4, tableTop, { width: 80 });
 
@@ -300,10 +302,11 @@ router.get('/bucket/:id/pdf', async (req, res) => {
         y = 50;
 
         // Repeat header on new page
-        doc.rect(col1 - 5, y - 5, 520, rowHeight + 5).fill('#059669');
+        doc.rect(colCheck - 5, y - 5, 520, rowHeight + 5).fill('#059669');
         doc.fillColor('white').fontSize(10).font('Helvetica-Bold');
-        doc.text('Name', col1, y, { width: 145 });
-        doc.text('Email', col2, y, { width: 165 });
+        doc.text('', colCheck, y, { width: 20 });
+        doc.text('Name', col1, y, { width: 130 });
+        doc.text('Email', col2, y, { width: 155 });
         doc.text('Phone', col3, y, { width: 95 });
         doc.text('Status', col4, y, { width: 80 });
         doc.fillColor('black').font('Helvetica').fontSize(9);
@@ -312,14 +315,17 @@ router.get('/bucket/:id/pdf', async (req, res) => {
 
       // Alternate row colors
       if (rowCount % 2 === 0) {
-        doc.rect(col1 - 5, y - 2, 520, rowHeight).fill('#f0fdf4');
+        doc.rect(colCheck - 5, y - 2, 520, rowHeight).fill('#f0fdf4');
         doc.fillColor('black');
       }
 
+      // Draw checkbox
+      doc.rect(colCheck, y + 2, 12, 12).lineWidth(1).stroke('#333333');
+
       const fullName = `${member.first_name} ${member.last_name}`;
 
-      doc.text(fullName, col1, y, { width: 145, ellipsis: true });
-      doc.text(member.email || '-', col2, y, { width: 165, ellipsis: true });
+      doc.text(fullName, col1, y, { width: 130, ellipsis: true });
+      doc.text(member.email || '-', col2, y, { width: 155, ellipsis: true });
       doc.text(member.phone || '-', col3, y, { width: 95, ellipsis: true });
       doc.text('Good Standing', col4, y, { width: 80 });
 
@@ -404,18 +410,20 @@ router.get('/bucket/:id/all/pdf', async (req, res) => {
 
     // Table header
     const tableTop = doc.y;
-    const col1 = 50;   // Name
-    const col2 = 200;  // Email
-    const col3 = 370;  // Phone
-    const col4 = 470;  // Status
+    const colCheck = 50;  // Checkbox
+    const col1 = 75;      // Name
+    const col2 = 210;     // Email
+    const col3 = 370;     // Phone
+    const col4 = 470;     // Status
     const rowHeight = 20;
 
     // Draw header background
-    doc.rect(col1 - 5, tableTop - 5, 520, rowHeight + 5).fill('#2563eb');
+    doc.rect(colCheck - 5, tableTop - 5, 520, rowHeight + 5).fill('#2563eb');
 
     doc.fillColor('white').fontSize(10).font('Helvetica-Bold');
-    doc.text('Name', col1, tableTop, { width: 145 });
-    doc.text('Email', col2, tableTop, { width: 165 });
+    doc.text('', colCheck, tableTop, { width: 20 });
+    doc.text('Name', col1, tableTop, { width: 130 });
+    doc.text('Email', col2, tableTop, { width: 155 });
     doc.text('Phone', col3, tableTop, { width: 95 });
     doc.text('Status', col4, tableTop, { width: 80 });
 
@@ -431,10 +439,11 @@ router.get('/bucket/:id/all/pdf', async (req, res) => {
         y = 50;
 
         // Repeat header on new page
-        doc.rect(col1 - 5, y - 5, 520, rowHeight + 5).fill('#2563eb');
+        doc.rect(colCheck - 5, y - 5, 520, rowHeight + 5).fill('#2563eb');
         doc.fillColor('white').fontSize(10).font('Helvetica-Bold');
-        doc.text('Name', col1, y, { width: 145 });
-        doc.text('Email', col2, y, { width: 165 });
+        doc.text('', colCheck, y, { width: 20 });
+        doc.text('Name', col1, y, { width: 130 });
+        doc.text('Email', col2, y, { width: 155 });
         doc.text('Phone', col3, y, { width: 95 });
         doc.text('Status', col4, y, { width: 80 });
         doc.fillColor('black').font('Helvetica').fontSize(9);
@@ -443,15 +452,18 @@ router.get('/bucket/:id/all/pdf', async (req, res) => {
 
       // Alternate row colors
       if (rowCount % 2 === 0) {
-        doc.rect(col1 - 5, y - 2, 520, rowHeight).fill('#f3f4f6');
+        doc.rect(colCheck - 5, y - 2, 520, rowHeight).fill('#f3f4f6');
         doc.fillColor('black');
       }
+
+      // Draw checkbox
+      doc.rect(colCheck, y + 2, 12, 12).lineWidth(1).stroke('#333333');
 
       const fullName = `${member.first_name} ${member.last_name}`;
       const status = member.pdf_filename ? 'Good Standing' : 'Pending';
 
-      doc.text(fullName, col1, y, { width: 145, ellipsis: true });
-      doc.text(member.email || '-', col2, y, { width: 165, ellipsis: true });
+      doc.text(fullName, col1, y, { width: 130, ellipsis: true });
+      doc.text(member.email || '-', col2, y, { width: 155, ellipsis: true });
       doc.text(member.phone || '-', col3, y, { width: 95, ellipsis: true });
       doc.text(status, col4, y, { width: 80 });
 
@@ -635,19 +647,21 @@ router.get('/rank-and-file/pdf', async (req, res) => {
 
     // Table header
     const tableTop = doc.y;
-    const col1 = 50;   // Unit
-    const col2 = 150;  // Name
-    const col3 = 300;  // Email
-    const col4 = 450;  // Phone
+    const colCheck = 50;  // Checkbox
+    const col1 = 75;      // Unit
+    const col2 = 150;     // Name
+    const col3 = 295;     // Email
+    const col4 = 450;     // Phone
     const rowHeight = 18;
 
     // Draw header background
-    doc.rect(col1 - 5, tableTop - 5, 520, rowHeight + 5).fill('#2563eb');
+    doc.rect(colCheck - 5, tableTop - 5, 520, rowHeight + 5).fill('#2563eb');
 
     doc.fillColor('white').fontSize(9).font('Helvetica-Bold');
-    doc.text('Unit', col1, tableTop, { width: 95 });
-    doc.text('Name', col2, tableTop, { width: 145 });
-    doc.text('Email', col3, tableTop, { width: 145 });
+    doc.text('', colCheck, tableTop, { width: 20 });
+    doc.text('Unit', col1, tableTop, { width: 70 });
+    doc.text('Name', col2, tableTop, { width: 140 });
+    doc.text('Email', col3, tableTop, { width: 150 });
     doc.text('Phone', col4, tableTop, { width: 80 });
 
     doc.fillColor('black').font('Helvetica').fontSize(8);
@@ -663,11 +677,12 @@ router.get('/rank-and-file/pdf', async (req, res) => {
         y = 50;
 
         // Repeat header on new page
-        doc.rect(col1 - 5, y - 5, 520, rowHeight + 5).fill('#2563eb');
+        doc.rect(colCheck - 5, y - 5, 520, rowHeight + 5).fill('#2563eb');
         doc.fillColor('white').fontSize(9).font('Helvetica-Bold');
-        doc.text('Unit', col1, y, { width: 95 });
-        doc.text('Name', col2, y, { width: 145 });
-        doc.text('Email', col3, y, { width: 145 });
+        doc.text('', colCheck, y, { width: 20 });
+        doc.text('Unit', col1, y, { width: 70 });
+        doc.text('Name', col2, y, { width: 140 });
+        doc.text('Email', col3, y, { width: 150 });
         doc.text('Phone', col4, y, { width: 80 });
         doc.fillColor('black').font('Helvetica').fontSize(8);
         y += rowHeight + 5;
@@ -675,16 +690,19 @@ router.get('/rank-and-file/pdf', async (req, res) => {
 
       // Alternate row colors
       if (rowCount % 2 === 0) {
-        doc.rect(col1 - 5, y - 2, 520, rowHeight).fill('#f3f4f6');
+        doc.rect(colCheck - 5, y - 2, 520, rowHeight).fill('#f3f4f6');
         doc.fillColor('black');
       }
+
+      // Draw checkbox
+      doc.rect(colCheck, y + 1, 11, 11).lineWidth(1).stroke('#333333');
 
       const bucketLabel = `#${member.bucket_number}`;
       const fullName = `${member.first_name} ${member.last_name}`;
 
-      doc.text(bucketLabel, col1, y, { width: 95, ellipsis: true });
-      doc.text(fullName, col2, y, { width: 145, ellipsis: true });
-      doc.text(member.email || '-', col3, y, { width: 145, ellipsis: true });
+      doc.text(bucketLabel, col1, y, { width: 70, ellipsis: true });
+      doc.text(fullName, col2, y, { width: 140, ellipsis: true });
+      doc.text(member.email || '-', col3, y, { width: 150, ellipsis: true });
       doc.text(member.phone || '-', col4, y, { width: 80, ellipsis: true });
 
       y += rowHeight;
