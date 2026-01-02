@@ -107,7 +107,7 @@ function get15DayEmailHtml(union, daysLeft) {
     .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 14px; margin-top: 8px; }
     .content { background: #fffbeb; padding: 24px; border: 1px solid #fde68a; border-top: none; }
     .content h2 { color: #92400e; margin-top: 0; }
-    .btn { display: inline-block; background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 16px; }
+    .btn { display: inline-block; background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #ffffff !important; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 16px; }
     .footer { text-align: center; padding: 20px; color: #6b7280; font-size: 13px; background: #f9fafb; border-radius: 0 0 12px 12px; border: 1px solid #e5e7eb; border-top: none; }
     .highlight { background: #fef3c7; padding: 16px; border-radius: 8px; margin: 16px 0; }
   </style>
@@ -162,8 +162,8 @@ function get5DayEmailHtml(union, daysLeft) {
     .badge { display: inline-block; background: rgba(255,255,255,0.25); padding: 6px 16px; border-radius: 20px; font-size: 16px; font-weight: 700; margin-top: 8px; }
     .content { background: #fef2f2; padding: 24px; border: 1px solid #fecaca; border-top: none; }
     .content h2 { color: #991b1b; margin-top: 0; }
-    .btn { display: inline-block; background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 8px; }
-    .btn-outline { background: white; color: #374151; border: 2px solid #d1d5db; }
+    .btn { display: inline-block; background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #ffffff !important; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 8px; }
+    .btn-outline { background: white; color: #2563eb !important; border: 2px solid #2563eb; }
     .footer { text-align: center; padding: 20px; color: #6b7280; font-size: 13px; background: #f9fafb; border-radius: 0 0 12px 12px; border: 1px solid #e5e7eb; border-top: none; }
     .pricing { background: white; padding: 20px; border-radius: 8px; margin: 16px 0; text-align: center; border: 2px solid #22c55e; }
     .price { font-size: 36px; font-weight: 700; color: #059669; }
