@@ -2,10 +2,11 @@
 
 <% if (union && union.payment_status === 'trial') { %>
   <% const daysLeft = Math.max(0, Math.ceil((new Date(union.subscription_end) - new Date()) / (1000 * 60 * 60 * 24))); %>
-  <div class="trial-banner">
+  <% const bannerColor = daysLeft <= 5 ? 'red' : (daysLeft <= 20 ? 'orange' : 'green'); %>
+  <div class="trial-banner trial-banner-<%= bannerColor %>">
     <div class="trial-content">
       <div class="trial-info">
-        <span class="trial-badge"><%= daysLeft %> days left</span>
+        <span class="trial-badge trial-badge-<%= bannerColor %>"><%= daysLeft %> days left</span>
         <span class="trial-text">Your free trial ends on <%= new Date(union.subscription_end).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %></span>
       </div>
       <div class="trial-action">
@@ -296,12 +297,36 @@
 
 /* Trial Banner */
 .trial-banner {
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  border: 2px solid #f59e0b;
   border-radius: 12px;
   padding: 1rem 1.5rem;
   margin-bottom: 2rem;
+}
+/* Green - 21-30 days */
+.trial-banner-green {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  border: 2px solid #22c55e;
+  box-shadow: 0 4px 6px rgba(34, 197, 94, 0.15);
+}
+.trial-badge-green {
+  background: #22c55e;
+}
+/* Orange - 6-20 days */
+.trial-banner-orange {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 2px solid #f59e0b;
   box-shadow: 0 4px 6px rgba(245, 158, 11, 0.15);
+}
+.trial-badge-orange {
+  background: #f59e0b;
+}
+/* Red - 5 days or less */
+.trial-banner-red {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  border: 2px solid #ef4444;
+  box-shadow: 0 4px 6px rgba(239, 68, 68, 0.15);
+}
+.trial-badge-red {
+  background: #ef4444;
 }
 .trial-content {
   display: flex;
@@ -326,9 +351,11 @@
   white-space: nowrap;
 }
 .trial-text {
-  color: #92400e;
   font-weight: 500;
 }
+.trial-banner-green .trial-text { color: #166534; }
+.trial-banner-orange .trial-text { color: #92400e; }
+.trial-banner-red .trial-text { color: #991b1b; }
 .trial-action {
   display: flex;
   align-items: center;
@@ -336,9 +363,11 @@
   flex-wrap: wrap;
 }
 .trial-price {
-  color: #78350f;
   font-size: 0.95rem;
 }
+.trial-banner-green .trial-price { color: #14532d; }
+.trial-banner-orange .trial-price { color: #78350f; }
+.trial-banner-red .trial-price { color: #7f1d1d; }
 .btn-trial {
   background: linear-gradient(135deg, #059669 0%, #047857 100%);
   color: white;
@@ -354,14 +383,24 @@
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(5, 150, 105, 0.4);
 }
-[data-theme="dark"] .trial-banner {
+[data-theme="dark"] .trial-banner-green {
+  background: linear-gradient(135deg, #14532d 0%, #166534 100%);
+  border-color: #22c55e;
+}
+[data-theme="dark"] .trial-banner-orange {
   background: linear-gradient(135deg, #78350f 0%, #92400e 100%);
   border-color: #f59e0b;
 }
-[data-theme="dark"] .trial-text,
-[data-theme="dark"] .trial-price {
-  color: #fef3c7;
+[data-theme="dark"] .trial-banner-red {
+  background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+  border-color: #ef4444;
 }
+[data-theme="dark"] .trial-banner-green .trial-text,
+[data-theme="dark"] .trial-banner-green .trial-price { color: #dcfce7; }
+[data-theme="dark"] .trial-banner-orange .trial-text,
+[data-theme="dark"] .trial-banner-orange .trial-price { color: #fef3c7; }
+[data-theme="dark"] .trial-banner-red .trial-text,
+[data-theme="dark"] .trial-banner-red .trial-price { color: #fee2e2; }
 @media (max-width: 768px) {
   .trial-content {
     flex-direction: column;
