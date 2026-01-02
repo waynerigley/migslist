@@ -1,5 +1,21 @@
 <%- include('../partials/header', { title: union ? union.name : 'Dashboard' }) %>
 
+<% if (union && union.payment_status === 'trial') { %>
+  <% const daysLeft = Math.max(0, Math.ceil((new Date(union.subscription_end) - new Date()) / (1000 * 60 * 60 * 24))); %>
+  <div class="trial-banner">
+    <div class="trial-content">
+      <div class="trial-info">
+        <span class="trial-badge"><%= daysLeft %> days left</span>
+        <span class="trial-text">Your free trial ends on <%= new Date(union.subscription_end).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %></span>
+      </div>
+      <div class="trial-action">
+        <span class="trial-price">Ready to continue? <strong>$500 CAD</strong> for your first year</span>
+        <a href="mailto:payments@migslist.com?subject=Payment for <%= encodeURIComponent(union.name) %>&body=Hi,%0A%0AI'd like to pay for my MigsList subscription.%0A%0AUnion: <%= encodeURIComponent(union.name) %>%0A%0AThank you!" class="btn btn-trial">Pay Now</a>
+      </div>
+    </div>
+  </div>
+<% } %>
+
 <% if (!union) { %>
   <div class="alert alert-error">No union assigned. Please contact an administrator.</div>
 <% } else { %>
@@ -276,6 +292,85 @@
 .export-label span {
   font-size: 0.875rem;
   color: var(--text-secondary);
+}
+
+/* Trial Banner */
+.trial-banner {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 2px solid #f59e0b;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(245, 158, 11, 0.15);
+}
+.trial-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.trial-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.trial-badge {
+  background: #f59e0b;
+  color: white;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+.trial-text {
+  color: #92400e;
+  font-weight: 500;
+}
+.trial-action {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.trial-price {
+  color: #78350f;
+  font-size: 0.95rem;
+}
+.btn-trial {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(5, 150, 105, 0.3);
+}
+.btn-trial:hover {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(5, 150, 105, 0.4);
+}
+[data-theme="dark"] .trial-banner {
+  background: linear-gradient(135deg, #78350f 0%, #92400e 100%);
+  border-color: #f59e0b;
+}
+[data-theme="dark"] .trial-text,
+[data-theme="dark"] .trial-price {
+  color: #fef3c7;
+}
+@media (max-width: 768px) {
+  .trial-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .trial-action {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 </style>
 
