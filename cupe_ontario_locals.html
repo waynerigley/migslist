@@ -1,0 +1,2645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ontario Union Presidents - Contact List</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        /* Union Tabs */
+        .union-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 20px;
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .union-tab {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            min-width: 140px;
+        }
+
+        .union-tab:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .union-tab.active {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            border-color: #1e3a8a;
+        }
+
+        .union-tab .union-name {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .union-tab .union-stats {
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+
+        .union-tab .union-stats .sent-count {
+            color: #059669;
+            font-weight: bold;
+        }
+
+        .union-tab.active .union-stats .sent-count {
+            color: #86efac;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .message-template {
+            background: #e0f2fe;
+            border-left: 5px solid #0284c7;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 8px;
+        }
+
+        .message-template h3 {
+            color: #075985;
+            margin-bottom: 15px;
+        }
+
+        .template-box {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            border: 1px solid #bae6fd;
+        }
+
+        .template-box h4 {
+            color: #0c4a6e;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .template-box textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.9em;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .region-section {
+            margin: 30px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .region-header {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .local-section {
+            margin: 20px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .local-header {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #475569 0%, #64748b 100%);
+            color: white;
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tbody tr:hover {
+            background: #f1f5f9;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr.sent {
+            background: #f0fdf4;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .date-input {
+            width: 110px;
+            padding: 5px 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        .email-btn {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .email-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
+        }
+
+        .contact-btn {
+            background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
+        }
+
+        .no-email {
+            color: #64748b;
+            font-style: italic;
+            font-size: 0.9em;
+        }
+
+        footer {
+            background: #1e293b;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+
+        footer a {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .coming-soon {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .coming-soon h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #475569;
+        }
+
+        .coming-soon p {
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ontario Union Presidents</h1>
+            <p>Contact List for Union Leadership Outreach</p>
+        </header>
+
+        <!-- Union Tabs -->
+        <div class="union-tabs">
+            <div class="union-tab active" data-union="cupe">
+                <div class="union-name">CUPE</div>
+                <div class="union-stats"><span class="sent-count" id="cupe-sent">0</span> / <span id="cupe-total">0</span> sent</div>
+            </div>
+            <div class="union-tab" data-union="unifor">
+                <div class="union-name">Unifor</div>
+                <div class="union-stats"><span class="sent-count" id="unifor-sent">0</span> / <span id="unifor-total">0</span> sent</div>
+            </div>
+            <div class="union-tab" data-union="liuna">
+                <div class="union-name">LIUNA</div>
+                <div class="union-stats"><span class="sent-count" id="liuna-sent">0</span> / <span id="liuna-total">0</span> sent</div>
+            </div>
+            <div class="union-tab" data-union="ufcw">
+                <div class="union-name">UFCW</div>
+                <div class="union-stats"><span class="sent-count" id="ufcw-sent">0</span> / <span id="ufcw-total">0</span> sent</div>
+            </div>
+            <div class="union-tab" data-union="opseu">
+                <div class="union-name">OPSEU</div>
+                <div class="union-stats"><span class="sent-count" id="opseu-sent">0</span> / <span id="opseu-total">0</span> sent</div>
+            </div>
+            <div class="union-tab" data-union="usw">
+                <div class="union-name">USW</div>
+                <div class="union-stats"><span class="sent-count" id="usw-sent">0</span> / <span id="usw-total">0</span> sent</div>
+            </div>
+            <div class="union-tab" data-union="ibew">
+                <div class="union-name">IBEW</div>
+                <div class="union-stats"><span class="sent-count" id="ibew-sent">0</span> / <span id="ibew-total">0</span> sent</div>
+            </div>
+            <div class="union-tab" data-union="teamsters">
+                <div class="union-name">Teamsters</div>
+                <div class="union-stats"><span class="sent-count" id="teamsters-sent">0</span> / <span id="teamsters-total">0</span> sent</div>
+            </div>
+        </div>
+
+        <!-- CUPE Tab Content -->
+        <div class="tab-content active" id="cupe-content">
+            <div class="message-template">
+                <h3>Message Templates</h3>
+
+                <div class="template-box">
+                    <h4>SHORT VERSION (for contact forms - under 500 characters)</h4>
+                    <textarea readonly onclick="this.select(); document.execCommand('copy'); alert('Short message copied to clipboard!');">Hello,
+
+Former CAW Local 200 member, now Health & Safety Data Analyst. Built MigsList to help unions track Members In Good Standing and streamline elections.
+
+Features: 1-click voter lists, rank-and-file exports, Excel/PDF exports, secure Canadian servers.
+
+View features: migslist.com/features
+Video tutorials: migslist.com/tutorials
+
+First year: $500 CAD (regularly $800). 30-day FREE trial.
+
+Reply to book a demo via Google Meet.
+
+In solidarity,
+
+Wayne Rigley
+Founder, MigsList
+Registered Ontario Business
+
+Email: support@migslist.com
+Website: migslist.com
+Facebook: facebook.com/MigsList</textarea>
+                </div>
+
+                <div class="template-box">
+                    <h4>FULL EMAIL VERSION (used by Gmail buttons automatically)</h4>
+                    <textarea readonly style="min-height: 350px;">Hello [First Name],
+
+My name is Wayne. I'm a former CAW Local 200 member, currently working as a Health and Safety Data Analyst. I'm reaching out to union leaders across Ontario about a tool I've built specifically for locals like [UNION_NAME].
+
+MigsList has been a dream of mine for years, and it's now a reality. This service has been tested and refined over the past year with several Locals to ensure it meets all the needs of union administration.
+
+View MigsList here: https://migslist.com/
+See all features: https://migslist.com/features
+
+The amount of stress, hours, and money wasted using outdated filing systems—especially during rank-and-file list generation—creates unnecessary challenges for both administrators and Presidents. MigsList solves this by giving the President full control of the system while allowing them to grant Recording Secretaries the access they need.
+
+HERE'S WHAT MIGSLIST CAN DO FOR [UNION_NAME]:
+
+• Track Members In Good Standing with ease
+• Active vs Non-Active member status tracking
+• Generate voter lists for elections with one click
+• Export rank-and-file lists (members without executive roles)
+• Export reports to Excel & PDF
+• Store PDF documents securely for each member
+• Import members directly from Excel spreadsheets
+• Send email communications to your membership
+• Multi-user access for your executive team
+• Video tutorials to get you started fast: https://migslist.com/tutorials
+• Secure Canadian servers — your data stays in Canada
+
+SPECIAL OFFER: First year at $500 CAD (regularly $800/year), plus a 30-day FREE trial with full access to all features.
+
+TAKE A LOOK FOR YOURSELF:
+
+1. Visit the website: https://migslist.com
+2. Explore all features: https://migslist.com/features
+3. Watch the video tutorials: https://migslist.com/tutorials
+
+Everything you need to see what MigsList can do is right there. If you still have questions after reviewing the site, I'm happy to schedule a quick Google Meet demo - just reply to this email.
+
+In solidarity,
+
+Wayne Rigley
+Founder, MigsList
+Registered Ontario Business
+
+Email: support@migslist.com
+Website: https://migslist.com
+Facebook: facebook.com/MigsList</textarea>
+                </div>
+            </div>
+
+            <!-- TORONTO REGION -->
+            <div class="region-section">
+                <div class="region-header">Toronto Region</div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 79 - City of Toronto</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email/Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe001" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe001" /></td>
+                                <td>Duty Officer</td>
+                                <td>Duty Officer</td>
+                                <td>CUPE 79</td>
+                                <td>Toronto</td>
+                                <td>dutyofficer@cupelocal79.org</td>
+                                <td><button class="email-btn" onclick="openGmail('Duty Officer', 'CUPE 79', 'dutyofficer@cupelocal79.org')">Open Gmail</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 416 - Toronto Civic Employees Union</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe002" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe002" /></td>
+                                <td>Local Office</td>
+                                <td>President</td>
+                                <td>CUPE 416</td>
+                                <td>Toronto</td>
+                                <td class="no-email">Via website</td>
+                                <td><a href="https://local416.ca/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 3903 - York University</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe003" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe003" /></td>
+                                <td>Chairperson</td>
+                                <td>Chairperson</td>
+                                <td>CUPE 3903</td>
+                                <td>Toronto</td>
+                                <td>chairperson@cupe3903.org</td>
+                                <td><button class="email-btn" onclick="openGmail('Chairperson', 'CUPE 3903 York University', 'chairperson@cupe3903.org')">Open Gmail</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 3902 - University of Toronto</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe004" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe004" /></td>
+                                <td>Amy Conwell</td>
+                                <td>President</td>
+                                <td>CUPE 3902</td>
+                                <td>Toronto</td>
+                                <td>president@cupe3902.org</td>
+                                <td><button class="email-btn" onclick="openGmail('Amy', 'CUPE 3902 U of T', 'president@cupe3902.org')">Open Gmail</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- OTTAWA REGION -->
+            <div class="region-section">
+                <div class="region-header">Ottawa Region</div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 503 - City of Ottawa</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe005" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe005" /></td>
+                                <td>James Watson</td>
+                                <td>President</td>
+                                <td>CUPE 503</td>
+                                <td>Ottawa</td>
+                                <td class="no-email">10,000 members</td>
+                                <td><a href="https://cupe.ca/local/cupe-503-city-ottawa" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 4000 - Ottawa Hospital</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe006" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe006" /></td>
+                                <td>P. Lavigne</td>
+                                <td>Contact</td>
+                                <td>CUPE 4000</td>
+                                <td>Ottawa</td>
+                                <td>plavigne@cupe4000.com</td>
+                                <td><button class="email-btn" onclick="openGmail('P.', 'CUPE 4000 Ottawa Hospital', 'plavigne@cupe4000.com')">Open Gmail</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- HAMILTON REGION -->
+            <div class="region-section">
+                <div class="region-header">Hamilton Region</div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 5167 - City of Hamilton</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe007" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe007" /></td>
+                                <td>Jason Lucas</td>
+                                <td>President</td>
+                                <td>CUPE 5167</td>
+                                <td>Hamilton</td>
+                                <td>president@cupe5167.org</td>
+                                <td><button class="email-btn" onclick="openGmail('Jason', 'CUPE 5167 Hamilton', 'president@cupe5167.org')">Open Gmail</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- WINDSOR REGION -->
+            <div class="region-section">
+                <div class="region-header">Windsor Region</div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 543 - City of Windsor (Inside)</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe008" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe008" /></td>
+                                <td>Patrick Murchison</td>
+                                <td>President</td>
+                                <td>CUPE 543</td>
+                                <td>Windsor</td>
+                                <td>president@cupe543.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Patrick', 'CUPE 543 Windsor', 'president@cupe543.ca')">Open Gmail</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 82 - City of Windsor (Outside)</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe009" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe009" /></td>
+                                <td>Local Office</td>
+                                <td>President</td>
+                                <td>CUPE 82</td>
+                                <td>Windsor</td>
+                                <td class="no-email">Windsor District</td>
+                                <td><a href="https://windsor.cupe.ca/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 2974 - County of Essex & Essex-Windsor EMS</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe010" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe010" /></td>
+                                <td>James Jovanovic</td>
+                                <td>President</td>
+                                <td>CUPE 2974</td>
+                                <td>Essex</td>
+                                <td>president@cupe2974.com</td>
+                                <td><button class="email-btn" onclick="openGmail('James', 'CUPE 2974 Essex County', 'president@cupe2974.com')">Open Gmail</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SUDBURY REGION -->
+            <div class="region-section">
+                <div class="region-header">Sudbury Region</div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 4705 - City of Greater Sudbury</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe011" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe011" /></td>
+                                <td>Max Lafontaine</td>
+                                <td>President</td>
+                                <td>CUPE 4705</td>
+                                <td>Sudbury</td>
+                                <td class="no-email">Via website</td>
+                                <td><a href="https://cupesudbury.org/contact-cupe-4705/about-us/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- THUNDER BAY REGION -->
+            <div class="region-section">
+                <div class="region-header">Thunder Bay Region</div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 87 - City of Thunder Bay</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe012" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe012" /></td>
+                                <td>Deryk Fournier</td>
+                                <td>President</td>
+                                <td>CUPE 87</td>
+                                <td>Thunder Bay</td>
+                                <td>cupe87secretary@tbaytel.net</td>
+                                <td><button class="email-btn" onclick="openGmail('Deryk', 'CUPE 87 Thunder Bay', 'cupe87secretary@tbaytel.net')">Open Gmail</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- KITCHENER-WATERLOO REGION -->
+            <div class="region-section">
+                <div class="region-header">Kitchener-Waterloo Region</div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 791 - City of Kitchener</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe013" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe013" /></td>
+                                <td>Mike Eckert</td>
+                                <td>President</td>
+                                <td>CUPE 791</td>
+                                <td>Kitchener</td>
+                                <td class="no-email">Via website</td>
+                                <td><a href="https://791.cupe.ca/contact-us/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 1883 - Region of Waterloo</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe014" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe014" /></td>
+                                <td>Noelle</td>
+                                <td>President</td>
+                                <td>CUPE 1883</td>
+                                <td>Waterloo</td>
+                                <td>president@cupe1883.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Noelle', 'CUPE 1883 Waterloo', 'president@cupe1883.ca')">Open Gmail</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- YORK REGION -->
+            <div class="region-section">
+                <div class="region-header">York Region</div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 905 - York Region (3,000+ members)</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe015" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe015" /></td>
+                                <td>Katherine Grzejszczak</td>
+                                <td>President</td>
+                                <td>CUPE 905</td>
+                                <td>Markham</td>
+                                <td class="no-email">Via website</td>
+                                <td><a href="https://cupe905.com/about-us/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PEEL REGION -->
+            <div class="region-section">
+                <div class="region-header">Peel Region</div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 831 - City of Brampton (1,200+ members)</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe016" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe016" /></td>
+                                <td>Fabio Gazzola</td>
+                                <td>President</td>
+                                <td>CUPE 831</td>
+                                <td>Brampton</td>
+                                <td class="no-email">905-846-0470</td>
+                                <td><a href="https://cupe831.com/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 2026 - Dufferin-Peel Catholic School Board</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe017" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe017" /></td>
+                                <td>Lisa Maye</td>
+                                <td>President</td>
+                                <td>CUPE 2026</td>
+                                <td>Mississauga</td>
+                                <td>unionpresident@cupe2026.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Lisa', 'CUPE 2026 DPCDSB', 'unionpresident@cupe2026.ca')">Open Gmail</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- HALTON REGION -->
+            <div class="region-section">
+                <div class="region-header">Halton Region</div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 1329 - Town of Oakville (Inside)</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe018" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe018" /></td>
+                                <td>Chris Clapham</td>
+                                <td>President</td>
+                                <td>CUPE 1329</td>
+                                <td>Oakville</td>
+                                <td>president@cupe1329.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Chris', 'CUPE 1329 Oakville', 'president@cupe1329.ca')">Open Gmail</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- KINGSTON REGION -->
+            <div class="region-section">
+                <div class="region-header">Kingston Region</div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 109 - City of Kingston</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe019" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe019" /></td>
+                                <td>Luis Talledo</td>
+                                <td>President</td>
+                                <td>CUPE 109</td>
+                                <td>Kingston</td>
+                                <td>Ltalledocupe109@hotmail.com</td>
+                                <td><button class="email-btn" onclick="openGmail('Luis', 'CUPE 109 Kingston', 'Ltalledocupe109@hotmail.com')">Open Gmail</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- LONDON REGION -->
+            <div class="region-section">
+                <div class="region-header">London Region</div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 101 - City of London</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe020" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe020" /></td>
+                                <td>Local Office</td>
+                                <td>President</td>
+                                <td>CUPE 101</td>
+                                <td>London</td>
+                                <td class="no-email">(226) 376-0014</td>
+                                <td><a href="https://101.cupe.ca/contact-us/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- NIAGARA REGION -->
+            <div class="region-section">
+                <div class="region-header">Niagara Region</div>
+
+                <div class="local-section">
+                    <div class="local-header">Niagara District CUPE Council</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe021" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe021" /></td>
+                                <td>District Council</td>
+                                <td>Council</td>
+                                <td>NDCC 9102</td>
+                                <td>St. Catharines</td>
+                                <td>infondcc9102@gmail.com</td>
+                                <td><button class="email-btn" onclick="openGmail('Niagara District Council', 'NDCC 9102', 'infondcc9102@gmail.com')">Open Gmail</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PETERBOROUGH REGION -->
+            <div class="region-section">
+                <div class="region-header">Peterborough Region</div>
+
+                <div class="local-section">
+                    <div class="local-header">Peterborough District CUPE Council</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe022" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe022" /></td>
+                                <td>Lisa Barker</td>
+                                <td>President</td>
+                                <td>PDCC</td>
+                                <td>Peterborough</td>
+                                <td>pdcc9144@outlook.com</td>
+                                <td><button class="email-btn" onclick="openGmail('Lisa', 'Peterborough District CUPE Council', 'pdcc9144@outlook.com')">Open Gmail</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- GUELPH REGION -->
+            <div class="region-section">
+                <div class="region-header">Guelph Region</div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 3913 - University of Guelph</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe023" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe023" /></td>
+                                <td>Local Office</td>
+                                <td>Office</td>
+                                <td>CUPE 3913</td>
+                                <td>Guelph</td>
+                                <td>questions@cupe3913.on.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('CUPE 3913', 'CUPE 3913 U of Guelph', 'questions@cupe3913.on.ca')">Open Gmail</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- OSHAWA REGION -->
+            <div class="region-section">
+                <div class="region-header">Oshawa Region</div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 251 - City of Oshawa</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe024" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe024" /></td>
+                                <td>Albert Chapple</td>
+                                <td>President</td>
+                                <td>CUPE 251</td>
+                                <td>Oshawa</td>
+                                <td>PresidentLocal251@gmail.com</td>
+                                <td><button class="email-btn" onclick="openGmail('Albert', 'CUPE 251 Oshawa', 'PresidentLocal251@gmail.com')">Open Gmail</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SAULT STE MARIE REGION -->
+            <div class="region-section">
+                <div class="region-header">Sault Ste. Marie Region</div>
+
+                <div class="local-section">
+                    <div class="local-header">CUPE 894 - Group Health Centre</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe025" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe025" /></td>
+                                <td>Tracy Fabbricino</td>
+                                <td>President</td>
+                                <td>CUPE 894</td>
+                                <td>Sault Ste. Marie</td>
+                                <td class="no-email">Via website</td>
+                                <td><a href="https://894.cupe.ca/about-us/your-executive/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PROVINCIAL - OSBCU -->
+            <div class="region-section">
+                <div class="region-header">Provincial - School Board Workers (OSBCU)</div>
+
+                <div class="local-section">
+                    <div class="local-header">OSBCU - Ontario School Board Council of Unions (57,000 members)</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Organization</th>
+                                <th>Location</th>
+                                <th>Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe026" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe026" /></td>
+                                <td>Joe Tigani</td>
+                                <td>President</td>
+                                <td>OSBCU</td>
+                                <td>Provincial</td>
+                                <td class="no-email">Via website</td>
+                                <td><a href="https://osbcu.ca/about-us/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PROVINCIAL - OCHU -->
+            <div class="region-section">
+                <div class="region-header">Provincial - Hospital Workers (OCHU)</div>
+
+                <div class="local-section">
+                    <div class="local-header">OCHU - Ontario Council of Hospital Unions (50,000+ members)</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Organization</th>
+                                <th>Location</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="cupe">
+                                <td><input type="checkbox" class="sent-checkbox" id="cupe027" /></td>
+                                <td><input type="date" class="date-input" id="date-cupe027" /></td>
+                                <td>Michael Hurley</td>
+                                <td>President</td>
+                                <td>OCHU</td>
+                                <td>Provincial</td>
+                                <td>michaelhurley@ochu.on.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Michael', 'OCHU/CUPE', 'michaelhurley@ochu.on.ca')">Open Gmail</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unifor Tab Content -->
+        <div class="tab-content" id="unifor-content">
+            <div class="message-template">
+                <h3>Message Templates</h3>
+                <div class="template-box">
+                    <h4>SHORT VERSION (for contact forms)</h4>
+                    <textarea readonly onclick="this.select(); document.execCommand('copy'); alert('Copied!');">Hello,
+
+Former CAW Local 200 member, now Health & Safety Data Analyst. Built MigsList to help unions track Members In Good Standing and streamline elections.
+
+Features: 1-click voter lists, rank-and-file exports, Excel/PDF exports, secure Canadian servers.
+
+View features: migslist.com/features
+Video tutorials: migslist.com/tutorials
+
+First year: $500 CAD (regularly $800). 30-day FREE trial.
+
+In solidarity,
+Wayne Rigley - MigsList</textarea>
+                </div>
+            </div>
+
+            <!-- AUTO SECTOR -->
+            <div class="region-section">
+                <div class="region-header">Auto Sector</div>
+                <div class="local-section">
+                    <div class="local-header">Major Auto Plants</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email/Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="unifor">
+                                <td><input type="checkbox" class="sent-checkbox" id="unifor001" /></td>
+                                <td><input type="date" class="date-input" id="date-unifor001" /></td>
+                                <td>James Stewart</td>
+                                <td>President</td>
+                                <td>Unifor Local 444</td>
+                                <td>Windsor</td>
+                                <td class="no-email">Stellantis Assembly</td>
+                                <td><a href="https://www.uni444.ca/contact" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="unifor">
+                                <td><input type="checkbox" class="sent-checkbox" id="unifor002" /></td>
+                                <td><input type="date" class="date-input" id="date-unifor002" /></td>
+                                <td>John D'Agnolo</td>
+                                <td>President</td>
+                                <td>Unifor Local 200</td>
+                                <td>Windsor</td>
+                                <td class="no-email">Ford Windsor</td>
+                                <td><a href="https://www.uniforlocal200.org/contact-us" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="unifor">
+                                <td><input type="checkbox" class="sent-checkbox" id="unifor003" /></td>
+                                <td><input type="date" class="date-input" id="date-unifor003" /></td>
+                                <td>Emile Nabbout</td>
+                                <td>President</td>
+                                <td>Unifor Local 195</td>
+                                <td>Windsor</td>
+                                <td>pres@uniforlocal195.com</td>
+                                <td><button class="email-btn" onclick="openGmail('Emile', 'Unifor Local 195', 'pres@uniforlocal195.com')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="unifor">
+                                <td><input type="checkbox" class="sent-checkbox" id="unifor004" /></td>
+                                <td><input type="date" class="date-input" id="date-unifor004" /></td>
+                                <td>Jeff Gray</td>
+                                <td>President</td>
+                                <td>Unifor Local 222</td>
+                                <td>Oshawa</td>
+                                <td class="no-email">GM Oshawa</td>
+                                <td><a href="https://www.unifor.org/about-unifor/locals/local-222" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="unifor">
+                                <td><input type="checkbox" class="sent-checkbox" id="unifor005" /></td>
+                                <td><input type="date" class="date-input" id="date-unifor005" /></td>
+                                <td>Marc Brennan</td>
+                                <td>President</td>
+                                <td>Unifor Local 707</td>
+                                <td>Oakville</td>
+                                <td>mbrennan@uniforlocal707.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Marc', 'Unifor Local 707', 'mbrennan@uniforlocal707.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="unifor">
+                                <td><input type="checkbox" class="sent-checkbox" id="unifor006" /></td>
+                                <td><input type="date" class="date-input" id="date-unifor006" /></td>
+                                <td>Jaspal Brar</td>
+                                <td>President</td>
+                                <td>Unifor Local 1285</td>
+                                <td>Brampton</td>
+                                <td class="no-email">Stellantis Brampton</td>
+                                <td><a href="https://www.unifor.org/about-unifor/locals/local-1285" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="unifor">
+                                <td><input type="checkbox" class="sent-checkbox" id="unifor007" /></td>
+                                <td><input type="date" class="date-input" id="date-unifor007" /></td>
+                                <td>Tim Batke</td>
+                                <td>President</td>
+                                <td>Unifor Local 88</td>
+                                <td>Ingersoll</td>
+                                <td class="no-email">GM CAMI</td>
+                                <td><a href="https://www.unifor.org/about-unifor/locals/local-88" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- AEROSPACE & MANUFACTURING -->
+            <div class="region-section">
+                <div class="region-header">Aerospace & Manufacturing</div>
+                <div class="local-section">
+                    <div class="local-header">Major Industrial Locals</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email/Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="unifor">
+                                <td><input type="checkbox" class="sent-checkbox" id="unifor008" /></td>
+                                <td><input type="date" class="date-input" id="date-unifor008" /></td>
+                                <td>John Turner</td>
+                                <td>President</td>
+                                <td>Unifor Local 112</td>
+                                <td>Toronto</td>
+                                <td>jturner@unifor112.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('John', 'Unifor Local 112', 'jturner@unifor112.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="unifor">
+                                <td><input type="checkbox" class="sent-checkbox" id="unifor009" /></td>
+                                <td><input type="date" class="date-input" id="date-unifor009" /></td>
+                                <td>Scott McIlmoyle</td>
+                                <td>President</td>
+                                <td>Unifor Local 673</td>
+                                <td>Toronto</td>
+                                <td class="no-email">Aerospace</td>
+                                <td><a href="https://www.unifor.org/about-unifor/locals/local-673" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="unifor">
+                                <td><input type="checkbox" class="sent-checkbox" id="unifor010" /></td>
+                                <td><input type="date" class="date-input" id="date-unifor010" /></td>
+                                <td>Pearl Almeida</td>
+                                <td>President</td>
+                                <td>Unifor Local 6006</td>
+                                <td>Scarborough</td>
+                                <td>pearl.almeida@unifor6006.com</td>
+                                <td><button class="email-btn" onclick="openGmail('Pearl', 'Unifor Local 6006', 'pearl.almeida@unifor6006.com')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="unifor">
+                                <td><input type="checkbox" class="sent-checkbox" id="unifor011" /></td>
+                                <td><input type="date" class="date-input" id="date-unifor011" /></td>
+                                <td>Local Office</td>
+                                <td>President</td>
+                                <td>Unifor Local 27</td>
+                                <td>London</td>
+                                <td class="no-email">Manufacturing</td>
+                                <td><a href="https://local27.ca/contact-us/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MEDIA & COMMUNICATIONS -->
+            <div class="region-section">
+                <div class="region-header">Media & Communications</div>
+                <div class="local-section">
+                    <div class="local-header">Media Locals</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email/Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="unifor">
+                                <td><input type="checkbox" class="sent-checkbox" id="unifor012" /></td>
+                                <td><input type="date" class="date-input" id="date-unifor012" /></td>
+                                <td>Carleen Chicken</td>
+                                <td>President</td>
+                                <td>Unifor Local 87-M</td>
+                                <td>Toronto</td>
+                                <td>carleen@unifor87m.org</td>
+                                <td><button class="email-btn" onclick="openGmail('Carleen', 'Unifor Local 87-M', 'carleen@unifor87m.org')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="unifor">
+                                <td><input type="checkbox" class="sent-checkbox" id="unifor013" /></td>
+                                <td><input type="date" class="date-input" id="date-unifor013" /></td>
+                                <td>Local Office</td>
+                                <td>President</td>
+                                <td>Unifor Local 79-M</td>
+                                <td>Toronto</td>
+                                <td class="no-email">Media</td>
+                                <td><a href="https://www.unifor.org/about-unifor/locals/local-79-m" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIUNA Tab Content -->
+        <div class="tab-content" id="liuna-content">
+            <div class="region-section">
+                <div class="region-header">LIUNA Ontario Locals - Construction & Laborers</div>
+                <div class="local-section">
+                    <div class="local-header">All LIUNA Locals</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email/Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="liuna">
+                                <td><input type="checkbox" class="sent-checkbox" id="liuna001" /></td>
+                                <td><input type="date" class="date-input" id="date-liuna001" /></td>
+                                <td>Jack Oliveira</td>
+                                <td>Business Manager</td>
+                                <td>LIUNA Local 183</td>
+                                <td>Vaughan/Toronto</td>
+                                <td>joliveira@liunaopdc.org</td>
+                                <td><button class="email-btn" onclick="openGmail('Jack', 'LIUNA Local 183', 'joliveira@liunaopdc.org')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="liuna">
+                                <td><input type="checkbox" class="sent-checkbox" id="liuna002" /></td>
+                                <td><input type="date" class="date-input" id="date-liuna002" /></td>
+                                <td>Carmen Principato</td>
+                                <td>Business Manager</td>
+                                <td>LIUNA Local 506</td>
+                                <td>Downsview/Toronto</td>
+                                <td>carmenp@local506.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Carmen', 'LIUNA Local 506', 'carmenp@local506.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="liuna">
+                                <td><input type="checkbox" class="sent-checkbox" id="liuna003" /></td>
+                                <td><input type="date" class="date-input" id="date-liuna003" /></td>
+                                <td>Luigi Carrozzi</td>
+                                <td>Business Manager</td>
+                                <td>LIUNA Local 527</td>
+                                <td>Ottawa</td>
+                                <td class="no-email">Via website</td>
+                                <td><a href="https://liunalocal527.com/liuna-local-527/contact-us/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="liuna">
+                                <td><input type="checkbox" class="sent-checkbox" id="liuna004" /></td>
+                                <td><input type="date" class="date-input" id="date-liuna004" /></td>
+                                <td>Robert Petroni</td>
+                                <td>Business Manager</td>
+                                <td>LIUNA Local 625</td>
+                                <td>Windsor</td>
+                                <td class="no-email">Via website</td>
+                                <td><a href="https://www.liuna625.ca/contact/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="liuna">
+                                <td><input type="checkbox" class="sent-checkbox" id="liuna005" /></td>
+                                <td><input type="date" class="date-input" id="date-liuna005" /></td>
+                                <td>Manuel Bastos</td>
+                                <td>Business Manager</td>
+                                <td>LIUNA Local 837</td>
+                                <td>Hamilton</td>
+                                <td>mbastos@laborers837.on.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Manuel', 'LIUNA Local 837', 'mbastos@laborers837.on.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="liuna">
+                                <td><input type="checkbox" class="sent-checkbox" id="liuna006" /></td>
+                                <td><input type="date" class="date-input" id="date-liuna006" /></td>
+                                <td>Wayne Scott</td>
+                                <td>Business Manager</td>
+                                <td>LIUNA Local 1036</td>
+                                <td>Sault Ste. Marie</td>
+                                <td class="no-email">Via website</td>
+                                <td><a href="http://local1036.com/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="liuna">
+                                <td><input type="checkbox" class="sent-checkbox" id="liuna007" /></td>
+                                <td><input type="date" class="date-input" id="date-liuna007" /></td>
+                                <td>Brandon MacKinnon</td>
+                                <td>Business Manager</td>
+                                <td>LIUNA Local 1059</td>
+                                <td>London</td>
+                                <td class="no-email">(519) 455-8083</td>
+                                <td><a href="https://liunalocal1059.com/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="liuna">
+                                <td><input type="checkbox" class="sent-checkbox" id="liuna008" /></td>
+                                <td><input type="date" class="date-input" id="date-liuna008" /></td>
+                                <td>Tony Valenti</td>
+                                <td>Business Manager</td>
+                                <td>LIUNA Local 1089</td>
+                                <td>Sarnia</td>
+                                <td>tony@liuna1089.org</td>
+                                <td><button class="email-btn" onclick="openGmail('Tony', 'LIUNA Local 1089', 'tony@liuna1089.org')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="liuna">
+                                <td><input type="checkbox" class="sent-checkbox" id="liuna009" /></td>
+                                <td><input type="date" class="date-input" id="date-liuna009" /></td>
+                                <td>Mike Ryan</td>
+                                <td>Business Manager</td>
+                                <td>LIUNA Local 493</td>
+                                <td>Sudbury</td>
+                                <td>local493@vianet.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Mike', 'LIUNA Local 493', 'local493@vianet.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="liuna">
+                                <td><input type="checkbox" class="sent-checkbox" id="liuna010" /></td>
+                                <td><input type="date" class="date-input" id="date-liuna010" /></td>
+                                <td>Terry Varga</td>
+                                <td>Business Manager</td>
+                                <td>LIUNA Local 607</td>
+                                <td>Thunder Bay</td>
+                                <td class="no-email">Via website</td>
+                                <td><a href="https://www.liunalocal607.ca/contact.html" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="liuna">
+                                <td><input type="checkbox" class="sent-checkbox" id="liuna011" /></td>
+                                <td><input type="date" class="date-input" id="date-liuna011" /></td>
+                                <td>Ken Sharpe</td>
+                                <td>Business Manager</td>
+                                <td>LIUNA Local 3000</td>
+                                <td>Burlington</td>
+                                <td class="no-email">(905) 632-1010</td>
+                                <td><a href="https://liuna3000.ca/contact.html" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- UFCW Tab Content -->
+        <div class="tab-content" id="ufcw-content">
+            <div class="region-section">
+                <div class="region-header">UFCW Ontario Locals - Food & Commercial Workers</div>
+                <div class="local-section">
+                    <div class="local-header">All UFCW Locals (112,000+ members)</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email/Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="ufcw">
+                                <td><input type="checkbox" class="sent-checkbox" id="ufcw001" /></td>
+                                <td><input type="date" class="date-input" id="date-ufcw001" /></td>
+                                <td>Wayne Hanley</td>
+                                <td>President</td>
+                                <td>UFCW Local 1006A</td>
+                                <td>Woodbridge</td>
+                                <td class="no-email">42,000 members</td>
+                                <td><a href="https://www.ufcw1006a.ca/index.php/contact" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="ufcw">
+                                <td><input type="checkbox" class="sent-checkbox" id="ufcw002" /></td>
+                                <td><input type="date" class="date-input" id="date-ufcw002" /></td>
+                                <td>Kelly Tosato</td>
+                                <td>President</td>
+                                <td>UFCW Local 175</td>
+                                <td>Mississauga</td>
+                                <td>president@ufcw175.com</td>
+                                <td><button class="email-btn" onclick="openGmail('Kelly', 'UFCW Local 175', 'president@ufcw175.com')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ufcw">
+                                <td><input type="checkbox" class="sent-checkbox" id="ufcw003" /></td>
+                                <td><input type="date" class="date-input" id="date-ufcw003" /></td>
+                                <td>Jim McLean</td>
+                                <td>Secretary-Treasurer</td>
+                                <td>UFCW Local 175</td>
+                                <td>Mississauga</td>
+                                <td>treasurer@ufcw175.com</td>
+                                <td><button class="email-btn" onclick="openGmail('Jim', 'UFCW Local 175', 'treasurer@ufcw175.com')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ufcw">
+                                <td><input type="checkbox" class="sent-checkbox" id="ufcw004" /></td>
+                                <td><input type="date" class="date-input" id="date-ufcw004" /></td>
+                                <td>Brian Kozlowski</td>
+                                <td>President</td>
+                                <td>UFCW Local 633</td>
+                                <td>Mississauga</td>
+                                <td>membership@ufcw175.com</td>
+                                <td><button class="email-btn" onclick="openGmail('Brian', 'UFCW Local 633', 'membership@ufcw175.com')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ufcw">
+                                <td><input type="checkbox" class="sent-checkbox" id="ufcw005" /></td>
+                                <td><input type="date" class="date-input" id="date-ufcw005" /></td>
+                                <td>John Nock</td>
+                                <td>President</td>
+                                <td>UFCW Local 12R24</td>
+                                <td>Ontario (Beer Store)</td>
+                                <td>john.nock@ufcw12r24.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('John', 'UFCW Local 12R24', 'john.nock@ufcw12r24.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ufcw">
+                                <td><input type="checkbox" class="sent-checkbox" id="ufcw006" /></td>
+                                <td><input type="date" class="date-input" id="date-ufcw006" /></td>
+                                <td>Dominic Musitano</td>
+                                <td>President</td>
+                                <td>UFCW Local 102</td>
+                                <td>Hamilton</td>
+                                <td class="no-email">(905) 525-5578</td>
+                                <td><a href="https://ufcw102.ca/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="ufcw">
+                                <td><input type="checkbox" class="sent-checkbox" id="ufcw007" /></td>
+                                <td><input type="date" class="date-input" id="date-ufcw007" /></td>
+                                <td>Tom Shannon</td>
+                                <td>President</td>
+                                <td>UFCW Local 232</td>
+                                <td>Ontario</td>
+                                <td class="no-email">NDP Staff</td>
+                                <td><a href="http://www.ufcw232.ca/index.php/en/contact" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- OPSEU Tab Content -->
+        <div class="tab-content" id="opseu-content">
+            <div class="region-section">
+                <div class="region-header">OPSEU College Locals - Academic</div>
+                <div class="local-section">
+                    <div class="local-header">College Academic Staff (CAAT-A)</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email/Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="opseu">
+                                <td><input type="checkbox" class="sent-checkbox" id="opseu001" /></td>
+                                <td><input type="date" class="date-input" id="date-opseu001" /></td>
+                                <td>President</td>
+                                <td>President</td>
+                                <td>OPSEU Local 415</td>
+                                <td>Ottawa (Algonquin)</td>
+                                <td class="no-email">College Faculty</td>
+                                <td><a href="https://opseu.org/information/general/member-locals-local-presidents/11565/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="opseu">
+                                <td><input type="checkbox" class="sent-checkbox" id="opseu002" /></td>
+                                <td><input type="date" class="date-input" id="date-opseu002" /></td>
+                                <td>President</td>
+                                <td>President</td>
+                                <td>OPSEU Local 417</td>
+                                <td>Kingston (St. Lawrence)</td>
+                                <td class="no-email">College Faculty</td>
+                                <td><a href="https://opseu.org/information/general/member-locals-local-presidents/11565/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="opseu">
+                                <td><input type="checkbox" class="sent-checkbox" id="opseu003" /></td>
+                                <td><input type="date" class="date-input" id="date-opseu003" /></td>
+                                <td>President</td>
+                                <td>President</td>
+                                <td>OPSEU Local 352</td>
+                                <td>Oshawa (Durham)</td>
+                                <td class="no-email">College Faculty</td>
+                                <td><a href="https://opseu.org/information/general/member-locals-local-presidents/11565/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="opseu">
+                                <td><input type="checkbox" class="sent-checkbox" id="opseu004" /></td>
+                                <td><input type="date" class="date-input" id="date-opseu004" /></td>
+                                <td>President</td>
+                                <td>President</td>
+                                <td>OPSEU Local 562</td>
+                                <td>Toronto (Humber)</td>
+                                <td class="no-email">College Faculty</td>
+                                <td><a href="https://opseu.org/information/general/member-locals-local-presidents/11565/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="opseu">
+                                <td><input type="checkbox" class="sent-checkbox" id="opseu005" /></td>
+                                <td><input type="date" class="date-input" id="date-opseu005" /></td>
+                                <td>President</td>
+                                <td>President</td>
+                                <td>OPSEU Local 237</td>
+                                <td>Kitchener (Conestoga)</td>
+                                <td class="no-email">College Faculty</td>
+                                <td><a href="https://opseu.org/information/general/member-locals-local-presidents/11565/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="opseu">
+                                <td><input type="checkbox" class="sent-checkbox" id="opseu006" /></td>
+                                <td><input type="date" class="date-input" id="date-opseu006" /></td>
+                                <td>President</td>
+                                <td>President</td>
+                                <td>OPSEU Local 560</td>
+                                <td>Toronto (Seneca)</td>
+                                <td class="no-email">College Faculty</td>
+                                <td><a href="https://opseu.org/information/general/member-locals-local-presidents/11565/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="opseu">
+                                <td><input type="checkbox" class="sent-checkbox" id="opseu007" /></td>
+                                <td><input type="date" class="date-input" id="date-opseu007" /></td>
+                                <td>President</td>
+                                <td>President</td>
+                                <td>OPSEU Local 556</td>
+                                <td>Toronto (George Brown)</td>
+                                <td class="no-email">College Faculty</td>
+                                <td><a href="https://opseu.org/information/general/member-locals-local-presidents/11565/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="opseu">
+                                <td><input type="checkbox" class="sent-checkbox" id="opseu008" /></td>
+                                <td><input type="date" class="date-input" id="date-opseu008" /></td>
+                                <td>President</td>
+                                <td>President</td>
+                                <td>OPSEU Local 558</td>
+                                <td>Toronto (Centennial)</td>
+                                <td class="no-email">College Faculty</td>
+                                <td><a href="https://opseu.org/information/general/member-locals-local-presidents/11565/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="opseu">
+                                <td><input type="checkbox" class="sent-checkbox" id="opseu009" /></td>
+                                <td><input type="date" class="date-input" id="date-opseu009" /></td>
+                                <td>President</td>
+                                <td>President</td>
+                                <td>OPSEU Local 241</td>
+                                <td>Hamilton (Mohawk)</td>
+                                <td class="no-email">College Faculty</td>
+                                <td><a href="https://opseu.org/information/general/member-locals-local-presidents/11565/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="opseu">
+                                <td><input type="checkbox" class="sent-checkbox" id="opseu010" /></td>
+                                <td><input type="date" class="date-input" id="date-opseu010" /></td>
+                                <td>President</td>
+                                <td>President</td>
+                                <td>OPSEU Local 349</td>
+                                <td>Barrie (Georgian)</td>
+                                <td class="no-email">College Faculty</td>
+                                <td><a href="https://opseu.org/information/general/member-locals-local-presidents/11565/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="opseu">
+                                <td><input type="checkbox" class="sent-checkbox" id="opseu011" /></td>
+                                <td><input type="date" class="date-input" id="date-opseu011" /></td>
+                                <td>President</td>
+                                <td>President</td>
+                                <td>OPSEU Local 655</td>
+                                <td>Sudbury (Cambrian)</td>
+                                <td class="no-email">College Faculty</td>
+                                <td><a href="https://opseu.org/information/general/member-locals-local-presidents/11565/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="opseu">
+                                <td><input type="checkbox" class="sent-checkbox" id="opseu012" /></td>
+                                <td><input type="date" class="date-input" id="date-opseu012" /></td>
+                                <td>President</td>
+                                <td>President</td>
+                                <td>OPSEU Local 652</td>
+                                <td>North Bay (Canadore)</td>
+                                <td class="no-email">College Faculty</td>
+                                <td><a href="https://opseu.org/information/general/member-locals-local-presidents/11565/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="opseu">
+                                <td><input type="checkbox" class="sent-checkbox" id="opseu013" /></td>
+                                <td><input type="date" class="date-input" id="date-opseu013" /></td>
+                                <td>President</td>
+                                <td>President</td>
+                                <td>OPSEU Local 244</td>
+                                <td>Oakville (Sheridan)</td>
+                                <td class="no-email">College Faculty</td>
+                                <td><a href="https://opseu.org/information/general/member-locals-local-presidents/11565/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="opseu">
+                                <td><input type="checkbox" class="sent-checkbox" id="opseu014" /></td>
+                                <td><input type="date" class="date-input" id="date-opseu014" /></td>
+                                <td>President</td>
+                                <td>President</td>
+                                <td>OPSEU Local 116</td>
+                                <td>Sarnia (Lambton)</td>
+                                <td class="no-email">College Faculty</td>
+                                <td><a href="https://opseu.org/information/general/member-locals-local-presidents/11565/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="opseu">
+                                <td><input type="checkbox" class="sent-checkbox" id="opseu015" /></td>
+                                <td><input type="date" class="date-input" id="date-opseu015" /></td>
+                                <td>President</td>
+                                <td>President</td>
+                                <td>OPSEU Local 110</td>
+                                <td>London (Fanshawe)</td>
+                                <td class="no-email">College Faculty</td>
+                                <td><a href="https://opseu.org/information/general/member-locals-local-presidents/11565/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="opseu">
+                                <td><input type="checkbox" class="sent-checkbox" id="opseu016" /></td>
+                                <td><input type="date" class="date-input" id="date-opseu016" /></td>
+                                <td>President</td>
+                                <td>President</td>
+                                <td>OPSEU Local 137</td>
+                                <td>Windsor (St. Clair)</td>
+                                <td class="no-email">College Faculty</td>
+                                <td><a href="https://opseu.org/information/general/member-locals-local-presidents/11565/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="region-section">
+                <div class="region-header">OPSEU Provincial Office</div>
+                <div class="local-section">
+                    <div class="local-header">Provincial Contact</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Organization</th>
+                                <th>Location</th>
+                                <th>Email/Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="opseu">
+                                <td><input type="checkbox" class="sent-checkbox" id="opseu017" /></td>
+                                <td><input type="date" class="date-input" id="date-opseu017" /></td>
+                                <td>JP Hornick</td>
+                                <td>President</td>
+                                <td>OPSEU/SEFPO</td>
+                                <td>Toronto</td>
+                                <td class="no-email">180,000 members</td>
+                                <td><a href="https://opseu.org/contact-us/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- USW Tab Content -->
+        <div class="tab-content" id="usw-content">
+            <div class="region-section">
+                <div class="region-header">USW Ontario Locals - Steelworkers & Mining</div>
+                <div class="local-section">
+                    <div class="local-header">All USW Locals</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email/Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="usw">
+                                <td><input type="checkbox" class="sent-checkbox" id="usw001" /></td>
+                                <td><input type="date" class="date-input" id="date-usw001" /></td>
+                                <td>Nick Larochelle</td>
+                                <td>President</td>
+                                <td>USW Local 6500</td>
+                                <td>Sudbury</td>
+                                <td>nlarochelle@uswsudbury.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Nick', 'USW Local 6500', 'nlarochelle@uswsudbury.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="usw">
+                                <td><input type="checkbox" class="sent-checkbox" id="usw002" /></td>
+                                <td><input type="date" class="date-input" id="date-usw002" /></td>
+                                <td>Mike Da Prat</td>
+                                <td>President</td>
+                                <td>USW Local 2251</td>
+                                <td>Sault Ste. Marie</td>
+                                <td class="no-email">Algoma Steel</td>
+                                <td><a href="https://www.usw2251.ca/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="usw">
+                                <td><input type="checkbox" class="sent-checkbox" id="usw003" /></td>
+                                <td><input type="date" class="date-input" id="date-usw003" /></td>
+                                <td>Bill Slater</td>
+                                <td>President</td>
+                                <td>USW Local 2724</td>
+                                <td>Sault Ste. Marie</td>
+                                <td class="no-email">Algoma Salaried</td>
+                                <td><a href="https://usw2724.ca/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="usw">
+                                <td><input type="checkbox" class="sent-checkbox" id="usw004" /></td>
+                                <td><input type="date" class="date-input" id="date-usw004" /></td>
+                                <td>John Tartt</td>
+                                <td>President</td>
+                                <td>USW Local 4120</td>
+                                <td>Guelph</td>
+                                <td>john@usw4120.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('John', 'USW Local 4120', 'john@usw4120.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="usw">
+                                <td><input type="checkbox" class="sent-checkbox" id="usw005" /></td>
+                                <td><input type="date" class="date-input" id="date-usw005" /></td>
+                                <td>John Ankenman</td>
+                                <td>President</td>
+                                <td>USW Local 1998</td>
+                                <td>Toronto</td>
+                                <td>john.ankenman@usw1998.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('John', 'USW Local 1998', 'john.ankenman@usw1998.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="usw">
+                                <td><input type="checkbox" class="sent-checkbox" id="usw006" /></td>
+                                <td><input type="date" class="date-input" id="date-usw006" /></td>
+                                <td>Sean Gomley</td>
+                                <td>President</td>
+                                <td>USW Local 2784</td>
+                                <td>Pickering</td>
+                                <td class="no-email">416-880-4845</td>
+                                <td><a href="https://uswlocals.org/local-2784/contact-us-0" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="usw">
+                                <td><input type="checkbox" class="sent-checkbox" id="usw007" /></td>
+                                <td><input type="date" class="date-input" id="date-usw007" /></td>
+                                <td>Carolyn Egan</td>
+                                <td>President</td>
+                                <td>USW Local 8300</td>
+                                <td>Toronto</td>
+                                <td>c.egan@sympatico.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Carolyn', 'USW Local 8300', 'c.egan@sympatico.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="usw">
+                                <td><input type="checkbox" class="sent-checkbox" id="usw008" /></td>
+                                <td><input type="date" class="date-input" id="date-usw008" /></td>
+                                <td>Roger Morin</td>
+                                <td>President</td>
+                                <td>USW Local 2020</td>
+                                <td>Sudbury</td>
+                                <td class="no-email">Multiple sectors</td>
+                                <td><a href="https://www.uswlocal2020.ca/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="usw">
+                                <td><input type="checkbox" class="sent-checkbox" id="usw009" /></td>
+                                <td><input type="date" class="date-input" id="date-usw009" /></td>
+                                <td>Sherry Charette</td>
+                                <td>President</td>
+                                <td>USW Local 9597</td>
+                                <td>Eastern/SW Ontario</td>
+                                <td class="no-email">Security Guards</td>
+                                <td><a href="https://www.usw9597.ca/contact-us/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="usw">
+                                <td><input type="checkbox" class="sent-checkbox" id="usw010" /></td>
+                                <td><input type="date" class="date-input" id="date-usw010" /></td>
+                                <td>President</td>
+                                <td>President</td>
+                                <td>USW Local 1005</td>
+                                <td>Hamilton</td>
+                                <td>info@uswa1005.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('President', 'USW Local 1005', 'info@uswa1005.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="usw">
+                                <td><input type="checkbox" class="sent-checkbox" id="usw011" /></td>
+                                <td><input type="date" class="date-input" id="date-usw011" /></td>
+                                <td>President</td>
+                                <td>President</td>
+                                <td>USW Local 1-500</td>
+                                <td>Southern Ontario</td>
+                                <td class="no-email">37 workplaces</td>
+                                <td><a href="https://www.uswlocal1-500.com/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- IBEW Tab Content -->
+        <div class="tab-content" id="ibew-content">
+            <div class="region-section">
+                <div class="region-header">IBEW Ontario Locals - Electrical Workers</div>
+                <div class="local-section">
+                    <div class="local-header">All IBEW Locals</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email/Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-120"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-120" placeholder="mm/dd/yy"></td>
+                                <td>James Barry</td>
+                                <td>Business Manager</td>
+                                <td>IBEW Local 120</td>
+                                <td>London</td>
+                                <td>info@ibew120.org</td>
+                                <td><button class="email-btn" onclick="openGmail('James', 'IBEW Local 120', 'info@ibew120.org')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-105"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-105" placeholder="mm/dd/yy"></td>
+                                <td>Mike Gallagher</td>
+                                <td>Business Manager</td>
+                                <td>IBEW Local 105</td>
+                                <td>Hamilton</td>
+                                <td>office@ibewlocal105.org</td>
+                                <td><button class="email-btn" onclick="openGmail('Mike', 'IBEW Local 105', 'office@ibewlocal105.org')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-353"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-353" placeholder="mm/dd/yy"></td>
+                                <td>Steve Martin</td>
+                                <td>Business Manager</td>
+                                <td>IBEW Local 353</td>
+                                <td>Toronto</td>
+                                <td>info@ibew353.org</td>
+                                <td><button class="email-btn" onclick="openGmail('Steve', 'IBEW Local 353', 'info@ibew353.org')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-586"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-586" placeholder="mm/dd/yy"></td>
+                                <td>Jeff Gray</td>
+                                <td>Business Manager</td>
+                                <td>IBEW Local 586</td>
+                                <td>Ottawa</td>
+                                <td>info@ibew586.org</td>
+                                <td><button class="email-btn" onclick="openGmail('Jeff', 'IBEW Local 586', 'info@ibew586.org')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-804"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-804" placeholder="mm/dd/yy"></td>
+                                <td>Ed Macphee</td>
+                                <td>Business Manager</td>
+                                <td>IBEW Local 804</td>
+                                <td>Kitchener</td>
+                                <td>info@ibew804.com</td>
+                                <td><button class="email-btn" onclick="openGmail('Ed', 'IBEW Local 804', 'info@ibew804.com')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-530"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-530" placeholder="mm/dd/yy"></td>
+                                <td>Tom Fink</td>
+                                <td>Business Manager</td>
+                                <td>IBEW Local 530</td>
+                                <td>Sarnia</td>
+                                <td>office@ibew530.com</td>
+                                <td><button class="email-btn" onclick="openGmail('Tom', 'IBEW Local 530', 'office@ibew530.com')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-773"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-773" placeholder="mm/dd/yy"></td>
+                                <td>Chris Moore</td>
+                                <td>Business Manager</td>
+                                <td>IBEW Local 773</td>
+                                <td>Windsor</td>
+                                <td>office@ibew773.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Chris', 'IBEW Local 773', 'office@ibew773.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-115"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-115" placeholder="mm/dd/yy"></td>
+                                <td>Dave Lewington</td>
+                                <td>Business Manager</td>
+                                <td>IBEW Local 115</td>
+                                <td>Kingston</td>
+                                <td>info@ibew115.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Dave', 'IBEW Local 115', 'info@ibew115.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-303"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-303" placeholder="mm/dd/yy"></td>
+                                <td>Rick Falkiner</td>
+                                <td>Business Manager</td>
+                                <td>IBEW Local 303</td>
+                                <td>St. Catharines</td>
+                                <td>office@ibew303.org</td>
+                                <td><button class="email-btn" onclick="openGmail('Rick', 'IBEW Local 303', 'office@ibew303.org')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-894"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-894" placeholder="mm/dd/yy"></td>
+                                <td>Bill Robinson</td>
+                                <td>Business Manager</td>
+                                <td>IBEW Local 894</td>
+                                <td>Oshawa</td>
+                                <td>info@ibew894.org</td>
+                                <td><button class="email-btn" onclick="openGmail('Bill', 'IBEW Local 894', 'info@ibew894.org')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-636"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-636" placeholder="mm/dd/yy"></td>
+                                <td>Paul Savard</td>
+                                <td>Business Manager</td>
+                                <td>IBEW Local 636</td>
+                                <td>Toronto (Utility)</td>
+                                <td>info@ibewlocal636.org</td>
+                                <td><button class="email-btn" onclick="openGmail('Paul', 'IBEW Local 636', 'info@ibewlocal636.org')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-1687"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-1687" placeholder="mm/dd/yy"></td>
+                                <td>Paul McIntyre</td>
+                                <td>Business Manager</td>
+                                <td>IBEW Local 1687</td>
+                                <td>Sudbury</td>
+                                <td>info@ibew1687.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Paul', 'IBEW Local 1687', 'info@ibew1687.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-402"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-402" placeholder="mm/dd/yy"></td>
+                                <td>Mark Watson</td>
+                                <td>Business Manager</td>
+                                <td>IBEW Local 402</td>
+                                <td>Thunder Bay</td>
+                                <td>ibew402@shaw.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Mark', 'IBEW Local 402', 'ibew402@shaw.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-625"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-625" placeholder="mm/dd/yy"></td>
+                                <td>Ian Wilkinson</td>
+                                <td>Business Manager</td>
+                                <td>IBEW Local 625</td>
+                                <td>Telecom (Ontario)</td>
+                                <td>info@ibew625.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Ian', 'IBEW Local 625', 'info@ibew625.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-cco"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-cco" placeholder="mm/dd/yy"></td>
+                                <td>Contact Office</td>
+                                <td>-</td>
+                                <td>IBEW Construction Council of Ontario</td>
+                                <td>Toronto</td>
+                                <td>https://ibewcco.org/contact</td>
+                                <td><a href="https://ibewcco.org/contact" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-1739"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-1739" placeholder="mm/dd/yy"></td>
+                                <td>Kevin Brousseau</td>
+                                <td>Business Manager</td>
+                                <td>IBEW Local 1739</td>
+                                <td>Barrie</td>
+                                <td>local1739@bellnet.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Kevin', 'IBEW Local 1739', 'local1739@bellnet.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-529"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-529" placeholder="mm/dd/yy"></td>
+                                <td>Joe Redshaw</td>
+                                <td>President</td>
+                                <td>IBEW Local 529</td>
+                                <td>Peterborough</td>
+                                <td>ibew529@nexicom.net</td>
+                                <td><button class="email-btn" onclick="openGmail('Joe', 'IBEW Local 529', 'ibew529@nexicom.net')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-1788"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-1788" placeholder="mm/dd/yy"></td>
+                                <td>Contact Office</td>
+                                <td>-</td>
+                                <td>IBEW Local 1788</td>
+                                <td>Sault Ste. Marie</td>
+                                <td>https://www.ibew.org/IBEW/directory</td>
+                                <td><a href="https://www.ibew.org/IBEW/directory" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="ibew">
+                                <td><input type="checkbox" class="sent-checkbox" id="ibew-993"></td>
+                                <td><input type="text" class="date-input" id="date-ibew-993" placeholder="mm/dd/yy"></td>
+                                <td>Contact Office</td>
+                                <td>-</td>
+                                <td>IBEW Local 993</td>
+                                <td>North Bay</td>
+                                <td>https://www.ibew.org/IBEW/directory</td>
+                                <td><a href="https://www.ibew.org/IBEW/directory" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teamsters Tab Content -->
+        <div class="tab-content" id="teamsters-content">
+            <div class="region-section">
+                <div class="region-header">Teamsters Ontario Locals - Transport & Warehousing</div>
+                <div class="local-section">
+                    <div class="local-header">All Teamsters Locals</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Sent</th>
+                                <th style="width: 110px;">Date Sent</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Local</th>
+                                <th>City</th>
+                                <th>Email/Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-union="teamsters">
+                                <td><input type="checkbox" class="sent-checkbox" id="teamsters-938"></td>
+                                <td><input type="text" class="date-input" id="date-teamsters-938" placeholder="mm/dd/yy"></td>
+                                <td>Stan Hennessy</td>
+                                <td>President</td>
+                                <td>Teamsters Local 938</td>
+                                <td>Toronto</td>
+                                <td>info@teamsters938.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Stan', 'Teamsters Local 938', 'info@teamsters938.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="teamsters">
+                                <td><input type="checkbox" class="sent-checkbox" id="teamsters-419"></td>
+                                <td><input type="text" class="date-input" id="date-teamsters-419" placeholder="mm/dd/yy"></td>
+                                <td>Mike Dillon</td>
+                                <td>President</td>
+                                <td>Teamsters Local 419</td>
+                                <td>Mississauga</td>
+                                <td>info@teamsters419.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Mike', 'Teamsters Local 419', 'info@teamsters419.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="teamsters">
+                                <td><input type="checkbox" class="sent-checkbox" id="teamsters-879"></td>
+                                <td><input type="text" class="date-input" id="date-teamsters-879" placeholder="mm/dd/yy"></td>
+                                <td>Ed Thompson</td>
+                                <td>President</td>
+                                <td>Teamsters Local 879</td>
+                                <td>Hamilton</td>
+                                <td>local879@teamsters879.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Ed', 'Teamsters Local 879', 'local879@teamsters879.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="teamsters">
+                                <td><input type="checkbox" class="sent-checkbox" id="teamsters-230"></td>
+                                <td><input type="text" class="date-input" id="date-teamsters-230" placeholder="mm/dd/yy"></td>
+                                <td>Ray Derouin</td>
+                                <td>President</td>
+                                <td>Teamsters Local 230</td>
+                                <td>Windsor</td>
+                                <td>info@teamsters230.com</td>
+                                <td><button class="email-btn" onclick="openGmail('Ray', 'Teamsters Local 230', 'info@teamsters230.com')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="teamsters">
+                                <td><input type="checkbox" class="sent-checkbox" id="teamsters-647"></td>
+                                <td><input type="text" class="date-input" id="date-teamsters-647" placeholder="mm/dd/yy"></td>
+                                <td>Russ Seguin</td>
+                                <td>President</td>
+                                <td>Teamsters Local 647</td>
+                                <td>Toronto (Warehouse)</td>
+                                <td>info@teamsters647.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Russ', 'Teamsters Local 647', 'info@teamsters647.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="teamsters">
+                                <td><input type="checkbox" class="sent-checkbox" id="teamsters-91"></td>
+                                <td><input type="text" class="date-input" id="date-teamsters-91" placeholder="mm/dd/yy"></td>
+                                <td>Mark Cormier</td>
+                                <td>President</td>
+                                <td>Teamsters Local 91</td>
+                                <td>London</td>
+                                <td>local91@teamsters.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Mark', 'Teamsters Local 91', 'local91@teamsters.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="teamsters">
+                                <td><input type="checkbox" class="sent-checkbox" id="teamsters-879o"></td>
+                                <td><input type="text" class="date-input" id="date-teamsters-879o" placeholder="mm/dd/yy"></td>
+                                <td>Contact Office</td>
+                                <td>-</td>
+                                <td>Teamsters Canada (Ontario)</td>
+                                <td>Mississauga</td>
+                                <td>https://teamsters.ca/contact/</td>
+                                <td><a href="https://teamsters.ca/contact/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                            <tr data-union="teamsters">
+                                <td><input type="checkbox" class="sent-checkbox" id="teamsters-213"></td>
+                                <td><input type="text" class="date-input" id="date-teamsters-213" placeholder="mm/dd/yy"></td>
+                                <td>Paul Dube</td>
+                                <td>President</td>
+                                <td>Teamsters Local 213</td>
+                                <td>Ottawa</td>
+                                <td>info@teamsters213.org</td>
+                                <td><button class="email-btn" onclick="openGmail('Paul', 'Teamsters Local 213', 'info@teamsters213.org')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="teamsters">
+                                <td><input type="checkbox" class="sent-checkbox" id="teamsters-141"></td>
+                                <td><input type="text" class="date-input" id="date-teamsters-141" placeholder="mm/dd/yy"></td>
+                                <td>Gord Murray</td>
+                                <td>President</td>
+                                <td>Teamsters Local 141</td>
+                                <td>Sudbury</td>
+                                <td>teamsters141@outlook.com</td>
+                                <td><button class="email-btn" onclick="openGmail('Gord', 'Teamsters Local 141', 'teamsters141@outlook.com')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="teamsters">
+                                <td><input type="checkbox" class="sent-checkbox" id="teamsters-847"></td>
+                                <td><input type="text" class="date-input" id="date-teamsters-847" placeholder="mm/dd/yy"></td>
+                                <td>Jim Hopper</td>
+                                <td>President</td>
+                                <td>Teamsters Local 847</td>
+                                <td>Kitchener</td>
+                                <td>local847@teamsters847.ca</td>
+                                <td><button class="email-btn" onclick="openGmail('Jim', 'Teamsters Local 847', 'local847@teamsters847.ca')">Open Gmail</button></td>
+                            </tr>
+                            <tr data-union="teamsters">
+                                <td><input type="checkbox" class="sent-checkbox" id="teamsters-362"></td>
+                                <td><input type="text" class="date-input" id="date-teamsters-362" placeholder="mm/dd/yy"></td>
+                                <td>Contact Office</td>
+                                <td>-</td>
+                                <td>Teamsters Local 362</td>
+                                <td>Thunder Bay</td>
+                                <td>https://teamsters.ca/contact/</td>
+                                <td><a href="https://teamsters.ca/contact/" target="_blank" class="contact-btn">Contact Page</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>MigsList Union Outreach</strong></p>
+            <p>Contact: <a href="mailto:support@migslist.com">support@migslist.com</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.union-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                document.querySelectorAll('.union-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                // Add active class to clicked tab
+                this.classList.add('active');
+                const union = this.dataset.union;
+                document.getElementById(union + '-content').classList.add('active');
+            });
+        });
+
+        // Save/load checkbox and date state
+        document.querySelectorAll('.sent-checkbox').forEach(checkbox => {
+            const id = checkbox.id;
+            const dateInput = document.getElementById('date-' + id);
+
+            // Load saved state
+            const savedChecked = localStorage.getItem(id);
+            const savedDate = localStorage.getItem('date-' + id);
+
+            if (savedChecked === 'true') {
+                checkbox.checked = true;
+                checkbox.closest('tr').classList.add('sent');
+            }
+            if (savedDate && dateInput) {
+                dateInput.value = savedDate;
+            }
+
+            // Save on change
+            checkbox.addEventListener('change', function() {
+                localStorage.setItem(id, this.checked);
+                if (this.checked) {
+                    this.closest('tr').classList.add('sent');
+                    // Auto-fill today's date if empty
+                    if (dateInput && !dateInput.value) {
+                        const today = new Date().toISOString().split('T')[0];
+                        dateInput.value = today;
+                        localStorage.setItem('date-' + id, today);
+                    }
+                } else {
+                    this.closest('tr').classList.remove('sent');
+                }
+                updateCounts();
+            });
+
+            if (dateInput) {
+                dateInput.addEventListener('change', function() {
+                    localStorage.setItem('date-' + id, this.value);
+                });
+            }
+        });
+
+        // Update tab counts
+        function updateCounts() {
+            const unions = ['cupe', 'unifor', 'liuna', 'ufcw', 'opseu', 'usw', 'ibew', 'teamsters'];
+
+            unions.forEach(union => {
+                const rows = document.querySelectorAll(`tr[data-union="${union}"]`);
+                const total = rows.length;
+                const sent = document.querySelectorAll(`tr[data-union="${union}"] .sent-checkbox:checked`).length;
+
+                document.getElementById(union + '-total').textContent = total;
+                document.getElementById(union + '-sent').textContent = sent;
+            });
+        }
+
+        // Initial count update
+        updateCounts();
+
+        // Open Gmail with pre-filled message
+        function openGmail(firstName, unionLocal, email) {
+            const subject = encodeURIComponent('MigsList - Membership Database Built for Ontario Unions');
+            const body = encodeURIComponent(`Hello ${firstName},
+
+My name is Wayne. I'm a former CAW Local 200 member, currently working as a Health and Safety Data Analyst. I'm reaching out to union leaders across Ontario about a tool I've built specifically for locals like ${unionLocal}.
+
+MigsList has been a dream of mine for years, and it's now a reality. This service has been tested and refined over the past year with several Locals to ensure it meets all the needs of union administration.
+
+View MigsList here: https://migslist.com/
+See all features: https://migslist.com/features
+
+The amount of stress, hours, and money wasted using outdated filing systems—especially during rank-and-file list generation—creates unnecessary challenges for both administrators and Presidents. MigsList solves this by giving the President full control of the system while allowing them to grant Recording Secretaries the access they need.
+
+HERE'S WHAT MIGSLIST CAN DO FOR ${unionLocal}:
+
+• Track Members In Good Standing with ease
+• Active vs Non-Active member status tracking
+• Generate voter lists for elections with one click
+• Export rank-and-file lists (members without executive roles)
+• Export reports to Excel & PDF
+• Store PDF documents securely for each member
+• Import members directly from Excel spreadsheets
+• Send email communications to your membership
+• Multi-user access for your executive team
+• Video tutorials to get you started fast: https://migslist.com/tutorials
+• Secure Canadian servers — your data stays in Canada
+
+SPECIAL OFFER: First year at $500 CAD (regularly $800/year), plus a 30-day FREE trial with full access to all features.
+
+TAKE A LOOK FOR YOURSELF:
+
+1. Visit the website: https://migslist.com
+2. Explore all features: https://migslist.com/features
+3. Watch the video tutorials: https://migslist.com/tutorials
+
+Everything you need to see what MigsList can do is right there. If you still have questions after reviewing the site, I'm happy to schedule a quick Google Meet demo - just reply to this email.
+
+In solidarity,
+
+Wayne Rigley
+Founder, MigsList
+Registered Ontario Business
+
+Email: support@migslist.com
+Website: https://migslist.com
+Facebook: facebook.com/MigsList`);
+
+            window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}&body=${body}`, '_blank');
+        }
+
+        // Copy template to clipboard
+        document.querySelectorAll('textarea').forEach(textarea => {
+            textarea.addEventListener('click', function() {
+                this.select();
+                document.execCommand('copy');
+
+                const originalBg = this.style.background;
+                this.style.background = '#d1fae5';
+                setTimeout(() => {
+                    this.style.background = originalBg;
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>
