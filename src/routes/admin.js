@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const { exec } = require('child_process');
 const ExcelJS = require('exceljs');
 const PDFDocument = require('pdfkit');
 const { requireSuperAdmin } = require('../middleware/auth');
@@ -71,6 +72,17 @@ router.get('/', async (req, res) => {
     const pendingUnions = await Union.findPending();
     const trials = await Union.findTrials();
 
+    // Get backup status
+    let backupStatus = null;
+    const statusPath = path.join(__dirname, '../../backup-status.json');
+    if (fs.existsSync(statusPath)) {
+      try {
+        backupStatus = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
+      } catch (e) {
+        console.error('Error reading backup status:', e);
+      }
+    }
+
     const stats = {
       totalUnions: unions.filter(u => u.status === 'active').length,
       totalUsers: users.length,
@@ -81,11 +93,11 @@ router.get('/', async (req, res) => {
       totalTrials: trials.length
     };
 
-    res.render('admin/dashboard', { unions, users, stats, pendingSignups, pendingUnions, trials });
+    res.render('admin/dashboard', { unions, users, stats, pendingSignups, pendingUnions, trials, backupStatus });
   } catch (err) {
     console.error('Admin dashboard error:', err);
     req.session.error = 'Error loading dashboard';
-    res.render('admin/dashboard', { unions: [], users: [], stats: {}, pendingSignups: [], pendingUnions: [], trials: [] });
+    res.render('admin/dashboard', { unions: [], users: [], stats: {}, pendingSignups: [], pendingUnions: [], trials: [], backupStatus: null });
   }
 });
 
@@ -1447,6 +1459,63 @@ router.post('/cleanup', async (req, res) => {
   } catch (err) {
     console.error('Cleanup error:', err);
     req.session.error = 'Error during cleanup';
+    res.redirect('/admin');
+  }
+});
+
+// === BACKUP MANAGEMENT ===
+
+// Get backup status
+router.get('/backup/status', async (req, res) => {
+  try {
+    const statusPath = path.join(__dirname, '../../backup-status.json');
+    if (fs.existsSync(statusPath)) {
+      const status = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
+      res.json(status);
+    } else {
+      res.json({ status: 'unknown', message: 'No backup status available' });
+    }
+  } catch (err) {
+    console.error('Backup status error:', err);
+    res.json({ status: 'error', message: err.message });
+  }
+});
+
+// Trigger manual backup
+router.post('/backup/run', async (req, res) => {
+  try {
+    // Run backup script in background
+    const backupCmd = 'source /var/www/migs/.env && export DATABASE_URL && /home/wayne/backup-to-proxmox.sh';
+
+    exec(backupCmd, { shell: '/bin/bash', cwd: '/var/www/migs' }, (error, stdout, stderr) => {
+      if (error) {
+        console.error('Backup error:', error);
+      }
+    });
+
+    req.session.success = 'Backup started. Refresh the page in a few seconds to see the updated status.';
+    res.redirect('/admin');
+  } catch (err) {
+    console.error('Trigger backup error:', err);
+    req.session.error = 'Error starting backup';
+    res.redirect('/admin');
+  }
+});
+
+// Backup management page
+router.get('/backups', async (req, res) => {
+  try {
+    const statusPath = path.join(__dirname, '../../backup-status.json');
+    let backupStatus = null;
+
+    if (fs.existsSync(statusPath)) {
+      backupStatus = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
+    }
+
+    res.render('admin/backups', { backupStatus });
+  } catch (err) {
+    console.error('Backup page error:', err);
+    req.session.error = 'Error loading backup status';
     res.redirect('/admin');
   }
 });

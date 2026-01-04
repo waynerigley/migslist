@@ -235,8 +235,108 @@ pool.query('SELECT 1').then(() => console.log('Migration complete')).finally(() 
 
 ---
 
+## Backup System (Proxmox)
+
+Automated backups from Vultr to Proxmox CT via Cloudflare Tunnel.
+
+| What              | Details                              |
+|-------------------|--------------------------------------|
+| Backup Server     | Proxmox CT at 192.168.0.152          |
+| Hostname          | backup.waynerigley.com               |
+| Tunnel            | Cloudflare Tunnel (ID: 3b780f4d-2216-4366-94b1-ccd7593e8952) |
+| Backup Location   | /root/backups/                       |
+| Schedule          | Daily at 3am (server time)           |
+| Retention         | 14 days of database backups          |
+
+### What Gets Backed Up
+
+1. **PostgreSQL Database** - Full dump, gzipped (`migs_backup_YYYY-MM-DD_HHMM.sql.gz`)
+2. **Uploads Folder** - `/var/www/migs/uploads/` (PDFs, documents)
+
+### Common Commands
+
+```bash
+# Manual backup
+ssh wayne@155.138.149.116 "source /var/www/migs/.env && export DATABASE_URL && ~/backup-to-proxmox.sh"
+
+# View backup log
+ssh wayne@155.138.149.116 "cat ~/backup.log"
+
+# List backups on Proxmox
+ssh wayne@155.138.149.116 "ssh backup.waynerigley.com 'ls -lah /root/backups/'"
+
+# Check tunnel status on Proxmox
+ssh wayne@155.138.149.116 "ssh backup.waynerigley.com 'systemctl status cloudflared'"
+
+# Restore database from backup (example)
+ssh wayne@155.138.149.116 "ssh backup.waynerigley.com 'zcat /root/backups/migs_backup_2026-01-04_2220.sql.gz'" | psql $DATABASE_URL
+```
+
+### SSH Config (Vultr)
+
+The Vultr server has SSH config to connect through Cloudflare tunnel:
+- Config: `~/.ssh/config` with ProxyCommand using cloudflared
+- Key: `~/.ssh/id_ed25519_backup`
+
+### Proxmox CT Setup
+
+- OS: Ubuntu 22.04
+- Specs: 1 CPU, 1GB RAM, 20GB disk
+- cloudflared installed as systemd service (auto-starts on reboot)
+- Domain managed via Cloudflare (waynerigley.com)
+
+---
+
+## Uptime Kuma (Status Monitoring)
+
+Status page and uptime monitoring at https://status.waynerigley.com
+
+| What              | Details                              |
+|-------------------|--------------------------------------|
+| Server            | Proxmox CT at 192.168.0.136          |
+| Hostname          | status.waynerigley.com               |
+| Tunnel            | Cloudflare Tunnel (ID: 16d310fc-8d99-4d52-bb45-7e987d47603c) |
+| App Location      | /opt/uptime-kuma                     |
+| Database          | SQLite                               |
+| Port              | 3001                                 |
+
+### Monitors to Configure
+
+- `https://migslist.com` - Main website (HTTPS)
+- `backup.waynerigley.com:22` - Backup server tunnel (TCP)
+
+### Common Commands
+
+```bash
+# Access Kuma CT via Vultr tunnel (port 2223)
+ssh wayne@155.138.149.116 "ssh -p 2223 -i ~/.ssh/id_ed25519_backup root@localhost 'command here'"
+
+# Check Uptime Kuma status
+systemctl status uptime-kuma
+
+# View logs
+journalctl -u uptime-kuma -f
+
+# Restart Uptime Kuma
+systemctl restart uptime-kuma
+
+# Check tunnel status
+systemctl status cloudflared
+```
+
+### Proxmox CT Setup
+
+- OS: Ubuntu 22.04
+- Specs: 1 CPU, 1GB RAM, 20GB disk
+- Node.js 20.x, Uptime Kuma 2.0.1
+- cloudflared + uptime-kuma as systemd services (auto-start on reboot)
+
+---
+
 ## Recent Updates (Jan 2026)
 
+- **Uptime Kuma** - Status monitoring at status.waynerigley.com
+- **Backup system** - Automated daily backups to Proxmox via Cloudflare Tunnel
 - **Trial banner** - Color-coded (green/orange/red) based on days remaining, with "Request Invoice" button
 - **Automated trial reminders** - 15-day check-in and 5-day urgent emails sent automatically
 - **Weekend skip** - 5-day reminders not sent on Sat/Sun, sent Monday instead

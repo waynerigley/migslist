@@ -23,6 +23,54 @@
   </div>
 </div>
 
+<!-- Backup Status Card -->
+<% if (typeof backupStatus !== 'undefined' && backupStatus) { %>
+<div class="backup-status-card">
+  <div class="backup-header">
+    <h3>Backup Status</h3>
+    <% if (backupStatus.status === 'success') { %>
+      <span class="badge badge-success">Healthy</span>
+    <% } else if (backupStatus.status === 'partial') { %>
+      <span class="badge badge-warning">Partial</span>
+    <% } else { %>
+      <span class="badge badge-danger">Error</span>
+    <% } %>
+  </div>
+  <div class="backup-details">
+    <div class="backup-stat">
+      <span class="backup-label">Last Backup</span>
+      <span class="backup-value"><%= backupStatus.lastBackupFormatted || 'Never' %></span>
+    </div>
+    <div class="backup-stat">
+      <span class="backup-label">Backups Stored</span>
+      <span class="backup-value"><%= backupStatus.backupCount || 0 %></span>
+    </div>
+    <div class="backup-stat">
+      <span class="backup-label">Total Size</span>
+      <span class="backup-value"><%= backupStatus.totalSize || 'N/A' %></span>
+    </div>
+  </div>
+  <div class="backup-actions">
+    <form action="/admin/backup/run" method="POST" class="inline-form" onsubmit="return confirm('Run a backup now?')">
+      <button type="submit" class="btn btn-primary btn-sm">Run Backup Now</button>
+    </form>
+  </div>
+</div>
+<% } else { %>
+<div class="backup-status-card backup-status-unknown">
+  <div class="backup-header">
+    <h3>Backup Status</h3>
+    <span class="badge badge-secondary">Unknown</span>
+  </div>
+  <p>No backup information available. Run a backup to initialize.</p>
+  <div class="backup-actions">
+    <form action="/admin/backup/run" method="POST" class="inline-form">
+      <button type="submit" class="btn btn-primary btn-sm">Run Backup Now</button>
+    </form>
+  </div>
+</div>
+<% } %>
+
 <% if (pendingSignups && pendingSignups.length > 0) { %>
 <div class="alert-banner">
   <strong><%= pendingSignups.length %> pending signup request<%= pendingSignups.length > 1 ? 's' : '' %></strong> awaiting payment confirmation.
@@ -242,5 +290,61 @@
 [data-theme="dark"] .highlight-section {
   background: #422006;
   border-color: #f59e0b;
+}
+/* Backup Status Card */
+.backup-status-card {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  color: white;
+}
+.backup-status-card.backup-status-unknown {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+}
+.backup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.backup-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+.backup-details {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.backup-stat {
+  display: flex;
+  flex-direction: column;
+}
+.backup-label {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.backup-value {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.backup-actions {
+  margin-top: 0.5rem;
+}
+.backup-status-card .btn-primary {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+}
+.backup-status-card .btn-primary:hover {
+  background: rgba(255,255,255,0.3);
+}
+[data-theme="dark"] .backup-status-card {
+  background: linear-gradient(135deg, #065f46 0%, #064e3b 100%);
 }
 </style>
