@@ -366,45 +366,31 @@
 
         <div class="template-section">
             <h3>Email Template (editable - saved automatically)</h3>
-            <textarea id="email-template">Hi [FIRST_NAME],
+            <textarea id="email-template">Hello [FIRST_NAME],
 
-My name is Wayne Rigley. I'm from Windsor, Ontario and spent 20 years in the union family. I'm now working as a data analyst, and I've always been passionate about building tools to help my union family.
+My name is Wayne, and as a former CAW Local 200 member with 20 years in the movement, I know exactly how much of a headache it is to manage membership data using outdated filing systems.
 
-MigsList has been a dream of mine for years, and it's now a reality. This service has been tested and refined over the past year with several Locals to ensure it meets all the needs of union administration.
+I'm reaching out because I built MigsList specifically for Ontario locals like [UNION_NAME]. After a year of testing with several Locals, it's ready to help eliminate the stress of manual list generation.
 
-View MigsList here: https://migslist.com/
-See all features: https://migslist.com/features
+Why union leaders are switching to MigsList:
 
-The amount of stress, hours, and money wasted using outdated filing systems—especially during rank-and-file list generation—creates unnecessary challenges for both administrators and Presidents. MigsList solves this by giving the President full control of the system while allowing them to grant Recording Secretaries the access they need.
+  • One-Click Elections: Generate voter lists and rank-and-file exports instantly
+  • Sovereignty: Your data stays on secure Canadian servers
+  • Total Control: You (the President) manage access for Recording Secretaries and the executive team
+  • Member Tracking: Effortlessly manage Active vs Non-Active status and secure document storage
 
-HERE'S WHAT MIGSLIST CAN DO FOR [UNION_NAME]:
+You can see a full breakdown of features and video tutorials here: https://migslist.com/features
 
-  • Track Members In Good Standing with ease
-  • Active vs Non-Active member status tracking
-  • Generate voter lists for elections with one click
-  • Export rank-and-file lists (members without executive roles)
-  • Export reports to Excel & PDF
-  • Store PDF documents securely for each member
-  • Import members directly from Excel spreadsheets
-  • Send email communications to your membership
-  • Multi-user access for your executive team
-  • Video tutorials to get you started fast: https://migslist.com/tutorials
-  • Secure Canadian servers — your data stays in Canada
+I'd love for you to try it out—I'm offering a 30-day free trial and a "Founder's Rate" of $500 for the first year (standard is $800) for fellow Ontario locals.
 
-SPECIAL OFFER: First year at $500 CAD (regularly $800/year), plus a 30-day FREE trial with full access to all features.
-
-I'd be happy to answer any questions or schedule a quick demo to show you how MigsList can streamline your membership management.
-
-BOOK A DEMO: Simply reply to this email and I'll send you a Google Meet link for a time that works for you. I'm here to help and happy to walk you through the system.
+If you're open to it, I'd be happy to hop on a 10-minute Google Meet to show you how it works. Or feel free to explore the site at your own pace.
 
 In Solidarity,
 
 Wayne Rigley
+Former CAW Local 200 Member
 Founder, MigsList
-Registered Ontario Business
-support@migslist.com
-https://migslist.com
-Facebook: facebook.com/MigsList</textarea>
+support@migslist.com</textarea>
             <div class="hint">
                 <strong>Placeholders:</strong> [FIRST_NAME] = Contact's first name | [UNION_NAME] = Their union name<br>
                 <strong>Tip:</strong> Click "Open Gmail" to compose with this template. The template auto-saves as you edit.
@@ -1206,20 +1192,20 @@ Facebook: facebook.com/MigsList</textarea>
 
         // Reset template function
         function resetTemplate() {
-            localStorage.removeItem('union-email-template-v7');
+            localStorage.removeItem('union-email-template-v8');
             document.getElementById('email-template').value = defaultTemplate;
             alert('Template reset to default!');
         }
 
         // Load saved template or use default (v4 = new key to force refresh)
-        const savedTemplate = localStorage.getItem('union-email-template-v7');
+        const savedTemplate = localStorage.getItem('union-email-template-v8');
         if (savedTemplate) {
             document.getElementById('email-template').value = savedTemplate;
         }
 
         // Save template on change
         document.getElementById('email-template').addEventListener('input', function() {
-            localStorage.setItem('union-email-template-v7', this.value);
+            localStorage.setItem('union-email-template-v8', this.value);
         });
 
         // Update stats display
@@ -1260,7 +1246,7 @@ Facebook: facebook.com/MigsList</textarea>
             template = template.replace(/\[UNION_NAME\]/g, unionName);
 
             // Create Gmail compose URL - opens as popup so you can see the From account selector
-            const subject = encodeURIComponent('MigsList - Member Management Software for Unions');
+            const subject = encodeURIComponent('Streamlining ' + unionName + "'s rank-and-file lists");
             const body = encodeURIComponent(template);
             const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(email)}&su=${subject}&body=${body}`;
 
@@ -1284,6 +1270,19 @@ Facebook: facebook.com/MigsList</textarea>
             checkbox.addEventListener('change', function() {
                 localStorage.setItem(this.id, this.checked);
                 updateStats();
+            });
+        });
+
+        // Auto-check when clicking mailto links directly
+        document.querySelectorAll('a.email-link[href^="mailto:"]').forEach(link => {
+            link.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const checkbox = row.querySelector('input[type="checkbox"]');
+                if (checkbox && !checkbox.checked) {
+                    checkbox.checked = true;
+                    localStorage.setItem(checkbox.id, 'true');
+                    updateStats();
+                }
             });
         });
 
